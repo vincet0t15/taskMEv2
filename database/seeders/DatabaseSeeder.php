@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,15 +14,47 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(OfficeSeeder::class);
+        $this->call(PrioritiesSeeder::class);
+        $this->call(StatusesSeeder::class);
 
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
+        $users = [
             [
-                'name' => 'Test User',
-                'password' => 'password',
-                'email_verified_at' => now(),
-            ]
-        );
+                'name' => 'Zyrus Vince B. Famini',
+                'username' => 'admin',
+                'office_id' => 1,
+                'password' => 'admin123',
+            ],
+            [
+                'name' => 'Zyrus Vance B. Famini',
+                'username' => 'adminvance',
+                'office_id' => 1,
+                'password' => 'admin123',
+            ],
+            [
+                'name' => 'Renz Jansen Distal',
+                'username' => 'adminrenz',
+                'office_id' => 1,
+                'password' => 'admin123',
+            ],
+            [
+                'name' => 'Paul Christian Reformina',
+                'username' => 'adminpong',
+                'office_id' => 1,
+                'password' => 'admin123',
+            ],
+        ];
+
+        foreach ($users as $data) {
+            User::firstOrCreate(
+                ['username' => $data['username']],
+                [
+                    'name' => $data['name'],
+                    'office_id' => $data['office_id'],
+                    'password' => Hash::make($data['password']),
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
     }
 }

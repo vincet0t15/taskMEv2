@@ -20,7 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'username',
         'password',
     ];
 
@@ -46,7 +46,19 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
+    }
+
+    // public function subTasks()
+    // {
+    //     return $this->belongsToMany(SubTask::class, 'sub_task_assignees', 'user_id', 'sub_task_id')
+    //         ->whereNull('sub_task_assignees.deleted_at')
+    //         ->withTimestamps()
+    //     ;
+    // }
 }

@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 import { ChevronDown, Plus } from 'lucide-react';
 import { useState } from 'react';
+import { SidebarGroupLabel } from './ui/sidebar';
 
 export default function WorkspaceSection() {
     const [open, setOpen] = useState(true);
@@ -15,13 +16,12 @@ export default function WorkspaceSection() {
 
     return (
         <div className="px-2 py-3">
-            {/* Header */}
             <div
-                className="flex cursor-pointer items-center justify-between px-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                className="flex cursor-pointer items-center justify-between text-sm font-medium text-muted-foreground hover:text-foreground"
                 onClick={() => setOpen(!open)}
             >
-                <div className="flex items-center space-x-1 text-sm font-medium text-muted-foreground hover:text-foreground">
-                    <span>Workspaces</span>
+                <div className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+                    <SidebarGroupLabel>Projects</SidebarGroupLabel>
                 </div>
                 <div className="flex items-center text-center">
                     <ChevronDown
