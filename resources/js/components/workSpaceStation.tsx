@@ -2,18 +2,30 @@
 
 import { cn } from '@/lib/utils';
 import { CreateProject } from '@/pages/projects/create';
+import { project } from '@/routes/show';
+import { Project } from '@/types/project';
+import { Link, usePage } from '@inertiajs/react';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { SidebarGroupLabel } from './ui/sidebar';
 
+interface Workspace {
+    id: number | string;
+    name: string;
+    url: string;
+}
+
 export default function WorkspaceSection() {
     const [open, setOpen] = useState(true);
+    const page = usePage();
+    const { myProjects } = page.props;
+    const currentUrl = page.url;
 
-    const workspaces = [
-        { id: 1, name: 'Beyond UI' },
-        { id: 2, name: 'Marketing' },
-        { id: 3, name: 'HR' },
-    ];
+    const workspaces: Workspace[] = (myProjects as Project[]).map((data) => ({
+        id: data.id,
+        name: data.name,
+        url: project.url(data.id),
+    }));
 
     return (
         <div className="px-2 py-3">
@@ -45,17 +57,34 @@ export default function WorkspaceSection() {
             {/* Workspace Items */}
             {open && (
                 <ul className="mt-2 space-y-1">
-                    {workspaces.map((ws) => (
-                        <li
-                            key={ws.id}
-                            className="flex cursor-pointer items-center space-x-2 rounded-md px-3 py-1 text-sm text-foreground hover:bg-muted"
-                        >
-                            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted text-xs font-medium text-foreground">
-                                {ws.name.charAt(0)}
-                            </div>
-                            <span>{ws.name}</span>
-                        </li>
-                    ))}
+                    {workspaces.map((ws) => {
+                        const isActive = currentUrl.startsWith(ws.url);
+
+                        return (
+                            <Link
+                                href={ws.url}
+                                key={ws.id}
+                                className={cn(
+                                    'flex cursor-pointer items-center space-x-2 rounded-md px-3 py-1 text-sm transition-colors',
+                                    isActive
+                                        ? 'bg-muted font-semibold text-foreground'
+                                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                )}
+                            >
+                                <div
+                                    className={cn(
+                                        'flex h-6 w-6 items-center justify-center rounded-md text-xs font-medium',
+                                        isActive
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-muted text-foreground',
+                                    )}
+                                >
+                                    {ws.name.charAt(0)}
+                                </div>
+                                <span className="truncate">{ws.name}</span>
+                            </Link>
+                        );
+                    })}
                 </ul>
             )}
         </div>

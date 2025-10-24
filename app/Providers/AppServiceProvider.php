@@ -46,6 +46,14 @@ class AppServiceProvider extends ServiceProvider
 
                 return app(ProjectController::class)->getMyProjects(request());
             },
+
+            'systemUsers' => function () {
+                if (!Auth::check()) {
+                    return null;
+                }
+
+                return app(\App\Http\Controllers\UserController::class)->getAllUsers();
+            },
         ]);
     }
 }
