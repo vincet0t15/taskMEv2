@@ -1,7 +1,8 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { ChevronDown, Plus } from 'lucide-react';
+import { CreateProject } from '@/pages/projects/create';
+import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { SidebarGroupLabel } from './ui/sidebar';
 
@@ -36,7 +37,7 @@ export default function WorkspaceSection() {
                             e.stopPropagation();
                         }}
                     >
-                        <Plus className="h-4 w-4 cursor-pointer" />
+                        <CreateProject />
                     </button>
                 </div>
             </div>

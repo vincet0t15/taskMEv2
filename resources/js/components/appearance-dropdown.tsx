@@ -6,7 +6,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAppearance } from '@/hooks/use-appearance';
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Monitor, Sun } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 
 export default function AppearanceToggleDropdown({
@@ -17,8 +17,6 @@ export default function AppearanceToggleDropdown({
 
     const getCurrentIcon = () => {
         switch (appearance) {
-            case 'dark':
-                return <Moon className="h-5 w-5" />;
             case 'light':
                 return <Sun className="h-5 w-5" />;
             default:
@@ -44,20 +42,6 @@ export default function AppearanceToggleDropdown({
                         <span className="flex items-center gap-2">
                             <Sun className="h-5 w-5" />
                             Light
-                        </span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => updateAppearance('dark')}>
-                        <span className="flex items-center gap-2">
-                            <Moon className="h-5 w-5" />
-                            Dark
-                        </span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => updateAppearance('system')}
-                    >
-                        <span className="flex items-center gap-2">
-                            <Monitor className="h-5 w-5" />
-                            System
                         </span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
