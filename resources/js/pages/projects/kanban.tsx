@@ -1,89 +1,61 @@
 'use client';
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
 import {
-    CheckSquare,
+    ChevronDown,
+    ChevronRight,
     Clock,
-    LinkIcon,
+    List,
     MessageSquare,
     MoreHorizontal,
-    Plus,
+    Paperclip,
 } from 'lucide-react';
+import { useState } from 'react';
 
-const statuses = [
+const data = [
     {
         id: 1,
-        name: 'To Do',
-        color: 'bg-blue-500',
-        count: 4,
+        title: 'To-Do',
+        count: 1,
+        icon: <List className="h-4 w-4 text-blue-500" />,
         tasks: [
             {
-                id: 1,
-                title: 'Design Homepage Wireframe',
-                description:
-                    'Discuss layout with the marketing team for alignment.',
-                status: 'Not Started',
-                priority: { label: 'Low', color: 'bg-blue-100 text-blue-800' },
-                date: '02 Nov 2023',
-                assignees: ['JD', 'AM'],
-                comments: 12,
-                links: 1,
-                progress: '0/3',
-            },
-            {
-                id: 2,
-                title: 'Design Homepage Wireframe',
-                description:
-                    'Discuss layout with the marketing team for alignment.',
-                status: 'In Research',
+                id: 101,
                 priority: {
-                    label: 'Medium',
+                    label: 'MEDIUM',
                     color: 'bg-yellow-100 text-yellow-800',
                 },
-                date: '02 Nov 2023',
-                assignees: ['JD', 'AM'],
-                comments: 12,
-                links: 1,
-                progress: '0/3',
+                title: 'NDA Documents Templates',
+                description: 'Hi Caroline, please help me to create NDA...',
+                dueDate: '04 Dec 2025, 10:00 AM',
+                assignee: { name: 'Caroline', avatar: '/avatar.jpg' },
+                attachments: 1,
+                comments: 0,
             },
         ],
     },
     {
         id: 2,
-        name: 'In Progress',
-        color: 'bg-indigo-500',
-        count: 4,
+        title: 'On Progress',
+        count: 2,
+        icon: <Clock className="h-4 w-4 text-blue-400" />,
         tasks: [
             {
-                id: 3,
-                title: 'Design Homepage Wireframe',
-                description:
-                    'Discuss layout with the marketing team for alignment.',
-                status: 'In Research',
-                priority: { label: 'High', color: 'bg-red-100 text-red-800' },
-                date: '02 Nov 2023',
-                assignees: ['JD', 'AM'],
-                comments: 12,
-                links: 1,
-                progress: '0/3',
-            },
-            {
-                id: 4,
-                title: 'Design Homepage Wireframe',
-                description:
-                    'Discuss layout with the marketing team for alignment.',
-                status: 'On Track',
-                priority: { label: 'Low', color: 'bg-blue-100 text-blue-800' },
-                date: '02 Nov 2023',
-                assignees: ['JD', 'AM'],
-                comments: 12,
-                links: 1,
-                progress: '0/3',
+                id: 102,
+                priority: { label: 'HIGH', color: 'bg-red-100 text-red-800' },
+                title: 'Set Up Meeting With Clients',
+                description: 'At 27 November 2024, we will discuss our...',
+                subtask: { done: 1, total: 2 },
+                dueDate: '01 Nov 2025, 12:00 AM',
+                assignee: { name: 'Ulysses', avatar: '/avatar.jpg' },
+                attachments: 1,
+                comments: 1,
             },
         ],
     },
@@ -93,113 +65,164 @@ interface Props {
     statusWithTasks: Status[];
 }
 export default function KanbanBoard({ statusWithTasks }: Props) {
+    const [openGroups, setOpenGroups] = useState<{ [key: number]: boolean }>(
+        {},
+    );
     const getInitials = useInitials();
+
+    const toggleGroup = (id: number) => {
+        setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));
+    };
+
     return (
-        <div className="flex h-full gap-4 overflow-x-auto">
-            {statusWithTasks.map((status) => (
+        <div className="flex gap-6 overflow-x-auto pb-6">
+            {statusWithTasks.map((status, index) => (
                 <div
-                    key={status.id}
-                    className="w-80 flex-shrink-0 rounded-xl bg-red-400 p-4 shadow-sm"
+                    key={index}
+                    className="w-80 flex-shrink-0 rounded-xl bg-muted/40 p-4 shadow-sm"
                 >
                     {/* Header */}
                     <div className="mb-3 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                        <div
+                            className="flex cursor-pointer items-center gap-2"
+                            onClick={() => toggleGroup(status.id)}
+                        >
+                            {openGroups[status.id] ? (
+                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            )}
                             <div
+                                className="rounded-ful h-5 w-[3px]"
                                 style={{
                                     backgroundColor: status.color,
                                 }}
-                                className={`h-2 w-2 rounded-full`}
                             ></div>
                             <h3 className="font-semibold text-foreground">
                                 {status.name}
                             </h3>
-                            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                            <span className="rounded-full bg-background px-2 py-0.5 text-xs text-muted-foreground">
                                 {status.tasks.length}
                             </span>
                         </div>
-                        <div className="flex gap-1">
-                            <button className="rounded p-1 hover:bg-muted">
-                                <Plus className="h-4 w-4" />
-                            </button>
-                            <button className="rounded p-1 hover:bg-muted">
-                                <MoreHorizontal className="h-4 w-4" />
-                            </button>
-                        </div>
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                        </Button>
                     </div>
 
-                    {/* Tasks */}
-                    <div className="space-y-3">
-                        {status.tasks.map((task) => (
-                            <Card
-                                key={task.id}
-                                className="rounded-xl shadow-sm"
-                            >
-                                <CardContent className="space-y-2">
-                                    <Badge
-                                        variant="secondary"
-                                        className="w-fit text-xs"
-                                        style={{
-                                            backgroundColor: task.status.color,
-                                        }}
-                                    >
-                                        {task.status.name}
-                                    </Badge>
-                                    <h4 className="leading-tight font-semibold">
-                                        {task.title}
-                                    </h4>
-                                    <p className="text-xs text-muted-foreground">
-                                        {task.description}
-                                    </p>
-
-                                    {/* Assignees */}
-                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                        <span>Assignees :</span>
-                                        <div className="flex -space-x-2">
-                                            {task.assignees.map((user, i) => (
-                                                <Avatar
-                                                    key={i}
-                                                    className="h-6 w-6 border-2 border-background bg-primary/10 text-xs font-semibold text-primary"
-                                                >
-                                                    <AvatarFallback className="flex items-center justify-center">
-                                                        {getInitials(user.name)}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Footer */}
-                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                        <div className="flex items-center gap-1">
-                                            <Clock className="h-4 w-4" />
-                                            <p>{task.due_date}</p>
-                                        </div>
-                                        <Badge className={task.priority.color}>
+                    {/* Collapsible Task List */}
+                    {openGroups[status.id] && (
+                        <div className="space-y-3 transition-all duration-300">
+                            {status.tasks.map((task) => (
+                                <Card
+                                    key={task.id}
+                                    className="border bg-card shadow-sm"
+                                >
+                                    <CardContent className="space-y-3 p-4">
+                                        {/* Priority */}
+                                        <Badge
+                                            className={`text-xs font-semibold`}
+                                            style={{
+                                                backgroundColor:
+                                                    task.priority.color,
+                                            }}
+                                        >
                                             {task.priority.name}
                                         </Badge>
-                                    </div>
-                                    <Separator />
-                                    {/* Task Meta */}
-                                    <div className="flex items-center justify-between pt-2 text-xs text-muted-foreground">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex items-center gap-1">
-                                                <MessageSquare className="h-3 w-3" />{' '}
-                                                {/* {task.comments} */}
+
+                                        {/* Title + Description */}
+                                        <div>
+                                            <h4 className="leading-tight font-semibold text-foreground">
+                                                {task.title}
+                                            </h4>
+                                            <p className="truncate text-xs text-muted-foreground">
+                                                {task.description}
+                                            </p>
+                                        </div>
+
+                                        {/* Optional Subtask */}
+                                        {/* {task.subtask && (
+                                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                                <div className="flex items-center gap-1">
+                                                    <List className="h-3 w-3" />
+                                                    Sub Task
+                                                </div>
+                                                <span>
+                                                    {task.subtask.done}/
+                                                    {task.subtask.total}
+                                                </span>
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <LinkIcon className="h-3 w-3" />{' '}
-                                                {/* {task.links} */}
+                                        )} */}
+
+                                        {/* Progress Bar (if subtasks) */}
+                                        {/* {task.subtask && (
+                                            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                                <div
+                                                    className="h-full bg-blue-500 transition-all"
+                                                    style={{
+                                                        width: `${
+                                                            (task.subtask.done /
+                                                                task.subtask
+                                                                    .total) *
+                                                            100
+                                                        }%`,
+                                                    }}
+                                                ></div>
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <CheckSquare className="h-3 w-3" />{' '}
-                                                {/* {task.progress} */}
+                                        )} */}
+
+                                        {/* Due Date */}
+                                        <p className="flex items-center gap-1 text-center text-xs text-muted-foreground">
+                                            <Clock className="h-4 w-4" />
+                                            {task.due_date}
+                                        </p>
+
+                                        <Separator />
+                                        {/* Footer: Assignee + Icons */}
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                {task.assignees.map(
+                                                    (user, index) => (
+                                                        <Avatar
+                                                            className="h-6 w-6 border"
+                                                            key={index}
+                                                        >
+                                                            {task.assignees ? (
+                                                                <AvatarImage
+                                                                    src={
+                                                                        user.avatar
+                                                                    }
+                                                                    alt={
+                                                                        user.name
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <AvatarFallback className="flex items-center justify-center text-xs font-medium">
+                                                                    {getInitials(
+                                                                        user.name,
+                                                                    )}
+                                                                </AvatarFallback>
+                                                            )}
+                                                        </Avatar>
+                                                    ),
+                                                )}
+                                            </div>
+                                            <div className="flex items-center gap-3 text-muted-foreground">
+                                                <div className="flex items-center gap-1 text-xs">
+                                                    <Paperclip className="h-3.5 w-3.5" />
+                                                    {/* {task.attachments} */}
+                                                </div>
+                                                <div className="flex items-center gap-1 text-xs">
+                                                    <MessageSquare className="h-3.5 w-3.5" />
+                                                    {/* {task.comments} */}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
                 </div>
             ))}
         </div>
