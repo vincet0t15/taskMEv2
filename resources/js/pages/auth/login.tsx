@@ -25,7 +25,7 @@ export default function Login({
     return (
         <AuthLayout
             title="Log in to your account"
-            description="Enter your email and password below to log in"
+            description="Enter your username and password below to log in"
         >
             <Head title="Log in" />
 
@@ -38,8 +38,9 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Username</Label>
+                                <Label htmlFor="username">Username</Label>
                                 <Input
+                                    id="username"
                                     type="text"
                                     name="username"
                                     required
@@ -47,7 +48,7 @@ export default function Login({
                                     tabIndex={1}
                                     placeholder="Username"
                                 />
-                                <InputError message={errors.email} />
+                                <InputError message={errors.username} />
                             </div>
 
                             <div className="grid gap-2">

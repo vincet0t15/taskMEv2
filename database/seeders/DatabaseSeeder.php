@@ -24,24 +24,28 @@ class DatabaseSeeder extends Seeder
                 'username' => 'admin',
                 'office_id' => 1,
                 'password' => 'admin123',
+                'is_active' => true,
             ],
             [
                 'name' => 'Zyrus Vance B. Famini',
                 'username' => 'adminvance',
                 'office_id' => 1,
                 'password' => 'admin123',
+                'is_active' => true,
             ],
             [
                 'name' => 'Renz Jansen Distal',
                 'username' => 'adminrenz',
                 'office_id' => 1,
                 'password' => 'admin123',
+                'is_active' => true,
             ],
             [
                 'name' => 'Paul Christian Reformina',
                 'username' => 'adminpong',
                 'office_id' => 1,
                 'password' => 'admin123',
+                'is_active' => true,
             ],
         ];
 
