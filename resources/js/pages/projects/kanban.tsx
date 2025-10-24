@@ -4,69 +4,29 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
 import {
     ChevronDown,
-    ChevronRight,
-    Clock,
-    List,
     MessageSquare,
     MoreHorizontal,
     Paperclip,
 } from 'lucide-react';
-import { useState } from 'react';
-
-const data = [
-    {
-        id: 1,
-        title: 'To-Do',
-        count: 1,
-        icon: <List className="h-4 w-4 text-blue-500" />,
-        tasks: [
-            {
-                id: 101,
-                priority: {
-                    label: 'MEDIUM',
-                    color: 'bg-yellow-100 text-yellow-800',
-                },
-                title: 'NDA Documents Templates',
-                description: 'Hi Caroline, please help me to create NDA...',
-                dueDate: '04 Dec 2025, 10:00 AM',
-                assignee: { name: 'Caroline', avatar: '/avatar.jpg' },
-                attachments: 1,
-                comments: 0,
-            },
-        ],
-    },
-    {
-        id: 2,
-        title: 'On Progress',
-        count: 2,
-        icon: <Clock className="h-4 w-4 text-blue-400" />,
-        tasks: [
-            {
-                id: 102,
-                priority: { label: 'HIGH', color: 'bg-red-100 text-red-800' },
-                title: 'Set Up Meeting With Clients',
-                description: 'At 27 November 2024, we will discuss our...',
-                subtask: { done: 1, total: 2 },
-                dueDate: '01 Nov 2025, 12:00 AM',
-                assignee: { name: 'Ulysses', avatar: '/avatar.jpg' },
-                attachments: 1,
-                comments: 1,
-            },
-        ],
-    },
-];
+import { useMemo, useState } from 'react';
 
 interface Props {
     statusWithTasks: Status[];
 }
+
 export default function KanbanBoard({ statusWithTasks }: Props) {
     const [openGroups, setOpenGroups] = useState<{ [key: number]: boolean }>(
-        {},
+        () => {
+            const initial: { [key: number]: boolean } = {};
+            statusWithTasks?.forEach((status) => {
+                initial[status.id] = true;
+            });
+            return initial;
+        },
     );
     const getInitials = useInitials();
 
@@ -74,120 +34,127 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
         setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
+    const sections = useMemo(() => statusWithTasks ?? [], [statusWithTasks]);
+
     return (
-        <div className="flex gap-6 overflow-x-auto pb-6">
-            {statusWithTasks.map((status, index) => (
+        <div className="flex gap-4 overflow-x-auto pb-6">
+            {sections.map((status) => (
                 <div
-                    key={index}
-                    className="w-80 flex-shrink-0 rounded-xl bg-muted/40 p-4 shadow-sm"
+                    key={status.id}
+                    className="w-[300px] flex-shrink-0 space-y-4"
                 >
-                    {/* Header */}
-                    <div className="mb-3 flex items-center justify-between">
-                        <div
-                            className="flex cursor-pointer items-center gap-2"
-                            onClick={() => toggleGroup(status.id)}
-                        >
-                            {openGroups[status.id] ? (
-                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <div
-                                className="rounded-ful h-5 w-[3px]"
-                                style={{
-                                    backgroundColor: status.color,
-                                }}
-                            ></div>
-                            <h3 className="font-semibold text-foreground">
+                    <button
+                        type="button"
+                        className="flex w-full items-center justify-between rounded-lg border border-border bg-card p-2 transition-colors hover:bg-muted/50"
+                        onClick={() => toggleGroup(status.id)}
+                    >
+                        <div className="flex items-center gap-3">
+                            <span
+                                className="h-5 w-1.5 rounded-full"
+                                style={{ backgroundColor: status.color }}
+                            />
+                            <span className="text-base font-semibold text-foreground uppercase">
                                 {status.name}
-                            </h3>
-                            <span className="rounded-full bg-background px-2 py-0.5 text-xs text-muted-foreground">
+                            </span>
+                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-semibold text-foreground">
                                 {status.tasks.length}
                             </span>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-7 w-7">
-                            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                        </Button>
-                    </div>
-
-                    {/* Collapsible Task List */}
+                        <ChevronDown
+                            className={`h-5 w-5 text-muted-foreground transition-transform ${
+                                !openGroups[status.id] ? '-rotate-90' : ''
+                            }`}
+                        />
+                    </button>
+                    {/* Task List */}
                     {openGroups[status.id] && (
-                        <div className="space-y-3 transition-all duration-300">
+                        <div className="space-y-4">
                             {status.tasks.map((task) => (
                                 <Card
                                     key={task.id}
-                                    className="border bg-card shadow-sm"
+                                    className="rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
                                 >
-                                    <CardContent className="space-y-3 p-4">
-                                        {/* Priority */}
-                                        <Badge
-                                            className={`text-xs font-semibold`}
-                                            style={{
-                                                backgroundColor:
-                                                    task.priority.color,
-                                            }}
-                                        >
-                                            {task.priority.name}
-                                        </Badge>
-
-                                        {/* Title + Description */}
-                                        <div>
-                                            <h4 className="leading-tight font-semibold text-foreground">
-                                                {task.title}
-                                            </h4>
-                                            <p className="truncate text-xs text-muted-foreground">
-                                                {task.description}
-                                            </p>
+                                    <CardContent className="space-y-4 p-5">
+                                        {/* Header with priority and menu */}
+                                        <div className="flex items-start justify-between">
+                                            <Badge
+                                                variant="secondary"
+                                                className="rounded-lg px-3 py-1.5 text-xs font-semibold uppercase"
+                                                style={{
+                                                    backgroundColor:
+                                                        task.priority.color +
+                                                        '25',
+                                                    color: task.priority.color,
+                                                }}
+                                            >
+                                                {task.priority.name}
+                                            </Badge>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="-mt-1 -mr-2 h-8 w-8 hover:bg-muted"
+                                            >
+                                                <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
+                                            </Button>
                                         </div>
 
-                                        {/* Optional Subtask */}
-                                        {/* {task.subtask && (
-                                            <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                                <div className="flex items-center gap-1">
-                                                    <List className="h-3 w-3" />
-                                                    Sub Task
+                                        {/* Title & description */}
+                                        <div>
+                                            <h4 className="text-base leading-snug font-semibold text-foreground">
+                                                {task.title}
+                                            </h4>
+                                            {task.description && (
+                                                <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                                                    {task.description}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Subtasks & progress */}
+                                        {/* {task.subtasks && task.subtasks.total > 0 && (
+                                            <div className="space-y-2.5 rounded-xl bg-muted/40 p-3.5">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
+                                                        <List className="h-4 w-4" />
+                                                        Sub Task
+                                                    </span>
+                                                    <span className="text-sm font-semibold text-foreground">
+                                                        {task.subtasks.done}/{task.subtasks.total}
+                                                    </span>
                                                 </div>
-                                                <span>
-                                                    {task.subtask.done}/
-                                                    {task.subtask.total}
+                                                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                                    <div
+                                                        className="h-full rounded-full transition-all duration-300"
+                                                        style={{
+                                                            width: `${Math.min(100, Math.round((task.subtasks.done / task.subtasks.total) * 100))}%`,
+                                                            backgroundColor: '#3b82f6',
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )} */}
+
+                                        {/* Due date */}
+                                        {task.due_date && (
+                                            <p className="text-sm text-muted-foreground">
+                                                <span className="font-medium">
+                                                    Due Date :{' '}
                                                 </span>
-                                            </div>
-                                        )} */}
+                                                {task.due_date}
+                                            </p>
+                                        )}
 
-                                        {/* Progress Bar (if subtasks) */}
-                                        {/* {task.subtask && (
-                                            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                                                <div
-                                                    className="h-full bg-blue-500 transition-all"
-                                                    style={{
-                                                        width: `${
-                                                            (task.subtask.done /
-                                                                task.subtask
-                                                                    .total) *
-                                                            100
-                                                        }%`,
-                                                    }}
-                                                ></div>
-                                            </div>
-                                        )} */}
-
-                                        {/* Due Date */}
-                                        <p className="flex items-center gap-1 text-center text-xs text-muted-foreground">
-                                            <Clock className="h-4 w-4" />
-                                            {task.due_date}
-                                        </p>
-
-                                        <Separator />
-                                        {/* Footer: Assignee + Icons */}
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                {task.assignees.map(
-                                                    (user, index) => (
+                                        {/* Footer */}
+                                        <div className="flex items-center justify-between pt-1">
+                                            <div className="flex -space-x-2">
+                                                {task.assignees
+                                                    ?.slice(0, 3)
+                                                    .map((user, idx) => (
                                                         <Avatar
-                                                            className="h-6 w-6 border"
-                                                            key={index}
+                                                            key={idx}
+                                                            className="h-9 w-9 border-2 border-background ring-0"
                                                         >
-                                                            {task.assignees ? (
+                                                            {user.avatar ? (
                                                                 <AvatarImage
                                                                     src={
                                                                         user.avatar
@@ -197,25 +164,31 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                                                                     }
                                                                 />
                                                             ) : (
-                                                                <AvatarFallback className="flex items-center justify-center text-xs font-medium">
+                                                                <AvatarFallback
+                                                                    className="text-xs font-semibold"
+                                                                    style={{
+                                                                        backgroundColor:
+                                                                            '#86efac',
+                                                                        color: '#166534',
+                                                                    }}
+                                                                >
                                                                     {getInitials(
                                                                         user.name,
                                                                     )}
                                                                 </AvatarFallback>
                                                             )}
                                                         </Avatar>
-                                                    ),
-                                                )}
+                                                    ))}
                                             </div>
-                                            <div className="flex items-center gap-3 text-muted-foreground">
-                                                <div className="flex items-center gap-1 text-xs">
-                                                    <Paperclip className="h-3.5 w-3.5" />
-                                                    {/* {task.attachments} */}
-                                                </div>
-                                                <div className="flex items-center gap-1 text-xs">
-                                                    <MessageSquare className="h-3.5 w-3.5" />
-                                                    {/* {task.comments} */}
-                                                </div>
+                                            <div className="flex items-center gap-2">
+                                                <button className="flex h-9 min-w-[60px] items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+                                                    <Paperclip className="h-4 w-4" />
+                                                    <span>1</span>
+                                                </button>
+                                                <button className="flex h-9 min-w-[60px] items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+                                                    <MessageSquare className="h-4 w-4" />
+                                                    <span>1</span>
+                                                </button>
                                             </div>
                                         </div>
                                     </CardContent>
