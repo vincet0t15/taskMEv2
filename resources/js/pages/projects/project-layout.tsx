@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { dashboard } from '@/routes';
+import { board, project } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Link, usePage } from '@inertiajs/react';
@@ -14,61 +15,61 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Props {
-    project: Project;
+    projects: Project;
 }
 
 export default function ProjectLayout({
-    project,
+    projects,
     children,
 }: PropsWithChildren<Props>) {
     const page = usePage();
     const currentUrl = page.url;
-    const { url } = usePage();
-    const current = url.split('/').pop();
+
     const tabs = [
         {
             label: 'List',
-            href: `/projects/${project.id}/list`,
+            href: project.url(projects.id),
         },
         {
             label: 'Board',
-            href: `/projects/${project.id}/tasks`,
+            href: board.url(projects.id),
         },
         {
             label: 'Calendar',
-            href: `/projects/${project.id}/calendar`,
+            href: `/projects/${projects.id}/calendar`,
         },
         {
             label: 'Settings',
-            href: `/projects/${project.id}/settings`,
+            href: `/projects/${projects.id}/settings`,
         },
     ];
+
     const activeTab =
-        tabs.find((tab) => currentUrl.startsWith(tab.href))?.label ||
+        tabs.find((tab) => currentUrl.startsWith(tab.href))?.label ??
         tabs[0].label;
+
     return (
-        <div className="space-y-6 p-6">
+        <div className="flex h-[calc(100vh-64px)] flex-col space-y-6 overflow-hidden p-6">
             {/* Header Section */}
-            <div className="flex items-center justify-between gap-2 border-b pb-4">
+            <div className="flex flex-shrink-0 items-center justify-between gap-2 border-b pb-4">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-                        {project.name}
+                        {projects.name}
                     </h1>
                     <p className="max-w-3xl text-sm text-muted-foreground">
-                        {project.description || 'No description provided.'}
+                        {projects.description || 'No description provided.'}
                     </p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div className="">
+                    <div>
                         <p className="text-sm text-muted-foreground">Status</p>
                         <Badge
                             style={{
-                                backgroundColor: project.status?.color,
+                                backgroundColor: projects.status?.color,
                             }}
-                            className=""
                         >
-                            {project.status?.name}
+                            {projects.status?.name}
                         </Badge>
                     </div>
 
@@ -78,16 +79,17 @@ export default function ProjectLayout({
                         </p>
                         <Badge
                             style={{
-                                backgroundColor: project.priority?.color,
+                                backgroundColor: projects.priority?.color,
                             }}
                         >
-                            {project.priority?.name}
+                            {projects.priority?.name}
                         </Badge>
                     </div>
                 </div>
             </div>
 
-            <div className="flex justify-between gap-4">
+            {/* Tabs + Create Button */}
+            <div className="flex flex-shrink-0 justify-between gap-4">
                 <Tabs value={activeTab}>
                     <TabsList>
                         {tabs.map((tab) => {
@@ -106,12 +108,13 @@ export default function ProjectLayout({
                         })}
                     </TabsList>
                 </Tabs>
-                <div>
-                    <CreateTaskDialog projectId={project.id} />
-                </div>
+                <CreateTaskDialog projectId={projects.id} />
             </div>
 
-            <div className="mt-4 rounded-md bg-transparent">{children}</div>
+            {/* Main Content (Scrollable Area) */}
+            <div className="flex-1 overflow-auto rounded-md bg-transparent">
+                {children}
+            </div>
         </div>
     );
 }

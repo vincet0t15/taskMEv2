@@ -5,15 +5,15 @@ import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Status } from '@/types/status';
 import { Head } from '@inertiajs/react';
+import KanbanBoard from './kanban';
 import ProjectLayout from './project-layout';
-import CollapsibleTaskTable from './table';
 
 interface Props {
     projects: Project;
     statusWithTasks: Status[];
 }
 
-export default function TaskList({ projects, statusWithTasks }: Props) {
+export default function TaskBoard({ projects, statusWithTasks }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
@@ -32,7 +32,7 @@ export default function TaskList({ projects, statusWithTasks }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <ProjectLayout projects={projects}>
-                <CollapsibleTaskTable statusWithTasks={statusWithTasks} />
+                <KanbanBoard statusWithTasks={statusWithTasks} />
             </ProjectLayout>
         </AppLayout>
     );

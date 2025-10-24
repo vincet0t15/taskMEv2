@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Models\Project;
@@ -24,6 +25,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // TASKS
     Route::post('tasks', [TaskController::class, 'store'])->name('store.task');
+
+    // BOARD
+    Route::get('projects/{project}/board', [BoardController::class, 'show'])->name('show.board');
 });
 
 require __DIR__ . '/settings.php';

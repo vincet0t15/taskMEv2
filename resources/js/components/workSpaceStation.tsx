@@ -58,7 +58,9 @@ export default function WorkspaceSection() {
             {open && (
                 <ul className="mt-2 space-y-1">
                     {workspaces.map((ws) => {
-                        const isActive = currentUrl.startsWith(ws.url);
+                        const isActive = currentUrl.startsWith(
+                            `/projects/${ws.id}`,
+                        );
 
                         return (
                             <Link
