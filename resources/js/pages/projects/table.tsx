@@ -1,209 +1,164 @@
 'use client';
 
-import { Avatar } from '@/components/ui/avatar'; // adjust based on your avatar component
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // adjust based on your avatar component
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
+import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { Status } from '@/types/status';
+
+import {
+    ArrowUpWideNarrow,
+    ChevronDown,
+    ChevronRight,
+    CircleCheck,
+    ClipboardCheck,
+    Clock,
+    ListCheckIcon,
+    User2Icon,
+} from 'lucide-react';
 import { useState } from 'react';
 
-interface Task {
-    id: number;
-    name: string;
-    description?: string;
-    deadline: string;
-    people: string[]; // URLs or initials
-    progress: number;
-    priority: 'Low' | 'Medium' | 'High';
+interface Props {
+    statusWithTasks: Status[];
 }
 
-interface Group {
-    title: string;
-    color: string;
-    tasks: Task[];
-}
-
-const groups: Group[] = [
-    {
-        title: 'To-do',
-        color: 'border-l-yellow-500',
-        tasks: [
-            {
-                id: 1,
-                name: 'Employee Details',
-                description:
-                    'Create a page where there is information about employees',
-                deadline: '29 Nov, 2024',
-                people: ['A', 'B', 'C'],
-                progress: 50,
-                priority: 'Medium',
-            },
-            {
-                id: 2,
-                name: 'Darkmode Version',
-                description: 'Darkmode version for all screens',
-                deadline: '29 Nov, 2024',
-                people: ['D', 'E'],
-                progress: 20,
-                priority: 'Low',
-            },
-        ],
-    },
-    {
-        title: 'In Progress',
-        color: 'border-l-blue-500',
-        tasks: [
-            {
-                id: 3,
-                name: 'Settings Page',
-                description: '-',
-                deadline: '29 Nov, 2024',
-                people: ['X', 'Y', 'Z'],
-                progress: 50,
-                priority: 'Medium',
-            },
-        ],
-    },
-    {
-        title: 'Completed',
-        color: 'border-l-green-500',
-        tasks: [
-            {
-                id: 4,
-                name: 'Super Admin Role',
-                description: '-',
-                deadline: '29 Nov, 2024',
-                people: ['A', 'B'],
-                progress: 100,
-                priority: 'Medium',
-            },
-        ],
-    },
-];
-
-export default function CollapsibleTaskTable() {
+export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
-
+    const getInitials = useInitials();
     const toggleGroup = (title: string) => {
         setOpenGroups((prev) => ({ ...prev, [title]: !prev[title] }));
     };
 
     return (
         <div className="space-y-4">
-            {groups.map((group) => (
+            {statusWithTasks.map((status) => (
                 <div
-                    key={group.title}
+                    key={status.name}
                     className={cn(
                         'overflow-hidden rounded-md bg-card text-card-foreground shadow-sm',
-                        group.color,
                     )}
                 >
                     {/* Header */}
                     <div
-                        className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-muted/30"
-                        onClick={() => toggleGroup(group.title)}
+                        className="flex cursor-pointer items-center justify-between bg-muted/100 px-4 py-2 hover:bg-muted/30"
+                        onClick={() => toggleGroup(status.name)}
                     >
                         <div className="flex items-center gap-2">
-                            {openGroups[group.title] ? (
+                            {openGroups[status.name] ? (
                                 <ChevronDown className="h-4 w-4" />
                             ) : (
                                 <ChevronRight className="h-4 w-4" />
                             )}
 
                             {/* Vertical colored line */}
-                            <div className="h-5 w-[3px] rounded-full bg-green-500"></div>
+                            <div
+                                className="rounded-ful h-5 w-[3px]"
+                                style={{
+                                    backgroundColor: status.color,
+                                }}
+                            ></div>
 
                             {/* Title and count */}
                             <span className="text-sm font-medium">
-                                {group.title}
+                                {status.name}
                             </span>
                             <Badge variant="secondary" className="text-xs">
-                                {group.tasks.length}
+                                {status.tasks.length}
                             </Badge>
                         </div>
                     </div>
 
                     {/* Task List */}
-                    {openGroups[group.title] && (
+                    {openGroups[status.name] && (
                         <div className="overflow-x-auto">
                             <table className="w-full border-t text-sm">
                                 <thead className="bg-muted/40">
                                     <tr className="text-left text-muted-foreground">
-                                        <th className="p-3">
-                                            <Checkbox />
-                                        </th>
-                                        <th className="p-3 font-medium">
+                                        <th className="flex items-center gap-1 p-3 text-center font-medium">
+                                            <ListCheckIcon className="h-4 w-4" />
                                             Task Name
                                         </th>
-                                        <th className="p-3 font-medium">
-                                            Description
+                                        <th className="font-medium">
+                                            <div className="flex items-center gap-1 text-center">
+                                                <ClipboardCheck className="h-4 w-4" />
+                                                Description
+                                            </div>
                                         </th>
-                                        <th className="p-3 font-medium">
-                                            Deadline
+                                        <th className="font-medium">
+                                            <div className="flex items-center gap-1 text-center">
+                                                <Clock className="h-4 w-4" />
+                                                Deadline
+                                            </div>
                                         </th>
-                                        <th className="p-3 font-medium">
-                                            People
+                                        <th className="font-medium">
+                                            <div className="flex items-center gap-1 text-center">
+                                                <User2Icon className="h-4 w-4" />
+                                                Assignees
+                                            </div>
                                         </th>
-                                        <th className="p-3 font-medium">
-                                            Progress
+                                        <th className="font-medium">
+                                            <div className="flex items-center gap-1 text-center">
+                                                <ArrowUpWideNarrow className="h-4 w-4" />
+                                                Progress
+                                            </div>
                                         </th>
-                                        <th className="p-3 font-medium">
-                                            Priority
+                                        <th className="font-medium">
+                                            <div className="flex items-center gap-1 text-center">
+                                                <CircleCheck className="h-4 w-4" />
+                                                Priority
+                                            </div>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {group.tasks.map((task) => (
+                                    {status.tasks.map((task) => (
                                         <tr
                                             key={task.id}
-                                            className="border-t hover:bg-muted/20"
+                                            className="border-t p-3 hover:bg-muted/20"
                                         >
-                                            <td className="p-3">
-                                                <Checkbox />
+                                            <td className="p-3 font-medium text-muted-foreground">
+                                                {task.title}
                                             </td>
-                                            <td className="p-3 font-medium">
-                                                {task.name}
-                                            </td>
-                                            <td className="p-3 text-muted-foreground">
+                                            <td className="text-muted-foreground">
                                                 {task.description || '-'}
                                             </td>
-                                            <td className="p-3">
-                                                {task.deadline}
+                                            <td className="">
+                                                {task.due_date}
                                             </td>
-                                            <td className="p-3">
+                                            <td className="">
                                                 <div className="flex -space-x-2">
-                                                    {task.people.map((p, i) => (
-                                                        <Avatar
-                                                            key={i}
-                                                            className="h-6 w-6 border-2 border-background"
-                                                        >
-                                                            <span className="text-xs">
-                                                                {p}
-                                                            </span>
-                                                        </Avatar>
-                                                    ))}
+                                                    {task.assignees.map(
+                                                        (user, i) => (
+                                                            <Avatar
+                                                                key={i}
+                                                                className="h-8 w-8 border-2 border-background"
+                                                            >
+                                                                <AvatarFallback className="flex items-center justify-center rounded-full text-center font-medium">
+                                                                    {getInitials(
+                                                                        user.name,
+                                                                    )}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                        ),
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className="w-32 p-3">
                                                 <Progress
-                                                    value={task.progress}
+                                                    value={80}
                                                     className="h-2"
                                                 />
                                             </td>
                                             <td className="p-3">
                                                 <Badge
-                                                    className={cn(
-                                                        'text-xs',
-                                                        task.priority === 'High'
-                                                            ? 'bg-red-500 text-white'
-                                                            : task.priority ===
-                                                                'Medium'
-                                                              ? 'bg-yellow-400 text-white'
-                                                              : 'bg-blue-400 text-white',
-                                                    )}
+                                                    className={cn('text-xs')}
+                                                    style={{
+                                                        backgroundColor:
+                                                            task.priority.color,
+                                                    }}
                                                 >
-                                                    {task.priority}
+                                                    {task.priority.name}
                                                 </Badge>
                                             </td>
                                         </tr>

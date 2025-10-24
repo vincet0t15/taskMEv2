@@ -3,15 +3,18 @@ import { dashboard } from '@/routes';
 import { project } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
+import { Status } from '@/types/status';
 import { Head } from '@inertiajs/react';
 import ProjectLayout from './project-layout';
 import CollapsibleTaskTable from './table';
 
 interface Props {
     projects: Project;
+    statusWithTasks: Status[];
 }
 
-export default function Dashboard({ projects }: Props) {
+export default function Dashboard({ projects, statusWithTasks }: Props) {
+    console.log(statusWithTasks);
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
@@ -30,7 +33,7 @@ export default function Dashboard({ projects }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <ProjectLayout project={projects}>
-                <CollapsibleTaskTable />
+                <CollapsibleTaskTable statusWithTasks={statusWithTasks} />
             </ProjectLayout>
         </AppLayout>
     );

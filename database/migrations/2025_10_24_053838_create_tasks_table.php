@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->foreignId('status_id')->constrained()->onDelete('cascade');
             $table->foreignId('priority_id')->constrained()->onDelete('cascade');
+            $table->string('due_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

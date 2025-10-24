@@ -1,9 +1,18 @@
+import { User } from '.';
+import { Priority } from './priority';
+import { Status } from './status';
+
 export interface Task {
     id: number;
     title: string;
     description?: string;
-    status: 'todo' | 'in-progress' | 'done';
-    priority: 'low' | 'medium' | 'high';
+    status_id: number;
+    priority_id: number;
+    project_id: number;
+    status: Status;
+    priority: Priority;
+    due_date: string;
+    assignees: User[];
 }
 
 export type TaskForm = {

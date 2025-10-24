@@ -31,7 +31,7 @@ interface Prosp {
 export function CreateTaskDialog({ projectId }: Prosp) {
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
-    console.log(systemUsers);
+
     const { data, setData, processing, reset, post, errors } =
         useForm<TaskForm>({
             title: '',

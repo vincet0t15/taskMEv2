@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectRequest\ProjectStoreRequest;
 use App\Models\Project;
+use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,8 +33,16 @@ class ProjectController extends Controller
     {
         $project->load(['priority', 'status', 'user']);
 
+        $statusWithTasks = Status::with([
+            'tasks' => function ($query) use ($project) {
+                $query->where('project_id', $project->id)
+                    ->with(['priority', 'status', 'assignees']);
+            }
+        ])->get();
+
         return inertia('projects/show', [
             'projects' => $project,
+            'statusWithTasks' => $statusWithTasks
         ]);
     }
 }
