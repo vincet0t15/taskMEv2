@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest\TaskStoreRequest;
+use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TaskController extends Controller
 {
@@ -25,5 +27,12 @@ class TaskController extends Controller
         }
 
         return redirect()->back()->with('success', 'Task created successfully.');
+    }
+
+    public function create(Project $project)
+    {
+        return Inertia::render('tasks/createTask', [
+            'project' => $project,
+        ]);
     }
 }

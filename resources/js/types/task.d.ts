@@ -1,6 +1,7 @@
 import { User } from '.';
 import { Priority } from './priority';
 import { Status } from './status';
+import { SubTaskForm } from './subTask';
 
 export interface Task {
     id: number;
@@ -23,4 +24,5 @@ export type TaskForm = {
     project_id: number;
     due_date: string;
     assignees: number[];
+    subTasks: SubTaskForm[];
 };

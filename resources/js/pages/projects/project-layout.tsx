@@ -1,10 +1,12 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { dashboard } from '@/routes';
+import { task } from '@/routes/create';
 import { board, project } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { PropsWithChildren } from 'react';
 import { CreateTaskDialog } from '../tasks/create';
 const breadcrumbs: BreadcrumbItem[] = [
@@ -109,6 +111,9 @@ export default function ProjectLayout({
                     </TabsList>
                 </Tabs>
                 <CreateTaskDialog projectId={projects.id} />
+                <Button onClick={() => router.get(task.url(projects.id))}>
+                    Create task
+                </Button>
             </div>
 
             {/* Main Content (Scrollable Area) */}
