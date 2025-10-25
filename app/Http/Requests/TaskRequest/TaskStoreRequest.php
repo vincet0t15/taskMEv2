@@ -33,7 +33,15 @@ class TaskStoreRequest extends FormRequest
             'project_id' => ['required', 'exists:projects,id'],
             'due_date' => ['required'],
             'assignees' => ['array', 'required'],
-            'assignees.*' => ['exists:users,id']
+            'assignees.*' => ['exists:users,id'],
+            'subTasks' => ['array'],
+            'subTasks.*.title' => ['required_with:subTasks', 'string'],
+            'subTasks.*.description' => ['string'],
+            'subTasks.*.priority_id' => ['required_with:subTasks', 'exists:priorities,id'],
+            'subTasks.*.status_id' => ['required_with:subTasks', 'exists:statuses,id'],
+            'subTasks.*.due_date' => ['date'],
+            'subTasks.*.assignees' => ['array'],
+            'subTasks.*.assignees.*' => ['exists:users,id']
         ];
     }
 }

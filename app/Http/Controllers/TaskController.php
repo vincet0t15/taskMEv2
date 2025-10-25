@@ -13,7 +13,7 @@ class TaskController extends Controller
     public function store(TaskStoreRequest $request)
     {
 
-        $task =    Task::create([
+        $task = Task::create([
             'title' => $request->title,
             'description' => $request->description,
             'priority_id' => $request->priority_id,
@@ -24,6 +24,23 @@ class TaskController extends Controller
 
         if ($request->assignees) {
             $task->assignees()->attach($request->assignees);
+        }
+
+        // Create subtasks
+        if ($request->subTasks) {
+            foreach ($request->subTasks as $subTaskData) {
+                $subTask = $task->subTasks()->create([
+                    'title' => $subTaskData['title'],
+                    'description' => $subTaskData['description'],
+                    'priority_id' => $subTaskData['priority_id'],
+                    'status_id' => $subTaskData['status_id'],
+                    'due_date' => $subTaskData['due_date'],
+                ]);
+
+                if (!empty($subTaskData['assignees'])) {
+                    $subTask->assignees()->attach($subTaskData['assignees']);
+                }
+            }
         }
 
         return redirect()->back()->with('success', 'Task created successfully.');

@@ -38,4 +38,9 @@ class Task extends Model
     {
         return $this->belongsToMany(User::class, 'task_assignees');
     }
+
+    public function subTasks()
+    {
+        return $this->hasMany(SubTask::class);
+    }
 }
