@@ -15,6 +15,7 @@ class SubTask extends Model
         'task_id',
         'status_id',
         'priority_id',
+        'due_date',
     ];
 
     public function task()
@@ -30,5 +31,10 @@ class SubTask extends Model
     public function priority()
     {
         return $this->belongsTo(Priority::class);
+    }
+
+    public function assignees()
+    {
+        return $this->belongsToMany(User::class, 'sub_task_assignees');
     }
 }

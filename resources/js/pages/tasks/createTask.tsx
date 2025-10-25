@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { task } from '@/routes/create';
+import { task as createTask } from '@/routes/create';
+import { task } from '@/routes/store';
 import { User, type BreadcrumbItem } from '@/types';
 import { Priority } from '@/types/priority';
 import { Project } from '@/types/project';
@@ -17,6 +18,7 @@ import { TaskForm } from '@/types/task';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { ChangeEventHandler } from 'react';
+import { toast } from 'sonner';
 
 interface CreateTaskProps {
     project: Project;
@@ -33,7 +35,7 @@ export default function CreateTask({ project }: CreateTaskProps) {
         },
         {
             title: 'Create Task',
-            href: task.url({ project: project.id }),
+            href: createTask.url({ project: project.id }),
         },
     ];
 
@@ -44,20 +46,11 @@ export default function CreateTask({ project }: CreateTaskProps) {
             title: '',
             description: '',
             due_date: '',
-            priority_id: 0,
-            status_id: 0,
-            project_id: 1,
+            priority_id: (systemPriorities as Priority[])[0]?.id || 0,
+            status_id: (systemStatuses as Status[])[0]?.id || 0,
+            project_id: project.id,
             assignees: [] as number[],
-            subTasks: [
-                {
-                    title: '',
-                    description: '',
-                    priority_id: 0,
-                    status_id: 0,
-                    due_date: '',
-                    assignees: [],
-                },
-            ],
+            subTasks: [],
         });
 
     const priorityOptions = (systemPriorities as Priority[]).map(
@@ -98,8 +91,8 @@ export default function CreateTask({ project }: CreateTaskProps) {
             {
                 title: '',
                 description: '',
-                priority_id: 0,
-                status_id: 0,
+                priority_id: (systemPriorities as Priority[])[0]?.id || 0,
+                status_id: (systemStatuses as Status[])[0]?.id || 0,
                 due_date: '',
                 assignees: [],
             },
@@ -107,16 +100,18 @@ export default function CreateTask({ project }: CreateTaskProps) {
     };
 
     const removeSubTask = (index: number) => {
-        if (data.subTasks.length > 1) {
-            const updatedSubTasks = data.subTasks.filter((_, i) => i !== index);
-            setData('subTasks', updatedSubTasks);
-        }
+        const updatedSubTasks = data.subTasks.filter((_, i) => i !== index);
+        setData('subTasks', updatedSubTasks);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setData('project_id', project.id);
-        post('/tasks', { onSuccess: () => reset() });
+        post(task.url(), {
+            onSuccess: (response: { props: FlashProps }) => {
+                toast.success(response.props.flash?.success);
+                reset();
+            },
+        });
     };
 
     return (
