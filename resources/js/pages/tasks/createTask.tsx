@@ -15,7 +15,7 @@ import { Priority } from '@/types/priority';
 import { Project } from '@/types/project';
 import { Status } from '@/types/status';
 import { TaskForm } from '@/types/task';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { ChangeEventHandler } from 'react';
 import { toast } from 'sonner';
@@ -31,7 +31,11 @@ export default function CreateTask({ project }: CreateTaskProps) {
         },
         {
             title: project.name,
-            href: '',
+            href: '#',
+            onClick: (e) => {
+                e.preventDefault();
+                router.visit(document.referrer || dashboard().url);
+            },
         },
         {
             title: 'Create Task',

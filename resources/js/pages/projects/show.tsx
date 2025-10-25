@@ -20,10 +20,6 @@ export default function TaskList({ projects, statusWithTasks }: Props) {
             href: dashboard().url,
         },
         {
-            title: 'Projects',
-            href: '#',
-        },
-        {
             title: projects.name,
             href: project.url(projects.id),
         },
