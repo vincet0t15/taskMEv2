@@ -37,11 +37,11 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
     const sections = useMemo(() => statusWithTasks ?? [], [statusWithTasks]);
 
     return (
-        <div className="flex gap-4 overflow-x-auto pb-6">
+        <div className="flex gap-2 overflow-x-auto pb-6 md:gap-4">
             {sections.map((status) => (
                 <div
                     key={status.id}
-                    className="w-[300px] flex-shrink-0 space-y-4"
+                    className="w-64 flex-shrink-0 space-y-4 md:w-[300px]"
                 >
                     <button
                         type="button"

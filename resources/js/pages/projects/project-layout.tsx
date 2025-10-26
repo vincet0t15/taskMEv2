@@ -53,8 +53,8 @@ export default function ProjectLayout({
     return (
         <div className="flex h-[calc(100vh-64px)] flex-col space-y-6 overflow-hidden p-6">
             {/* Header Section */}
-            <div className="flex flex-shrink-0 items-center justify-between gap-2 border-b pb-4">
-                <div>
+            <div className="flex flex-col gap-4 border-b pb-4 md:flex-row md:items-center md:justify-between">
+                <div className="min-w-0 flex-1">
                     <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                         {projects.name}
                     </h1>
@@ -63,7 +63,7 @@ export default function ProjectLayout({
                     </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 md:justify-end">
                     <div>
                         <p className="text-sm text-muted-foreground">Status</p>
                         <Badge
@@ -91,7 +91,7 @@ export default function ProjectLayout({
             </div>
 
             {/* Tabs + Create Button */}
-            <div className="flex flex-shrink-0 justify-between gap-4">
+            <div className="flex flex-shrink-0 flex-col gap-4 md:flex-row md:justify-between">
                 <Tabs value={activeTab}>
                     <TabsList>
                         {tabs.map((tab) => {
@@ -110,10 +110,12 @@ export default function ProjectLayout({
                         })}
                     </TabsList>
                 </Tabs>
-                <CreateTaskDialog projectId={projects.id} />
-                <Button onClick={() => router.get(task.url(projects.id))}>
-                    Create task
-                </Button>
+                <div className="flex gap-2 md:justify-end">
+                    <CreateTaskDialog projectId={projects.id} />
+                    <Button onClick={() => router.get(task.url(projects.id))}>
+                        Create task
+                    </Button>
+                </div>
             </div>
 
             {/* Main Content (Scrollable Area) */}
