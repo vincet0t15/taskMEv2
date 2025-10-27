@@ -11,33 +11,41 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { task } from '@/routes/store';
+import { subtask } from '@/routes/update';
 import { User } from '@/types';
 import { Priority } from '@/types/priority';
 import { Status } from '@/types/status';
-import { SubTaskForm } from '@/types/subTask';
+import { SubTaskForm, SubTaskInterface } from '@/types/subTask';
 import { useForm, usePage } from '@inertiajs/react';
-import { PlusIcon } from 'lucide-react';
 import { ChangeEventHandler, FormEventHandler } from 'react';
 import { toast } from 'sonner';
 
-export function CreateSubTaskDialog() {
+interface CreateTaskProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    subTask: SubTaskInterface;
+}
+
+export function SubTaskDialog({
+    open,
+    onOpenChange,
+    subTask,
+}: CreateTaskProps) {
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
 
-    const { data, setData, processing, reset, post, errors } =
+    const { data, setData, processing, reset, put, errors } =
         useForm<SubTaskForm>({
-            title: '',
-            description: '',
-            due_date: '',
-            priority_id: 0,
-            status_id: 0,
-            assignees: [] as number[],
+            title: subTask.title ?? '',
+            description: subTask.description ?? '',
+            due_date: subTask.due_date ?? '',
+            priority_id: subTask.priority_id ?? 0,
+            status_id: subTask.status_id ?? 0,
+            assignees: subTask.assignees.map((user) => user.id),
         });
 
     const priorityOptions = (systemPriorities as Priority[]).map(
@@ -68,7 +76,7 @@ export function CreateSubTaskDialog() {
 
     const handleSubmmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(task.url(), {
+        put(subtask.url(subTask.id), {
             onSuccess: (response: { props: FlashProps }) => {
                 toast.success(response.props.flash?.success);
                 reset();
@@ -84,21 +92,10 @@ export function CreateSubTaskDialog() {
     };
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex cursor-pointer items-center gap-2"
-                >
-                    <PlusIcon className="h-4 w-4" />
-                    Add Subtask
-                </Button>
-            </DialogTrigger>
-
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create New Task</DialogTitle>
+                    <DialogTitle> SubTask Details</DialogTitle>
                     <DialogDescription>
                         Fill out the details below to add a new task to your
                         project.
@@ -188,7 +185,7 @@ export function CreateSubTaskDialog() {
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
                         <Button type="submit" className="cursor-pointer">
-                            Create Task
+                            Save changes
                         </Button>
                     </DialogFooter>
                 </form>

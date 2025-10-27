@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TaskController;
 use App\Models\Project;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // BOARD
     Route::get('projects/{project}/board', [BoardController::class, 'show'])->name('show.board');
+
+    // SUBTASKS
+    Route::put('subtasks/{subTask}', [SubTaskController::class, 'updateSubTask'])->name('update.subtask');
 });
 
 require __DIR__ . '/settings.php';

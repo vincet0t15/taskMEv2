@@ -9,13 +9,14 @@ import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { task as createTask } from '@/routes/create';
+import { project } from '@/routes/show';
 import { task } from '@/routes/store';
 import { User, type BreadcrumbItem } from '@/types';
 import { Priority } from '@/types/priority';
 import { Project } from '@/types/project';
 import { Status } from '@/types/status';
 import { TaskForm } from '@/types/task';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { ChangeEventHandler } from 'react';
 import { toast } from 'sonner';
@@ -23,23 +24,19 @@ import { toast } from 'sonner';
 interface CreateTaskProps {
     project: Project;
 }
-export default function CreateTask({ project }: CreateTaskProps) {
+export default function CreateTask({ project: proj }: CreateTaskProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
             href: dashboard().url,
         },
         {
-            title: project.name,
-            href: '#',
-            onClick: (e) => {
-                e.preventDefault();
-                router.visit(document.referrer || dashboard().url);
-            },
+            title: proj.name,
+            href: project.url(proj.id),
         },
         {
             title: 'Create Task',
-            href: createTask.url({ project: project.id }),
+            href: createTask.url({ project: proj.id }),
         },
     ];
 
@@ -52,7 +49,7 @@ export default function CreateTask({ project }: CreateTaskProps) {
             due_date: '',
             priority_id: (systemPriorities as Priority[])[0]?.id || 0,
             status_id: (systemStatuses as Status[])[0]?.id || 0,
-            project_id: project.id,
+            project_id: proj.id,
             assignees: [] as number[],
             subTasks: [],
         });
@@ -84,14 +81,14 @@ export default function CreateTask({ project }: CreateTaskProps) {
     };
 
     const handleSubTaskChange = (index: number, field: string, value: any) => {
-        const updatedSubTasks = [...data.subTasks];
+        const updatedSubTasks = [...(data.subTasks ?? [])];
         updatedSubTasks[index] = { ...updatedSubTasks[index], [field]: value };
         setData('subTasks', updatedSubTasks);
     };
 
     const addSubTask = () => {
         setData('subTasks', [
-            ...data.subTasks,
+            ...(data.subTasks ?? []), // ✅ if undefined, use []
             {
                 title: '',
                 description: '',
@@ -104,7 +101,9 @@ export default function CreateTask({ project }: CreateTaskProps) {
     };
 
     const removeSubTask = (index: number) => {
-        const updatedSubTasks = data.subTasks.filter((_, i) => i !== index);
+        const updatedSubTasks = (data.subTasks ?? []).filter(
+            (_, i) => i !== index,
+        );
         setData('subTasks', updatedSubTasks);
     };
 
@@ -224,7 +223,7 @@ export default function CreateTask({ project }: CreateTaskProps) {
                             Add Subtask
                         </Button>
                     </div>
-                    {data.subTasks.map((subTask, index) => (
+                    {data.subTasks?.map((subTask, index) => (
                         <div
                             key={index}
                             className="relative space-y-4 rounded-lg border p-4"

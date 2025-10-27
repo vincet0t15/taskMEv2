@@ -15,7 +15,9 @@ class BoardController extends Controller
         $statusWithTasks = Status::with([
             'tasks' => function ($query) use ($project) {
                 $query->where('project_id', $project->id)
-                    ->with(['priority', 'status', 'assignees']);
+                    ->with(['priority', 'status', 'assignees', 'subTasks' => function ($subQuery) {
+                        $subQuery->with('assignees', 'priority', 'status');
+                    }]);
             }
         ])->get();
 

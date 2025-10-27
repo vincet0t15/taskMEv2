@@ -7,8 +7,8 @@ import { board, project } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Link, router, usePage } from '@inertiajs/react';
+import { PlusIcon } from 'lucide-react';
 import { PropsWithChildren } from 'react';
-import { CreateTaskDialog } from '../tasks/create';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -111,8 +111,12 @@ export default function ProjectLayout({
                     </TabsList>
                 </Tabs>
                 <div className="flex gap-2 md:justify-end">
-                    <CreateTaskDialog projectId={projects.id} />
-                    <Button onClick={() => router.get(task.url(projects.id))}>
+                    {/* <CreateTaskDialog projectId={projects.id} /> */}
+                    <Button
+                        onClick={() => router.get(task.url(projects.id))}
+                        className="cursor-pointer"
+                    >
+                        <PlusIcon />
                         Create task
                     </Button>
                 </div>

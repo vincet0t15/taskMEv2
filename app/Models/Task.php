@@ -41,6 +41,6 @@ class Task extends Model
 
     public function subTasks()
     {
-        return $this->hasMany(SubTask::class);
+        return $this->hasMany(SubTask::class, 'task_id');
     }
 }

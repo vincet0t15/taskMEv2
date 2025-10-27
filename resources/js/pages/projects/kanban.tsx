@@ -1,24 +1,29 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
 import {
+    AlertTriangle,
     ChevronDown,
-    MessageSquare,
-    MoreHorizontal,
-    Paperclip,
+    Clock,
+    MessageCircle,
+    UserCircle2,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-
+import { SubTaskDrawer } from '../subTasks/list';
 interface Props {
     statusWithTasks: Status[];
 }
 
 export default function KanbanBoard({ statusWithTasks }: Props) {
+    console.log(statusWithTasks);
     const [openGroups, setOpenGroups] = useState<{ [key: number]: boolean }>(
         () => {
             const initial: { [key: number]: boolean } = {};
@@ -38,10 +43,10 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
 
     return (
         <div className="flex gap-2 overflow-x-auto pb-6 md:gap-4">
-            {sections.map((status) => (
+            {sections.map((status, index) => (
                 <div
-                    key={status.id}
-                    className="w-64 flex-shrink-0 space-y-4 md:w-[300px]"
+                    key={index}
+                    className="flex w-70 flex-shrink-0 flex-col rounded-xl transition-all duration-300"
                 >
                     <button
                         type="button"
@@ -68,131 +73,133 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                     </button>
                     {/* Task List */}
                     {openGroups[status.id] && (
-                        <div className="space-y-4">
-                            {status.tasks.map((task) => (
-                                <Card
-                                    key={task.id}
-                                    className="rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
+                        <div className="mt-4 space-y-4">
+                            {status.tasks.map((task, index) => (
+                                <div
+                                    key={index}
+                                    className="group rounded-sm border border-slate-500 p-4 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-700"
                                 >
-                                    <CardContent className="space-y-4 p-5">
-                                        {/* Header with priority and menu */}
-                                        <div className="flex items-start justify-between">
+                                    <div className="mb-2 flex items-center justify-between">
+                                        <span className="cursor-pointer truncate text-sm font-semibold text-slate-700 hover:font-bold">
+                                            {task.title}
+                                        </span>
+                                        <div className="flex items-center justify-center gap-2">
                                             <Badge
-                                                variant="secondary"
-                                                className="rounded-lg px-3 py-1.5 text-xs font-semibold uppercase"
+                                                className="text-white"
                                                 style={{
                                                     backgroundColor:
-                                                        task.priority.color +
-                                                        '25',
-                                                    color: task.priority.color,
+                                                        task.priority.color,
                                                 }}
                                             >
                                                 {task.priority.name}
                                             </Badge>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="-mt-1 -mr-2 h-8 w-8 hover:bg-muted"
-                                            >
-                                                <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
-                                            </Button>
+                                        </div>
+                                    </div>
+                                    <p className="mb-3 line-clamp-2 text-sm leading-snug text-slate-700">
+                                        {task.description ||
+                                            'No description provided.'}
+                                    </p>
+                                    {/* Footer */}
+                                    <div className="flex items-center justify-between border-t border-slate-500/40 pt-2 text-xs text-slate-400">
+                                        {/* Comments and Assigned Users */}
+
+                                        {/* Comments Count */}
+                                        <div className="flex items-center gap-1">
+                                            <MessageCircle className="h-3.5 w-3.5" />
+                                            <span>2</span>
                                         </div>
 
-                                        {/* Title & description */}
+                                        {/* Users (Avatars) */}
+
+                                        <div className="flex items-center gap-1">
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="flex cursor-default items-center gap-1">
+                                                            <UserCircle2 className="h-4.5 w-4.5 text-slate-400" />
+                                                            <span>
+                                                                {task.assignees
+                                                                    ?.length ??
+                                                                    0}
+                                                            </span>
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent
+                                                        side="top"
+                                                        className="text-xs"
+                                                    >
+                                                        {task.assignees &&
+                                                        task.assignees.length >
+                                                            0
+                                                            ? task.assignees
+                                                                  .map(
+                                                                      (user) =>
+                                                                          user.name,
+                                                                  )
+                                                                  .join(', ')
+                                                            : 'No users assigned'}
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+
                                         <div>
-                                            <h4 className="text-base leading-snug font-semibold text-foreground">
-                                                {task.title}
-                                            </h4>
-                                            {task.description && (
-                                                <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                                                    {task.description}
-                                                </p>
-                                            )}
+                                            <SubTaskDrawer
+                                                subTasks={task.sub_tasks}
+                                                task={task}
+                                            />
                                         </div>
 
-                                        {/* Subtasks & progress */}
-                                        {/* {task.subtasks && task.subtasks.total > 0 && (
-                                            <div className="space-y-2.5 rounded-xl bg-muted/40 p-3.5">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
-                                                        <List className="h-4 w-4" />
-                                                        Sub Task
-                                                    </span>
-                                                    <span className="text-sm font-semibold text-foreground">
-                                                        {task.subtasks.done}/{task.subtasks.total}
-                                                    </span>
-                                                </div>
-                                                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                                                    <div
-                                                        className="h-full rounded-full transition-all duration-300"
-                                                        style={{
-                                                            width: `${Math.min(100, Math.round((task.subtasks.done / task.subtasks.total) * 100))}%`,
-                                                            backgroundColor: '#3b82f6',
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )} */}
+                                        <div className="flex items-center gap-1">
+                                            {(() => {
+                                                const dueDate = task?.due_date;
+                                                const isOverdue =
+                                                    dueDate &&
+                                                    new Date(dueDate) <
+                                                        new Date();
 
-                                        {/* Due date */}
-                                        {task.due_date && (
-                                            <p className="text-sm text-muted-foreground">
-                                                <span className="font-medium">
-                                                    Due Date :{' '}
-                                                </span>
-                                                {task.due_date}
-                                            </p>
-                                        )}
-
-                                        {/* Footer */}
-                                        <div className="flex items-center justify-between pt-1">
-                                            <div className="flex -space-x-2">
-                                                {task.assignees
-                                                    ?.slice(0, 3)
-                                                    .map((user, idx) => (
-                                                        <Avatar
-                                                            key={idx}
-                                                            className="h-9 w-9 border-2 border-background ring-0"
+                                                if (dueDate) {
+                                                    return (
+                                                        <div
+                                                            className={`flex items-center gap-1 text-xs ${
+                                                                isOverdue
+                                                                    ? 'text-red-400'
+                                                                    : 'text-teal-400'
+                                                            }`}
+                                                            title={
+                                                                isOverdue
+                                                                    ? 'Overdue'
+                                                                    : 'Due Date'
+                                                            }
                                                         >
-                                                            {user.avatar ? (
-                                                                <AvatarImage
-                                                                    src={
-                                                                        user.avatar
-                                                                    }
-                                                                    alt={
-                                                                        user.name
-                                                                    }
-                                                                />
+                                                            {isOverdue ? (
+                                                                <AlertTriangle className="h-3 w-3" />
                                                             ) : (
-                                                                <AvatarFallback
-                                                                    className="text-xs font-semibold"
-                                                                    style={{
-                                                                        backgroundColor:
-                                                                            '#86efac',
-                                                                        color: '#166534',
-                                                                    }}
-                                                                >
-                                                                    {getInitials(
-                                                                        user.name,
-                                                                    )}
-                                                                </AvatarFallback>
+                                                                <Clock className="h-3 w-3" />
                                                             )}
-                                                        </Avatar>
-                                                    ))}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <button className="flex h-9 min-w-[60px] items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-                                                    <Paperclip className="h-4 w-4" />
-                                                    <span>1</span>
-                                                </button>
-                                                <button className="flex h-9 min-w-[60px] items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-                                                    <MessageSquare className="h-4 w-4" />
-                                                    <span>1</span>
-                                                </button>
-                                            </div>
+                                                            {new Date(
+                                                                dueDate,
+                                                            ).toLocaleDateString(
+                                                                'en-US',
+                                                                {
+                                                                    month: 'short',
+                                                                    day: 'numeric',
+                                                                    year: '2-digit',
+                                                                },
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }
+
+                                                return (
+                                                    <span className="text-gray-500">
+                                                        —
+                                                    </span>
+                                                );
+                                            })()}
                                         </div>
-                                    </CardContent>
-                                </Card>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     )}

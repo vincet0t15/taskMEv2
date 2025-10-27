@@ -11,4 +11,9 @@ export interface Project {
     priority?: Priority;
 }
 
-export type ProjectCreateInput = Omit<Project, 'id'>;
+export type ProjectCreateInput = {
+    name: string;
+    description?: string;
+    priority_id: number;
+    status_id: number;
+};
