@@ -29,20 +29,12 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
     console.log(task);
     const getInitials = useInitials();
     const [addSubTask, setAddSubTask] = useState(false);
-    const [maxSubtaskHeight, setMaxSubtaskHeight] = useState('300px');
 
     useEffect(() => {
-        const updateHeight = () => {
-            const calculatedHeight = Math.max(window.innerHeight - 400, 200);
-            setMaxSubtaskHeight(`${calculatedHeight}px`);
-        };
-
-        updateHeight();
-        window.addEventListener('resize', updateHeight);
-
-        return () => window.removeEventListener('resize', updateHeight);
-    }, []);
-
+        if (addSubTask) {
+            task;
+        }
+    }, [addSubTask]);
     return (
         <>
             {!addSubTask && (
@@ -252,10 +244,7 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                     />
 
                                     {/* Scrollable Subtasks Container */}
-                                    <div
-                                        className="space-y-2 overflow-y-auto pr-2"
-                                        style={{ maxHeight: maxSubtaskHeight }}
-                                    >
+                                    <div className="h-[18vh] space-y-2 overflow-y-auto pr-2">
                                         {task.sub_tasks.map((sub) => (
                                             <div
                                                 key={sub.id}
