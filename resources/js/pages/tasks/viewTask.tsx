@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
+import { useInitials } from '@/hooks/use-initials';
 import { Task } from '@/types/task';
 import {
     Calendar,
@@ -19,10 +20,12 @@ import { useState } from 'react';
 interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
-    Task: Task;
+    task: Task;
 }
 
-export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
+export default function TaskDetailDialog({ open, setOpen, task }: Props) {
+    console.log(task);
+    const getInitials = useInitials();
     const [subtasks] = useState([
         { id: 1, title: 'Creating presentation deck', completed: true },
         {
@@ -42,7 +45,7 @@ export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
                     <div className="mb-4 flex items-start justify-between">
                         <div>
                             <h2 className="text-xl font-semibold text-gray-900">
-                                {Task.title}
+                                {task.title}
                             </h2>
                         </div>
                     </div>
@@ -51,8 +54,12 @@ export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
                     <div className="mb-4 grid grid-cols-2 gap-4">
                         <div>
                             <p className="mb-1 text-xs text-gray-500">Status</p>
-                            <Badge className="bg-blue-100 text-blue-700">
-                                On Progress
+                            <Badge
+                                style={{
+                                    backgroundColor: task.status.color,
+                                }}
+                            >
+                                {task.status.name}
                             </Badge>
                         </div>
                         <div>
@@ -60,8 +67,42 @@ export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
                                 Due Date
                             </p>
                             <div className="flex items-center gap-1 text-sm text-gray-700">
-                                <Calendar className="h-4 w-4" /> 25 November
-                                2024
+                                <Calendar className="h-4 w-4" />
+                                {(() => {
+                                    const dueDate = task?.due_date;
+                                    const isOverdue =
+                                        dueDate &&
+                                        new Date(dueDate) < new Date();
+
+                                    if (dueDate) {
+                                        return (
+                                            <div
+                                                className={`flex items-center text-xs ${
+                                                    isOverdue
+                                                        ? 'text-red-400'
+                                                        : 'text-teal-400'
+                                                }`}
+                                                title={
+                                                    isOverdue
+                                                        ? 'Overdue'
+                                                        : 'Due Date'
+                                                }
+                                            >
+                                                {new Date(
+                                                    dueDate,
+                                                ).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric',
+                                                })}
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <span className="text-gray-500">—</span>
+                                    );
+                                })()}
                             </div>
                         </div>
                         <div>
@@ -69,12 +110,19 @@ export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
                                 Assignees
                             </p>
                             <div className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarFallback>IC</AvatarFallback>
-                                </Avatar>
-                                <Avatar className="h-8 w-8">
-                                    <AvatarFallback>UL</AvatarFallback>
-                                </Avatar>
+                                <div className="flex -space-x-2">
+                                    {task.assignees.map((data, index) => (
+                                        <Avatar
+                                            key={index}
+                                            className="h-6 w-6 border border-background bg-green-400"
+                                        >
+                                            <AvatarFallback className="bg-green-300 p-2 text-sm">
+                                                {getInitials(data.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    ))}
+                                </div>
+
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -86,8 +134,12 @@ export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
                         </div>
                         <div>
                             <p className="mb-1 text-xs text-gray-500">Tag</p>
-                            <Badge className="bg-yellow-100 text-yellow-700">
-                                MEDIUM
+                            <Badge
+                                style={{
+                                    backgroundColor: task.priority.color,
+                                }}
+                            >
+                                {task.priority.name}
                             </Badge>
                         </div>
                     </div>
@@ -98,10 +150,7 @@ export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
                             Description
                         </p>
                         <p className="rounded-md border border-gray-100 bg-gray-50 p-3 text-sm text-gray-700">
-                            At 27 November 2024, we will discuss our
-                            collaboration with clients, please prepare for the
-                            presentation material and notes for the moderator,
-                            thanks!
+                            {task.description}
                         </p>
                     </div>
 
@@ -161,28 +210,33 @@ export default function TaskDetailDialog({ open, setOpen, Task }: Props) {
                                     Sub Task
                                 </span>
                                 <span className="text-xs text-gray-500">
-                                    {completedCount}/{subtasks.length}
+                                    {task.completed_subtasks_count}/
+                                    {task.total_subtasks_count}
                                 </span>
                             </div>
+
                             <Progress
-                                value={(completedCount / subtasks.length) * 100}
+                                value={
+                                    (task.completed_subtasks_count! /
+                                        task.total_subtasks_count!) *
+                                    100
+                                }
                                 className="mb-3"
                             />
-
                             <div className="space-y-2">
-                                {subtasks.map((sub) => (
+                                {task.sub_tasks.map((sub) => (
                                     <div
                                         key={sub.id}
                                         className="flex items-center gap-2"
                                     >
-                                        {sub.completed ? (
+                                        {sub.status_id == 4 ? (
                                             <CheckCircle2 className="h-4 w-4 text-blue-600" />
                                         ) : (
                                             <Circle className="h-4 w-4 text-gray-400" />
                                         )}
                                         <span
                                             className={`text-sm ${
-                                                sub.completed
+                                                sub.status_id == 4
                                                     ? 'text-gray-500 line-through'
                                                     : 'text-gray-800'
                                             }`}

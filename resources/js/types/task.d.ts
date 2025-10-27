@@ -15,6 +15,8 @@ export interface Task {
     due_date: string;
     assignees: User[];
     sub_tasks: SubTaskInterface[];
+    completed_subtasks_count?: number;
+    total_subtasks_count?: number;
 }
 
 export type TaskForm = {

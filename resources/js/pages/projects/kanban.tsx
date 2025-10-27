@@ -224,7 +224,7 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                 <TaskDetailDialog
                     open={openView}
                     setOpen={setOpenView}
-                    Task={taskDetails}
+                    task={taskDetails}
                 />
             )}
         </div>
