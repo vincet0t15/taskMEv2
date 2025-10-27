@@ -17,7 +17,7 @@ import {
     MessageCircle,
     UserCircle2,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SubTaskDrawer } from '../subTasks/list';
 import TaskDetailDialog from '../tasks/viewTask';
 interface Props {
@@ -50,6 +50,17 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
         setTaskDetails(task);
         setOpenView(true);
     };
+
+    useEffect(() => {
+        if (taskDetails && openView) {
+            const updatedTask = sections
+                .flatMap((status) => status.tasks)
+                .find((task) => task.id === taskDetails.id);
+            if (updatedTask) {
+                setTaskDetails(updatedTask);
+            }
+        }
+    }, [statusWithTasks, taskDetails?.id, openView]);
 
     return (
         <div className="flex gap-2 overflow-x-auto pb-6 md:gap-4">

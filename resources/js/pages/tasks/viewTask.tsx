@@ -17,7 +17,7 @@ import {
     Plus,
     UserPlus,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 interface Props {
     open: boolean;
@@ -29,12 +29,6 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
     console.log(task);
     const getInitials = useInitials();
     const [addSubTask, setAddSubTask] = useState(false);
-
-    useEffect(() => {
-        if (addSubTask) {
-            task;
-        }
-    }, [addSubTask]);
     return (
         <>
             {!addSubTask && (
@@ -288,8 +282,8 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                     onOpenChange={setAddSubTask}
                     task={task}
                     onSubTaskCreated={() => {
-                        // Handle subtask creation - could reload data or update state
-                        router.reload();
+                        // Handle subtask creation - reload only the tasks data to keep dialog open
+                        router.reload({ only: ['statusWithTasks'] });
                     }}
                 />
             )}
