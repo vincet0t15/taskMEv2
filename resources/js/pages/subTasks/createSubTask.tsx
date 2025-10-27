@@ -30,11 +30,13 @@ interface CreateSubTaskDialogProps {
     task: Task;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    onSubTaskCreated?: () => void;
 }
 export function CreateSubTaskDialog({
     task,
     open,
     onOpenChange,
+    onSubTaskCreated,
 }: CreateSubTaskDialogProps) {
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
@@ -82,6 +84,8 @@ export function CreateSubTaskDialog({
             onSuccess: (response: { props: FlashProps }) => {
                 toast.success(response.props.flash?.success);
                 reset();
+                onOpenChange(false);
+                onSubTaskCreated?.();
             },
         });
     };

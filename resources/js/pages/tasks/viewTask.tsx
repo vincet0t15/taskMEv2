@@ -7,6 +7,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { useInitials } from '@/hooks/use-initials';
 import { Task } from '@/types/task';
+import { router } from '@inertiajs/react';
 import {
     Calendar,
     CheckCircle2,
@@ -41,6 +42,7 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
 
         return () => window.removeEventListener('resize', updateHeight);
     }, []);
+
     return (
         <>
             {!addSubTask && (
@@ -296,6 +298,10 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                     open={addSubTask}
                     onOpenChange={setAddSubTask}
                     task={task}
+                    onSubTaskCreated={() => {
+                        // Handle subtask creation - could reload data or update state
+                        router.reload();
+                    }}
                 />
             )}
         </>
