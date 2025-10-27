@@ -16,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { subtask } from '@/routes/store';
 import { User } from '@/types';
 import { Priority } from '@/types/priority';
 import { Status } from '@/types/status';
@@ -24,6 +25,7 @@ import { Task } from '@/types/task';
 import { useForm, usePage } from '@inertiajs/react';
 import { PlusIcon } from 'lucide-react';
 import { ChangeEventHandler, FormEventHandler } from 'react';
+import { toast } from 'sonner';
 interface CreateSubTaskDialogProps {
     task: Task;
     open: boolean;
@@ -76,12 +78,12 @@ export function CreateSubTaskDialog({
 
     const handleSubmmit: FormEventHandler = (e) => {
         e.preventDefault();
-        // post(task.url(), {
-        //     onSuccess: (response: { props: FlashProps }) => {
-        //         toast.success(response.props.flash?.success);
-        //         reset();
-        //     },
-        // });
+        post(subtask.url(), {
+            onSuccess: (response: { props: FlashProps }) => {
+                toast.success(response.props.flash?.success);
+                reset();
+            },
+        });
     };
 
     const handleSelectUserChange = (selectedUsers: User[]) => {
