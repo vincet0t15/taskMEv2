@@ -16,7 +16,7 @@ import {
     Plus,
     UserPlus,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 interface Props {
     open: boolean;
@@ -28,6 +28,19 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
     console.log(task);
     const getInitials = useInitials();
     const [addSubTask, setAddSubTask] = useState(false);
+    const [maxSubtaskHeight, setMaxSubtaskHeight] = useState('300px');
+
+    useEffect(() => {
+        const updateHeight = () => {
+            const calculatedHeight = Math.max(window.innerHeight - 400, 200);
+            setMaxSubtaskHeight(`${calculatedHeight}px`);
+        };
+
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+
+        return () => window.removeEventListener('resize', updateHeight);
+    }, []);
     return (
         <>
             {!addSubTask && (
@@ -237,7 +250,10 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                     />
 
                                     {/* Scrollable Subtasks Container */}
-                                    <div className="max-h-48 space-y-2 overflow-y-auto pr-2">
+                                    <div
+                                        className="space-y-2 overflow-y-auto pr-2"
+                                        style={{ maxHeight: maxSubtaskHeight }}
+                                    >
                                         {task.sub_tasks.map((sub) => (
                                             <div
                                                 key={sub.id}

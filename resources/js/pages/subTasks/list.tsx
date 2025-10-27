@@ -56,7 +56,7 @@ export function SubTaskDrawer({ subTasks = [], task }: SubTaskDrawerProps) {
                 </DrawerTrigger>
 
                 <DrawerContent className="ml-auto max-w-md border-l bg-background shadow-lg">
-                    <DrawerHeader className="flex items-center justify-between border-b">
+                    <DrawerHeader className="flex border-b">
                         <div>
                             <DrawerTitle className="flex items-center gap-2 text-lg font-semibold">
                                 <Workflow className="h-5 w-5 text-primary" />
@@ -68,7 +68,7 @@ export function SubTaskDrawer({ subTasks = [], task }: SubTaskDrawerProps) {
                         </div>
                     </DrawerHeader>
 
-                    <ScrollArea className="h-[75vh] px-2 py-2">
+                    <ScrollArea className="h-[89vh] px-2 py-2">
                         {subTasks.length > 0 ? (
                             <div className="space-y-3">
                                 {subTasks.map((sub, index) => (
