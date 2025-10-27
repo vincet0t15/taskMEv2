@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
+import { Task } from '@/types/task';
 import {
     AlertTriangle,
     ChevronDown,
@@ -18,12 +19,16 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { SubTaskDrawer } from '../subTasks/list';
+import TaskDetailDialog from '../tasks/viewTask';
 interface Props {
     statusWithTasks: Status[];
 }
 
 export default function KanbanBoard({ statusWithTasks }: Props) {
     console.log(statusWithTasks);
+    const [taskDetails, setTaskDetails] = useState<Task>();
+    const [openView, setOpenView] = useState(false);
+
     const [openGroups, setOpenGroups] = useState<{ [key: number]: boolean }>(
         () => {
             const initial: { [key: number]: boolean } = {};
@@ -40,6 +45,11 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
     };
 
     const sections = useMemo(() => statusWithTasks ?? [], [statusWithTasks]);
+
+    const handleClickName = (task: Task) => {
+        setTaskDetails(task);
+        setOpenView(true);
+    };
 
     return (
         <div className="flex gap-2 overflow-x-auto pb-6 md:gap-4">
@@ -80,7 +90,12 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                                     className="group rounded-sm border border-slate-500 p-4 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-700"
                                 >
                                     <div className="mb-2 flex items-center justify-between">
-                                        <span className="cursor-pointer truncate text-sm font-semibold text-slate-700 hover:font-bold">
+                                        <span
+                                            className="cursor-pointer truncate text-sm font-semibold text-slate-700 hover:font-bold"
+                                            onClick={() =>
+                                                handleClickName(task)
+                                            }
+                                        >
                                             {task.title}
                                         </span>
                                         <div className="flex items-center justify-center gap-2">
@@ -205,6 +220,13 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                     )}
                 </div>
             ))}
+            {openView && taskDetails && (
+                <TaskDetailDialog
+                    open={openView}
+                    setOpen={setOpenView}
+                    Task={taskDetails}
+                />
+            )}
         </div>
     );
 }

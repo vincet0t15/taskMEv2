@@ -5,6 +5,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Status } from '@/types/status';
 import { Head } from '@inertiajs/react';
+import TaskDetailModal from '../tasks/viewTask';
 import ProjectLayout from './project-layout';
 import CollapsibleTaskTable from './table';
 
@@ -29,6 +30,7 @@ export default function TaskList({ projects, statusWithTasks }: Props) {
             <Head title="Dashboard" />
             <ProjectLayout projects={projects}>
                 <CollapsibleTaskTable statusWithTasks={statusWithTasks} />
+                <TaskDetailModal />
             </ProjectLayout>
         </AppLayout>
     );
