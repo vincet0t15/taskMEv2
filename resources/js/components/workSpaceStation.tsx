@@ -75,7 +75,7 @@ export default function WorkspaceSection() {
                             >
                                 <div
                                     className={cn(
-                                        'flex h-6 w-6 items-center justify-center rounded-md text-xs font-medium',
+                                        'flex size-8 items-center justify-center rounded-full text-xs font-medium',
                                         isActive
                                             ? 'bg-primary text-primary-foreground'
                                             : 'bg-muted text-foreground',
