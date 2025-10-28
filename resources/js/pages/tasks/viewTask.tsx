@@ -251,25 +251,35 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                         {task.sub_tasks.map((sub) => (
                                             <div
                                                 key={sub.id}
-                                                className="flex cursor-pointer items-center gap-2 rounded-xs hover:bg-gray-200"
+                                                className="flex cursor-pointer items-center justify-between gap-2 rounded-sm hover:bg-gray-200"
                                                 onClick={() =>
                                                     handleClickSubTask(sub)
                                                 }
                                             >
-                                                {sub.status_id === 4 ? (
-                                                    <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                                                ) : (
-                                                    <Circle className="h-4 w-4 text-gray-400" />
-                                                )}
-                                                <span
-                                                    className={`text-sm ${
-                                                        sub.status_id === 4
-                                                            ? 'text-gray-500 line-through'
-                                                            : 'text-gray-800'
-                                                    }`}
+                                                <div className="flex items-center gap-1">
+                                                    {sub.status_id === 4 ? (
+                                                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
+                                                    ) : (
+                                                        <Circle className="h-4 w-4 text-gray-400" />
+                                                    )}
+                                                    <span
+                                                        className={`text-sm ${
+                                                            sub.status_id === 4
+                                                                ? 'text-gray-500 line-through'
+                                                                : 'text-gray-800'
+                                                        }`}
+                                                    >
+                                                        {sub.title}
+                                                    </span>
+                                                </div>
+                                                <Badge
+                                                    style={{
+                                                        backgroundColor:
+                                                            sub.status.color,
+                                                    }}
                                                 >
-                                                    {sub.title}
-                                                </span>
+                                                    {sub.status.name}
+                                                </Badge>
                                             </div>
                                         ))}
                                     </div>
