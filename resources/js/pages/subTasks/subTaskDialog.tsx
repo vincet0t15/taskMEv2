@@ -24,17 +24,13 @@ import { useForm, usePage } from '@inertiajs/react';
 import { ChangeEventHandler, FormEventHandler } from 'react';
 import { toast } from 'sonner';
 
-interface CreateTaskProps {
+interface subTaskDetails {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     subTask: SubTaskInterface;
 }
 
-export function SubTaskDialog({
-    open,
-    onOpenChange,
-    subTask,
-}: CreateTaskProps) {
+export function SubTaskDialog({ open, onOpenChange, subTask }: subTaskDetails) {
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
 

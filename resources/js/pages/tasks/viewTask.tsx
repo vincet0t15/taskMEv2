@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { useInitials } from '@/hooks/use-initials';
+import { SubTaskInterface } from '@/types/subTask';
 import { Task } from '@/types/task';
 import { router } from '@inertiajs/react';
 import {
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
+import { SubTaskDialog } from '../subTasks/subTaskDialog';
 interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -29,9 +31,16 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
     console.log(task);
     const getInitials = useInitials();
     const [addSubTask, setAddSubTask] = useState(false);
+    const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
+    const [subTask, setSubTask] = useState<SubTaskInterface>();
+
+    const handleClickSubTask = (subTask: SubTaskInterface) => {
+        setSubTask(subTask);
+        setOpenSubTaskDialog(true);
+    };
     return (
         <>
-            {!addSubTask && (
+            {!addSubTask && !openSubTaskDialog && (
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogContent className="max-w-3xl border-none bg-transparent p-0 shadow-none">
                         <div className="rounded-sm bg-white p-6 shadow-xl">
@@ -242,7 +251,10 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                         {task.sub_tasks.map((sub) => (
                                             <div
                                                 key={sub.id}
-                                                className="flex items-center gap-2"
+                                                className="flex cursor-pointer items-center gap-2 rounded-xs hover:bg-gray-200"
+                                                onClick={() =>
+                                                    handleClickSubTask(sub)
+                                                }
                                             >
                                                 {sub.status_id === 4 ? (
                                                     <CheckCircle2 className="h-4 w-4 text-blue-600" />
@@ -285,6 +297,14 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                         // Handle subtask creation - reload only the tasks data to keep dialog open
                         router.reload({ only: ['statusWithTasks'] });
                     }}
+                />
+            )}
+
+            {openSubTaskDialog && subTask && (
+                <SubTaskDialog
+                    open={openSubTaskDialog}
+                    onOpenChange={setOpenSubTaskDialog}
+                    subTask={subTask}
                 />
             )}
         </>
