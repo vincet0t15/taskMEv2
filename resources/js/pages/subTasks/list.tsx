@@ -29,9 +29,14 @@ import { SubTaskDialog } from './subTaskDialog';
 interface SubTaskDrawerProps {
     subTasks?: SubTaskInterface[];
     task?: Task;
+    onSubTaskUpdated?: () => void;
 }
 
-export function SubTaskDrawer({ subTasks = [], task }: SubTaskDrawerProps) {
+export function SubTaskDrawer({
+    subTasks = [],
+    task,
+    onSubTaskUpdated,
+}: SubTaskDrawerProps) {
     const [open, setOpen] = useState(false);
     const [subTaskDetails, setSubTaskDetails] =
         useState<SubTaskInterface | null>(null);
@@ -222,6 +227,7 @@ export function SubTaskDrawer({ subTasks = [], task }: SubTaskDrawerProps) {
                     open={open}
                     onOpenChange={setOpen}
                     subTask={subTaskDetails!}
+                    onSubTaskUpdated={onSubTaskUpdated}
                 />
             )}
 

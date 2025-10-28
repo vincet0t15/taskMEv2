@@ -5,7 +5,6 @@ import MultiSelectUser from '@/components/multi-select-user';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -21,18 +20,26 @@ import { Priority } from '@/types/priority';
 import { Status } from '@/types/status';
 import { SubTaskForm, SubTaskInterface } from '@/types/subTask';
 import { useForm, usePage } from '@inertiajs/react';
-import { ChangeEventHandler, FormEventHandler } from 'react';
+import { ChangeEventHandler, FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
+import DeleteSubTaskDialog from './delete';
 
 interface subTaskDetails {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     subTask: SubTaskInterface;
+    onSubTaskUpdated?: () => void;
 }
 
-export function SubTaskDialog({ open, onOpenChange, subTask }: subTaskDetails) {
+export function SubTaskDialog({
+    open,
+    onOpenChange,
+    subTask,
+    onSubTaskUpdated,
+}: subTaskDetails) {
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
+    const [openDelete, setOpenDelete] = useState(false);
 
     const { data, setData, processing, reset, put, errors } =
         useForm<SubTaskForm>({
@@ -75,7 +82,8 @@ export function SubTaskDialog({ open, onOpenChange, subTask }: subTaskDetails) {
         put(subtask.url(subTask.id), {
             onSuccess: (response: { props: FlashProps }) => {
                 toast.success(response.props.flash?.success);
-                reset();
+                onSubTaskUpdated?.();
+                onOpenChange(false);
             },
         });
     };
@@ -88,104 +96,130 @@ export function SubTaskDialog({ open, onOpenChange, subTask }: subTaskDetails) {
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle> SubTask Details</DialogTitle>
-                    <DialogDescription>
-                        Fill out the details below to add a new task to your
-                        project.
-                    </DialogDescription>
-                </DialogHeader>
+        <>
+            {!openDelete && (
+                <Dialog open={open} onOpenChange={onOpenChange}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle> SubTask Details</DialogTitle>
+                            <DialogDescription>
+                                Fill out the details below to add a new task to
+                                your project.
+                            </DialogDescription>
+                        </DialogHeader>
 
-                <form className="mt-4 space-y-6" onSubmit={handleSubmmit}>
-                    {/* Task Info */}
-                    <div className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="title">Task Name</Label>
-                            <Input
-                                id="title"
-                                name="title"
-                                placeholder="Enter task name"
-                                value={data.title}
-                                onChange={handleInputChange}
-                                required
-                            />
-                            <InputError message={errors.title} />
-                        </div>
+                        <form
+                            className="mt-4 space-y-6"
+                            onSubmit={handleSubmmit}
+                        >
+                            {/* Task Info */}
+                            <div className="grid gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="title">Task Name</Label>
+                                    <Input
+                                        id="title"
+                                        name="title"
+                                        placeholder="Enter task name"
+                                        value={data.title}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                    <InputError message={errors.title} />
+                                </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                name="description"
-                                placeholder="Write a short task description..."
-                                rows={3}
-                                value={data.description}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                    </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="description">
+                                        Description
+                                    </Label>
+                                    <Textarea
+                                        id="description"
+                                        name="description"
+                                        placeholder="Write a short task description..."
+                                        rows={3}
+                                        value={data.description}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
 
-                    {/* Dates, Priority, Status */}
-                    <div className="grid gap-2 md:grid-cols-3">
-                        <div className="grid gap-2">
-                            <Label htmlFor="due_date">Deadline</Label>
-                            <CustomDatePicker
-                                initialDate={data.due_date}
-                                onSelect={onChangeDueDate}
-                            />
-                            <InputError message={errors.due_date} />
-                        </div>
+                            {/* Dates, Priority, Status */}
+                            <div className="grid gap-2 md:grid-cols-3">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="due_date">Deadline</Label>
+                                    <CustomDatePicker
+                                        initialDate={data.due_date}
+                                        onSelect={onChangeDueDate}
+                                    />
+                                    <InputError message={errors.due_date} />
+                                </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="priority">Priority</Label>
-                            <CustomSelectWithColor
-                                widthClass="w-full"
-                                options={priorityOptions}
-                                onChange={handleSelectPriorityChange}
-                                value={String(data.priority_id)}
-                                placeholder="Select priority"
-                            />
-                            <InputError message={errors.priority_id} />
-                        </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="priority">Priority</Label>
+                                    <CustomSelectWithColor
+                                        widthClass="w-full"
+                                        options={priorityOptions}
+                                        onChange={handleSelectPriorityChange}
+                                        value={String(data.priority_id)}
+                                        placeholder="Select priority"
+                                    />
+                                    <InputError message={errors.priority_id} />
+                                </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="status">Status</Label>
-                            <CustomSelectWithColor
-                                widthClass="w-full"
-                                options={statusOptions}
-                                onChange={handleSelectStatusChange}
-                                value={String(data.status_id)}
-                                placeholder="Select status"
-                            />
-                            <InputError message={errors.status_id} />
-                        </div>
-                    </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="status">Status</Label>
+                                    <CustomSelectWithColor
+                                        widthClass="w-full"
+                                        options={statusOptions}
+                                        onChange={handleSelectStatusChange}
+                                        value={String(data.status_id)}
+                                        placeholder="Select status"
+                                    />
+                                    <InputError message={errors.status_id} />
+                                </div>
+                            </div>
 
-                    {/* Assignee */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="assignee">Assignee</Label>
-                        <MultiSelectUser
-                            users={systemUsers}
-                            selectedUsers={systemUsers.filter((user) =>
-                                data.assignees.includes(user.id),
-                            )}
-                            onUsersChange={handleSelectUserChange}
-                            placeholder="Select assignees"
-                        />
-                    </div>
+                            {/* Assignee */}
+                            <div className="grid gap-2">
+                                <Label htmlFor="assignee">Assignee</Label>
+                                <MultiSelectUser
+                                    users={systemUsers}
+                                    selectedUsers={systemUsers.filter((user) =>
+                                        data.assignees.includes(user.id),
+                                    )}
+                                    onUsersChange={handleSelectUserChange}
+                                    placeholder="Select assignees"
+                                />
+                            </div>
 
-                    <DialogFooter className="pt-4">
-                        <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button type="submit" className="cursor-pointer">
-                            Save changes
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
+                            <DialogFooter className="pt-4">
+                                <Button
+                                    type="button"
+                                    variant="destructive"
+                                    className="cursor-pointer"
+                                    onClick={() => setOpenDelete(true)}
+                                >
+                                    Delete
+                                </Button>
+
+                                <Button
+                                    type="submit"
+                                    className="cursor-pointer"
+                                >
+                                    Save changes
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+            )}
+
+            {openDelete && subTask && (
+                <DeleteSubTaskDialog
+                    open={openDelete}
+                    setOpen={setOpenDelete}
+                    subTask={subTask}
+                />
+            )}
+        </>
     );
 }

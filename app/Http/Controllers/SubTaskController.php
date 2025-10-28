@@ -45,4 +45,11 @@ class SubTaskController extends Controller
 
         return redirect()->back()->with('success', 'Subtask created successfully.');
     }
+
+    public function destroySubTask(SubTask $subTask)
+    {
+        $subTask->delete();
+
+        return redirect()->back()->with('success', 'Subtask deleted successfully.');
+    }
 }
