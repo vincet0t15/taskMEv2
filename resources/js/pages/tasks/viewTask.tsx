@@ -318,6 +318,9 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                     onSubTaskUpdated={() => {
                         router.reload({ only: ['task'] });
                     }}
+                    onSubTaskDeleted={() => {
+                        router.reload({ only: ['task'] });
+                    }}
                 />
             )}
         </>

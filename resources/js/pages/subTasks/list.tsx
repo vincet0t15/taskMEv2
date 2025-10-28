@@ -228,6 +228,7 @@ export function SubTaskDrawer({
                     onOpenChange={setOpen}
                     subTask={subTaskDetails!}
                     onSubTaskUpdated={onSubTaskUpdated}
+                    onSubTaskDeleted={onSubTaskUpdated}
                 />
             )}
 

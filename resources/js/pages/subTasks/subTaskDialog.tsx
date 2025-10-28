@@ -29,6 +29,7 @@ interface subTaskDetails {
     onOpenChange: (open: boolean) => void;
     subTask: SubTaskInterface;
     onSubTaskUpdated?: () => void;
+    onSubTaskDeleted?: () => void;
 }
 
 export function SubTaskDialog({
@@ -36,6 +37,7 @@ export function SubTaskDialog({
     onOpenChange,
     subTask,
     onSubTaskUpdated,
+    onSubTaskDeleted,
 }: subTaskDetails) {
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
@@ -218,6 +220,10 @@ export function SubTaskDialog({
                     open={openDelete}
                     setOpen={setOpenDelete}
                     subTask={subTask}
+                    onSubTaskDeleted={() => {
+                        onSubTaskDeleted?.();
+                        onOpenChange(false);
+                    }}
                 />
             )}
         </>

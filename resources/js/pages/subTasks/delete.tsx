@@ -17,17 +17,22 @@ interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
     subTask: SubTaskInterface;
+    onSubTaskDeleted?: () => void;
 }
-export default function DeleteSubTaskDialog({ open, setOpen, subTask }: Props) {
+export default function DeleteSubTaskDialog({
+    open,
+    setOpen,
+    subTask,
+    onSubTaskDeleted,
+}: Props) {
     const deleteData = () => {
-        (router.delete(subtask.url(subTask.id)),
-            {
-                preserveScroll: true,
-                onSuccess: (response: { props: FlashProps }) => {
-                    toast.success(response.props.flash?.success);
-                    setOpen(false);
-                },
-            });
+        router.delete(subtask.url(subTask.id), {
+            onSuccess: (response: { props: FlashProps }) => {
+                toast.success(response.props.flash?.success);
+                setOpen(false);
+                onSubTaskDeleted?.();
+            },
+        });
     };
     return (
         <div>
