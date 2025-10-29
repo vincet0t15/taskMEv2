@@ -17,7 +17,7 @@ import {
     ListCheckIcon,
     Users2Icon,
 } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import TaskDetailDialog from '../tasks/viewTask';
 
@@ -55,9 +55,9 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
     };
     return (
         <div className="space-y-4">
-            {statusWithTasks.map((status) => (
+            {statusWithTasks.map((status, index) => (
                 <div
-                    key={status.name}
+                    key={index}
                     className="overflow-hidden rounded-md bg-card text-card-foreground shadow-sm"
                 >
                     {/* Status Header */}
@@ -130,11 +130,8 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                 </thead>
                                 <tbody>
                                     {status.tasks.map((task) => (
-                                        <>
-                                            <tr
-                                                key={task.id}
-                                                className="cursor-pointer border-t hover:bg-muted/20"
-                                            >
+                                        <React.Fragment key={task.id}>
+                                            <tr className="cursor-pointer border-t hover:bg-muted/20">
                                                 <td className="flex items-center gap-2 p-3 font-medium text-muted-foreground">
                                                     {task.sub_tasks &&
                                                     task.sub_tasks.length >
@@ -172,10 +169,12 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                         {task.title}
                                                     </span>
                                                 </td>
+
                                                 <td>
                                                     {task.description || '-'}
                                                 </td>
                                                 <td>{task.due_date || '-'}</td>
+
                                                 <td>
                                                     <div className="flex -space-x-2">
                                                         {task.assignees.map(
@@ -194,12 +193,21 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                         )}
                                                     </div>
                                                 </td>
+
                                                 <td className="w-32 p-2">
                                                     <Progress
-                                                        value={40}
-                                                        className="h-2"
+                                                        value={
+                                                            task.total_subtasks_count
+                                                                ? ((task.completed_subtasks_count ??
+                                                                      0) /
+                                                                      task.total_subtasks_count) *
+                                                                  100
+                                                                : 0
+                                                        }
+                                                        className="mb-3 [&>div]:bg-blue-500"
                                                     />
                                                 </td>
+
                                                 <td>
                                                     <Badge
                                                         className="text-xs"
@@ -214,17 +222,15 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                 </td>
                                             </tr>
 
-                                            {/* Subtask Rows (Indented, No Header) */}
                                             {openTasks[task.id] &&
-                                                task.sub_tasks &&
-                                                task.sub_tasks.length > 0 &&
-                                                task.sub_tasks.map((sub, i) => (
+                                                task.sub_tasks?.length > 0 &&
+                                                task.sub_tasks.map((sub) => (
                                                     <tr
-                                                        key={i}
+                                                        key={sub.id}
                                                         className="border-t bg-muted/5 transition-colors hover:bg-muted/20"
                                                     >
                                                         <td
-                                                            className="flex items-center gap-2 p-3 pl-10 text-muted-foreground"
+                                                            className="flex cursor-pointer items-center gap-2 p-3 pl-10 text-muted-foreground hover:font-bold"
                                                             onClick={() =>
                                                                 handleClickSubTask(
                                                                     task,
@@ -266,10 +272,19 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                             </div>
                                                         </td>
                                                         <td className="w-32 p-2">
-                                                            <Progress
-                                                                value={30}
-                                                                className="h-2"
-                                                            />
+                                                            <Badge
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        sub
+                                                                            .status
+                                                                            .color,
+                                                                }}
+                                                            >
+                                                                {
+                                                                    sub.status
+                                                                        .name
+                                                                }
+                                                            </Badge>
                                                         </td>
                                                         <td>
                                                             <Badge
@@ -288,7 +303,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                         </td>
                                                     </tr>
                                                 ))}
-                                        </>
+                                        </React.Fragment>
                                     ))}
                                 </tbody>
                             </table>

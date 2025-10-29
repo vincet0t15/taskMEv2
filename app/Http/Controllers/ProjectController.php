@@ -31,6 +31,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
+
         $project->load(['priority', 'status', 'user']);
 
         $statusWithTasks = Status::with([
@@ -48,9 +49,11 @@ class ProjectController extends Controller
                         'subTasks as completed_subtasks_count' => function ($subQuery) {
                             $subQuery->where('status_id', 4);
                         },
+                        'subTasks as total_subtasks_count'
                     ]);
             },
         ])->get();
+
 
         return inertia('projects/show', [
             'projects' => $project,
