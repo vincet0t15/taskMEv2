@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest\TaskStoreRequest;
+use App\Models\Attachment;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\TaskAttachment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TaskController extends Controller
 {
-    public function store(TaskStoreRequest $request)
+    public function store(Request $request)
     {
 
         $task = Task::create([
@@ -43,6 +46,32 @@ class TaskController extends Controller
             }
         }
 
+        if ($request->hasFile('attachment')) {
+
+            foreach ($request->file('attachment') as $file) {
+                $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+
+                $size = $file->getSize();
+                for ($i = 0; $size > 1024; $i++) {
+                    $size /= 1024;
+                }
+
+                $filePath = $file->store('attachment', 'public');
+                $original_name = $file->getClientOriginalName();
+                $fileName = time() . '.' . $file->getClientOriginalName();
+                $fileName = preg_replace('/[\[{\(].*?[\]}\)]/', '', $fileName);
+                $extension_name = pathinfo($original_name, PATHINFO_EXTENSION);
+
+                $attachment = new TaskAttachment();
+                $attachment->task_id = $task->id;
+                $attachment->original_name = $original_name;
+                $attachment->path = $filePath;
+                $attachment->extension_name = $extension_name;
+                $attachment->date_created = Carbon::now('singapore')->toDateTimeString();
+                $attachment->file_size = round($size, 2) . ' ' . $units[$i];
+                $attachment->save();
+            }
+        }
         return redirect()->back()->with('success', 'Task created successfully.');
     }
 

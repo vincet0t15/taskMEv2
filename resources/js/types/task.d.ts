@@ -29,5 +29,5 @@ export type TaskForm = {
     due_date: string;
     assignees: number[];
     subTasks?: SubTaskForm[];
-    attachment:TaskAttachment[]
+    attachment:File[]
 };

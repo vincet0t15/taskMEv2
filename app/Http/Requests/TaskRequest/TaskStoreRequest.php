@@ -41,7 +41,9 @@ class TaskStoreRequest extends FormRequest
             'subTasks.*.status_id' => ['required_with:subTasks', 'exists:statuses,id'],
             'subTasks.*.due_date' => ['date'],
             'subTasks.*.assignees' => ['array'],
-            'subTasks.*.assignees.*' => ['exists:users,id']
+            'subTasks.*.assignees.*' => ['exists:users,id'],
+            'attachment' => ['array'],
+            'attachment.*' => ['file', 'mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx,ppt,pptx', 'max:2048']
         ];
     }
 }

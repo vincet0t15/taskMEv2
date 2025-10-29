@@ -1,5 +1,6 @@
 import CustomDatePicker from '@/components/custom-date-picker';
 import CustomSelectWithColor from '@/components/custom-select-with-color';
+import FileInput from '@/components/file-input';
 import InputError from '@/components/input-error';
 import MultiSelectUser from '@/components/multi-select-user';
 import { Button } from '@/components/ui/button';
@@ -109,6 +110,7 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
+        console.log(data);
         e.preventDefault();
         post(task.url(), {
             onSuccess: (response: { props: FlashProps }) => {
@@ -209,6 +211,15 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
                         }
                         placeholder="Select assignees"
                     />
+                </div>
+
+                <div className="grid gap-2">
+                    <Label>Attachments</Label>
+                    <FileInput
+                        value={data.attachment as File[]}
+                        onChange={(files) => setData('attachment', files)}
+                    />
+                    <InputError message={errors.attachment} />
                 </div>
 
                 <div className="grid gap-4">
