@@ -62,6 +62,7 @@ export default function FileInput({ value, onChange }: FileInputProps) {
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => handleRemoveFile(index)}
+                                className="cursor-pointer hover:text-muted-foreground"
                             >
                                 <X className="h-4 w-4" />
                             </Button>
