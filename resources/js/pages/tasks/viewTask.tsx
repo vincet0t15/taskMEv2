@@ -19,7 +19,7 @@ import {
     FileText,
     Plus,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 interface Props {
@@ -38,6 +38,17 @@ export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
         setSubTask(subTask);
         setOpenSubTaskDialog(true);
     };
+    useEffect(() => {
+        if (openSubTaskDialog) {
+            // The dialog was just opened
+            console.log('Dialog opened ✅');
+            console.log('Task:', tasks);
+        } else {
+            // The dialog was just closed
+            console.log('Dialog closed ❌');
+        }
+    }, [open]);
+
     return (
         <>
             {!addSubTask && !openSubTaskDialog && (
