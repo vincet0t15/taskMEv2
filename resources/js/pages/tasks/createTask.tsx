@@ -54,6 +54,10 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
             subTasks: [],
         });
 
+        const filterAssignees = data.assignees.filter(id =>
+  systemUsers.some(user => user.id === id)
+);
+
     const priorityOptions = (systemPriorities as Priority[]).map(
         (priority) => ({
             value: String(priority.id),
@@ -88,7 +92,7 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
 
     const addSubTask = () => {
         setData('subTasks', [
-            ...(data.subTasks ?? []), // ✅ if undefined, use []
+            ...(data.subTasks ?? []),
             {
                 title: '',
                 description: '',
@@ -335,7 +339,9 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
                                     Assignees
                                 </Label>
                                 <MultiSelectUser
-                                    users={systemUsers}
+                                    users={systemUsers.filter((user) =>
+                                        data.assignees.includes(user.id),
+                                    )}
                                     selectedUsers={systemUsers.filter((user) =>
                                         subTask.assignees.includes(user.id),
                                     )}
