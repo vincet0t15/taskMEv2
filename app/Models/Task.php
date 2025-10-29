@@ -46,6 +46,6 @@ class Task extends Model
 
     public function attachments()
     {
-        return $this->hasMany(Attachment::class, 'task_id');
+        return $this->hasMany(TaskAttachment::class, 'task_id');
     }
 }
