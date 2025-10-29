@@ -53,6 +53,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
         setSubTask(subTask);
         setOpenSubTaskDialog(true);
     };
+
     return (
         <div className="space-y-4">
             {statusWithTasks.map((status, index) => (

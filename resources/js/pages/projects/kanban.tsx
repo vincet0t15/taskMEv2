@@ -7,7 +7,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
 import { Task } from '@/types/task';
 import {
@@ -37,7 +36,6 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
             return initial;
         },
     );
-    const getInitials = useInitials();
 
     const toggleGroup = (id: number) => {
         setOpenGroups((prev) => ({ ...prev, [id]: !prev[id] }));

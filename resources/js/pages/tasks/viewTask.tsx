@@ -19,7 +19,7 @@ import {
     FileText,
     Plus,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 interface Props {
@@ -34,20 +34,19 @@ export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
     const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
     const [subTask, setSubTask] = useState<SubTaskInterface>();
 
+    const isInitialMount = useRef(true);
+
     const handleClickSubTask = (subTask: SubTaskInterface) => {
         setSubTask(subTask);
         setOpenSubTaskDialog(true);
     };
     useEffect(() => {
-        if (openSubTaskDialog) {
-            // The dialog was just opened
-            console.log('Dialog opened ✅');
-            console.log('Task:', tasks);
-        } else {
-            // The dialog was just closed
-            console.log('Dialog closed ❌');
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+        } else if (!openSubTaskDialog) {
+            router.reload({ only: ['tasks'] });
         }
-    }, [open]);
+    }, [openSubTaskDialog]);
 
     return (
         <>
