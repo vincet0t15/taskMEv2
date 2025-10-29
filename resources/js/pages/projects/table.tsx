@@ -27,6 +27,7 @@ interface Props {
 }
 
 export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
+    console.log(statusWithTasks);
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
     const [openTasks, setOpenTasks] = useState<Record<number, boolean>>({});
     const [openViewTask, setOpenViewTask] = useState(false);

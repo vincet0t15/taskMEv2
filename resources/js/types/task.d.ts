@@ -18,6 +18,7 @@ export interface Task {
     sub_tasks: SubTaskInterface[];
     completed_subtasks_count?: number;
     total_subtasks_count?: number;
+    attachments: TaskAttachment[];
 }
 
 export type TaskForm = {

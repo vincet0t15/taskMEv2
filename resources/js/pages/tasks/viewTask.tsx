@@ -11,14 +11,7 @@ import { SubTaskInterface } from '@/types/subTask';
 import { Task } from '@/types/task';
 import { router } from '@inertiajs/react';
 import { DialogDescription } from '@radix-ui/react-dialog';
-import {
-    Calendar,
-    CheckCircle2,
-    Circle,
-    File,
-    FileText,
-    Plus,
-} from 'lucide-react';
+import { Calendar, CheckCircle2, Circle, File, Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
@@ -209,25 +202,34 @@ export default function TaskDetailDialog({
                                 <p className="mb-2 text-xs text-gray-500">
                                     Attachments
                                 </p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex items-center gap-2 rounded-md border p-2 hover:bg-gray-50">
-                                        <File className="h-5 w-5 text-orange-500" />
-                                        <div className="text-xs">
-                                            <p>Presentation Material.pptx</p>
-                                            <span className="text-gray-400">
-                                                3.0 MB
-                                            </span>
+                                <div className="flex items-center gap-2 rounded-md border p-2 hover:bg-gray-50">
+                                    {tasks.attachments.length > 0 && (
+                                        <div className="space-y-2">
+                                            {tasks.attachments.map(
+                                                (attachment, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="flex items-center gap-2 rounded-md border p-2 hover:bg-gray-50"
+                                                    >
+                                                        <File className="h-5 w-5 text-orange-500" />
+                                                        <div className="text-xs">
+                                                            <p>
+                                                                {
+                                                                    attachment.original_name
+                                                                }
+                                                            </p>
+                                                            <span className="text-gray-400">
+                                                                {
+                                                                    attachment.file_size
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                ),
+                                            )}
                                         </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 rounded-md border p-2 hover:bg-gray-50">
-                                        <FileText className="h-5 w-5 text-red-500" />
-                                        <div className="text-xs">
-                                            <p>Notes.pdf</p>
-                                            <span className="text-gray-400">
-                                                2.4 MB
-                                            </span>
-                                        </div>
-                                    </div>
+                                    )}
+
                                     <Button
                                         variant="outline"
                                         size="icon"
