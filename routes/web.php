@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TaskController;
@@ -36,6 +37,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('subtasks/{subTask}', [SubTaskController::class, 'updateSubTask'])->name('update.subtask');
     Route::post('subtasks', [SubTaskController::class, 'store'])->name('store.subtask');
     Route::delete('subtasks/{subTask}', [SubTaskController::class, 'destroySubTask'])->name('destroy.subtask');
+
+    // CALENDAR
+    Route::get('projects/{project}/calendar', [CalendarController::class, 'show'])->name('show.calendar');
+
+    // SETTINGS
 });
 
 require __DIR__ . '/settings.php';

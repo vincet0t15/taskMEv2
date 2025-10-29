@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { dashboard } from '@/routes';
 import { task } from '@/routes/create';
-import { board, project } from '@/routes/show';
+import { board, calendar, project } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Link, router, usePage } from '@inertiajs/react';
@@ -38,7 +38,7 @@ export default function ProjectLayout({
         },
         {
             label: 'Calendar',
-            href: `/projects/${projects.id}/calendar`,
+            href: calendar.url(projects.id),
         },
         {
             label: 'Settings',
@@ -113,7 +113,7 @@ export default function ProjectLayout({
                 <div className="flex gap-2 md:justify-end">
                     {/* <CreateTaskDialog projectId={projects.id} /> */}
                     <Button
-                    variant={'outline'}
+                        variant={'outline'}
                         onClick={() => router.get(task.url(projects.id))}
                         className="cursor-pointer"
                     >
