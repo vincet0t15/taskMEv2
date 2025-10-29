@@ -73,6 +73,7 @@ class TaskController extends Controller
 
     public function updateTask(Request $request, Task $task)
     {
+
         $task->update([
             'title' => $request->title,
             'description' => $request->description,
@@ -81,5 +82,30 @@ class TaskController extends Controller
             'priority_id' => $request->priority_id,
             'due_date' => $request->due_date,
         ]);
+
+        // 🔹 Sync assignees to avoid duplicates or stale links
+        if ($request->has('assignees')) {
+            $task->assignees()->sync($request->assignees);
+        }
+
+        // 🔹 Handle subtasks
+        if ($request->has('subTasks')) {
+            foreach ($request->subTasks as $subTaskData) {
+                $subTask = $task->subTasks()->create([
+                    'title' => $subTaskData['title'],
+                    'description' => $subTaskData['description'],
+                    'priority_id' => $subTaskData['priority_id'],
+                    'status_id' => $subTaskData['status_id'],
+                    'due_date' => $subTaskData['due_date'],
+                ]);
+
+                // If subtasks have assignees
+                if (!empty($subTaskData['assignees'])) {
+                    $subTask->assignees()->sync($subTaskData['assignees']);
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'Task updated successfully.');
     }
 }
