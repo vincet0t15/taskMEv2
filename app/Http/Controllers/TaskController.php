@@ -83,28 +83,54 @@ class TaskController extends Controller
             'due_date' => $request->due_date,
         ]);
 
-        // 🔹 Sync assignees to avoid duplicates or stale links
+        // 🔹 Sync main task assignees
         if ($request->has('assignees')) {
             $task->assignees()->sync($request->assignees);
         }
 
-        // 🔹 Handle subtasks
+        // 🔹 Handle subtasks (create or update)
         if ($request->has('subTasks')) {
-            foreach ($request->subTasks as $subTaskData) {
-                $subTask = $task->subTasks()->create([
-                    'title' => $subTaskData['title'],
-                    'description' => $subTaskData['description'],
-                    'priority_id' => $subTaskData['priority_id'],
-                    'status_id' => $subTaskData['status_id'],
-                    'due_date' => $subTaskData['due_date'],
-                ]);
+            $subTaskIds = []; // Keep track of updated/created subtask IDs
 
-                // If subtasks have assignees
+            foreach ($request->subTasks as $subTaskData) {
+                // Check if subtask has an ID (means existing)
+                if (!empty($subTaskData['id'])) {
+                    $subTask = $task->subTasks()->find($subTaskData['id']);
+                    if ($subTask) {
+                        $subTask->update([
+                            'title' => $subTaskData['title'],
+                            'description' => $subTaskData['description'],
+                            'priority_id' => $subTaskData['priority_id'],
+                            'status_id' => $subTaskData['status_id'],
+                            'due_date' => $subTaskData['due_date'],
+                        ]);
+                    }
+                } else {
+                    // Create a new subtask
+                    $subTask = $task->subTasks()->create([
+                        'title' => $subTaskData['title'],
+                        'description' => $subTaskData['description'],
+                        'priority_id' => $subTaskData['priority_id'],
+                        'status_id' => $subTaskData['status_id'],
+                        'due_date' => $subTaskData['due_date'],
+                    ]);
+                }
+
+                // Sync subtask assignees (if any)
                 if (!empty($subTaskData['assignees'])) {
                     $subTask->assignees()->sync($subTaskData['assignees']);
                 }
+
+                // Add ID to list
+                $subTaskIds[] = $subTask->id;
             }
+
+            // 🔹 Optionally: delete removed subtasks
+            $task->subTasks()
+                ->whereNotIn('id', $subTaskIds)
+                ->delete();
         }
+
 
         return redirect()->back()->with('success', 'Task updated successfully.');
     }
