@@ -20,6 +20,7 @@ import { User } from '@/types';
 import { Priority } from '@/types/priority';
 import { Status } from '@/types/status';
 import { SubTaskForm, SubTaskInterface } from '@/types/subTask';
+import { Task } from '@/types/task';
 import { useForm, usePage } from '@inertiajs/react';
 import { ChangeEventHandler, FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
@@ -29,6 +30,7 @@ interface subTaskDetails {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     subTask: SubTaskInterface;
+    task?: Task;
     onSubTaskUpdated?: () => void;
     onSubTaskDeleted?: () => void;
 }
@@ -39,7 +41,9 @@ export function SubTaskDialog({
     subTask,
     onSubTaskUpdated,
     onSubTaskDeleted,
+    task,
 }: subTaskDetails) {
+    console.log(task);
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
     const [openDelete, setOpenDelete] = useState(false);
@@ -185,10 +189,12 @@ export function SubTaskDialog({
                             <div className="grid gap-2">
                                 <Label htmlFor="assignee">Assignee</Label>
                                 <MultiSelectUser
-                                    users={systemUsers}
+                                    users={task?.assignees || []}
                                     selectedUsers={systemUsers.filter((user) =>
-                                        data.assignees.includes(user.id),
-                                    )}
+                                        (data?.assignees || []).includes(
+                                            user.id,
+                                        ),
+                                    )} // returns Use
                                     onUsersChange={handleSelectUserChange}
                                     placeholder="Select assignees"
                                 />

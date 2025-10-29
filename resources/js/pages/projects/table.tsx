@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
+import { SubTaskInterface } from '@/types/subTask';
 import { Task } from '@/types/task';
 import {
     ArrowUpWideNarrow,
@@ -17,6 +18,7 @@ import {
     Users2Icon,
 } from 'lucide-react';
 import { useState } from 'react';
+import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import TaskDetailDialog from '../tasks/viewTask';
 
 interface Props {
@@ -28,6 +30,9 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
     const [openTasks, setOpenTasks] = useState<Record<number, boolean>>({});
     const [openViewTask, setOpenViewTask] = useState(false);
     const [taskDetails, setTaskDetails] = useState<Task>();
+    const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
+    const [subTask, setSubTask] = useState<SubTaskInterface>();
+
     const getInitials = useInitials();
 
     const toggleGroup = (title: string) => {
@@ -41,6 +46,12 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
     const handleClickTask = (task: Task) => {
         setTaskDetails(task);
         setOpenViewTask(true);
+    };
+
+    const handleClickSubTask = (task: Task, subTask: SubTaskInterface) => {
+        setTaskDetails(task);
+        setSubTask(subTask);
+        setOpenSubTaskDialog(true);
     };
     return (
         <div className="space-y-4">
@@ -212,7 +223,15 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                         key={i}
                                                         className="border-t bg-muted/5 transition-colors hover:bg-muted/20"
                                                     >
-                                                        <td className="flex items-center gap-2 p-3 pl-10 text-muted-foreground">
+                                                        <td
+                                                            className="flex items-center gap-2 p-3 pl-10 text-muted-foreground"
+                                                            onClick={() =>
+                                                                handleClickSubTask(
+                                                                    task,
+                                                                    sub,
+                                                                )
+                                                            }
+                                                        >
                                                             {sub.title}
                                                         </td>
                                                         <td className="text-xs">
@@ -282,6 +301,15 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                     open={openViewTask}
                     setOpen={setOpenViewTask}
                     tasks={taskDetails}
+                />
+            )}
+
+            {openSubTaskDialog && subTask && (
+                <SubTaskDialog
+                    open={openSubTaskDialog}
+                    onOpenChange={setOpenSubTaskDialog}
+                    subTask={subTask}
+                    task={taskDetails}
                 />
             )}
         </div>
