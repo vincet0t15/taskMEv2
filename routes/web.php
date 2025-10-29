@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('tasks', [TaskController::class, 'store'])->name('store.task');
     Route::get('projects/{project}/create-task', [TaskController::class, 'create'])->name('create.task');
     Route::get('projects/{project}/tasks/{task}', [TaskController::class, 'show'])->name('show.task');
+    Route::put('tasks/{task}', [TaskController::class, 'updateTask'])->name('update.task');
 
     // BOARD
     Route::get('projects/{project}/board', [BoardController::class, 'show'])->name('show.board');

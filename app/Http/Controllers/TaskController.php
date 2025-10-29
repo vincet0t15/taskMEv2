@@ -66,8 +66,20 @@ class TaskController extends Controller
         ]);
 
         return Inertia::render('tasks/showTask', [
-            'task' => $task,
+            'tasks' => $task,
             'project' => $project
+        ]);
+    }
+
+    public function updateTask(Request $request, Task $task)
+    {
+        $task->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'project_id' => $request->project_id,
+            'status_id' => $request->status_id,
+            'priority_id' => $request->priority_id,
+            'due_date' => $request->due_date,
         ]);
     }
 }

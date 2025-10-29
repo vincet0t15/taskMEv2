@@ -8,8 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { project as projectRoute } from '@/routes/show';
-
+import { project as projectRoute, task as taskRoute } from '@/routes/show';
+import { task } from '@/routes/update';
 import { User, type BreadcrumbItem } from '@/types';
 import { Priority } from '@/types/priority';
 import { Project } from '@/types/project';
@@ -18,12 +18,13 @@ import { Task, TaskForm } from '@/types/task';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { ChangeEventHandler } from 'react';
+import { toast } from 'sonner';
 
 interface ShowTaskProps {
-    task: Task;
+    tasks: Task;
     project: Project;
 }
-export default function ShowTask({ task, project: proj }: ShowTaskProps) {
+export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
@@ -34,33 +35,32 @@ export default function ShowTask({ task, project: proj }: ShowTaskProps) {
             href: projectRoute.url(proj.id),
         },
         {
-            title: task.title,
-            href: '#',
+            title: tasks.title,
+            href: taskRoute.url({ project: proj.id, task: tasks.id }),
         },
     ];
 
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
-    const { data, setData, processing, reset, post, errors } =
-        useForm<TaskForm>({
-            title: task.title,
-            description: task.description || '',
-            due_date: task.due_date,
-            priority_id: task.priority_id,
-            status_id: task.status_id,
-            project_id: task.project_id,
-            assignees: task.assignees?.map((user) => user.id) || [],
-            subTasks:
-                task.sub_tasks?.map((subTask) => ({
-                    title: subTask.title,
-                    description: subTask.description || '',
-                    priority_id: subTask.priority_id,
-                    status_id: subTask.status_id,
-                    due_date: subTask.due_date,
-                    assignees: subTask.assignees?.map((user) => user.id) || [],
-                    task_id: subTask.task_id,
-                })) || [],
-        });
+    const { data, setData, processing, put, errors } = useForm<TaskForm>({
+        title: tasks.title,
+        description: tasks.description || '',
+        due_date: tasks.due_date,
+        priority_id: tasks.priority_id,
+        status_id: tasks.status_id,
+        project_id: tasks.project_id,
+        assignees: tasks.assignees?.map((user) => user.id) || [],
+        subTasks:
+            tasks.sub_tasks?.map((subTask) => ({
+                title: subTask.title,
+                description: subTask.description || '',
+                priority_id: subTask.priority_id,
+                status_id: subTask.status_id,
+                due_date: subTask.due_date,
+                assignees: subTask.assignees?.map((user) => user.id) || [],
+                task_id: subTask.task_id,
+            })) || [],
+    });
 
     const priorityOptions = (systemPriorities as Priority[]).map(
         (priority) => ({
@@ -117,11 +117,18 @@ export default function ShowTask({ task, project: proj }: ShowTaskProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // put(updateTaskRoute.url(task.id), {
-        //     onSuccess: (response: { props: FlashProps }) => {
-        //         toast.success(response.props.flash?.success);
-        //     },
-        // });
+        put(task.url(tasks.id), {
+            onSuccess: (response: { props: FlashProps }) => {
+                toast.success(
+                    response.props.flash?.success ||
+                        'Task updated successfully.',
+                );
+            },
+            onError: () => {
+                toast.error('An error occurred while updating the task.');
+            },
+            preserveScroll: true,
+        });
     };
 
     return (
