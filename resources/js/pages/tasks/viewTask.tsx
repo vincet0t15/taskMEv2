@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { useInitials } from '@/hooks/use-initials';
 import { SubTaskInterface } from '@/types/subTask';
@@ -21,14 +21,16 @@ import {
 import { useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
+import { DialogDescription } from '@radix-ui/react-dialog';
+import { task } from '@/routes/show';
 interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
-    task: Task;
+    tasks: Task;
 }
 
-export default function TaskDetailDialog({ open, setOpen, task }: Props) {
-    console.log(task);
+export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
+
     const getInitials = useInitials();
     const [addSubTask, setAddSubTask] = useState(false);
     const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
@@ -42,13 +44,19 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
         <>
             {!addSubTask && !openSubTaskDialog && (
                 <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTitle>
+                        <DialogDescription></DialogDescription>
+                    </DialogTitle>
                     <DialogContent className="max-w-3xl border-none bg-transparent p-0 shadow-none">
                         <div className="rounded-sm bg-white p-6 shadow-xl">
                             {/* Header */}
                             <div className="mb-4 flex items-start justify-between">
                                 <div>
-                                    <h2 className="text-xl font-semibold text-gray-900">
-                                        {task.title}
+                                    <h2 className="text-xl font-semibold text-gray-900 hover:underline cursor-pointer"
+
+                                    onClick={() => router.get(task.url({project: tasks.project_id, task: tasks.id}))}
+                                    >
+                                        {tasks.title}
                                     </h2>
                                 </div>
                             </div>
@@ -61,10 +69,10 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                     </p>
                                     <Badge
                                         style={{
-                                            backgroundColor: task.status.color,
+                                            backgroundColor: tasks.status.color,
                                         }}
                                     >
-                                        {task.status.name}
+                                        {tasks.status.name}
                                     </Badge>
                                 </div>
                                 <div>
@@ -74,7 +82,7 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                     <div className="flex items-center gap-1 text-sm text-gray-700">
                                         <Calendar className="h-4 w-4" />
                                         {(() => {
-                                            const dueDate = task?.due_date;
+                                            const dueDate = tasks?.due_date;
                                             const isOverdue =
                                                 dueDate &&
                                                 new Date(dueDate) < new Date();
@@ -121,7 +129,7 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                     </p>
                                     <div className="flex items-center gap-2">
                                         <div className="flex -space-x-2">
-                                            {task.assignees.map(
+                                            {tasks.assignees.map(
                                                 (data, index) => (
                                                     <Avatar
                                                         key={index}
@@ -153,10 +161,10 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                     <Badge
                                         style={{
                                             backgroundColor:
-                                                task.priority.color,
+                                                tasks.priority.color,
                                         }}
                                     >
-                                        {task.priority.name}
+                                        {tasks.priority.name}
                                     </Badge>
                                 </div>
                             </div>
@@ -167,7 +175,7 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                     Description
                                 </p>
                                 <p className="rounded-md border border-gray-100 bg-gray-50 p-3 text-sm text-gray-700">
-                                    {task.description}
+                                    {tasks.description}
                                 </p>
                             </div>
 
@@ -229,17 +237,17 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                                             Sub Task
                                         </span>
                                         <span className="text-xs text-gray-500">
-                                            {task.completed_subtasks_count}/
-                                            {task.total_subtasks_count}
+                                            {tasks.completed_subtasks_count}/
+                                            {tasks.total_subtasks_count}
                                         </span>
                                     </div>
 
                                     <Progress
                                         value={
-                                            task.total_subtasks_count
-                                                ? ((task.completed_subtasks_count ??
+                                            tasks.total_subtasks_count
+                                                ? ((tasks.completed_subtasks_count ??
                                                       0) /
-                                                      task.total_subtasks_count) *
+                                                      tasks.total_subtasks_count) *
                                                   100
                                                 : 0
                                         }
@@ -248,7 +256,7 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
 
                                     {/* Scrollable Subtasks Container */}
                                     <div className="h-[18vh] space-y-2 overflow-y-auto pr-2">
-                                        {task.sub_tasks.map((sub) => (
+                                        {tasks.sub_tasks.map((sub) => (
                                             <div
                                                 key={sub.id}
                                                 className="flex cursor-pointer items-center justify-between gap-2 rounded-sm hover:bg-gray-200"
@@ -298,11 +306,11 @@ export default function TaskDetailDialog({ open, setOpen, task }: Props) {
                 </Dialog>
             )}
 
-            {addSubTask && task && (
+            {addSubTask && tasks && (
                 <CreateSubTaskDialog
                     open={addSubTask}
                     onOpenChange={setAddSubTask}
-                    task={task}
+                    task={tasks}
                     onSubTaskCreated={() => {
                         // Handle subtask creation - reload only the tasks data to keep dialog open
                         router.reload({ only: ['statusWithTasks'] });

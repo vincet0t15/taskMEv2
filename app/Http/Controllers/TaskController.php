@@ -52,4 +52,15 @@ class TaskController extends Controller
             'project' => $project,
         ]);
     }
+
+    public function show(Project $project, Task $task)
+    {
+
+        $task->load(['priority', 'status', 'assignees', 'subTasks']);
+
+        return Inertia::render('tasks/showTask', [
+            'task' => $task,
+            'project' => $project
+        ]);
+    }
 }

@@ -29,6 +29,19 @@ export function Breadcrumbs({
                                             <BreadcrumbPage>
                                                 {item.title}
                                             </BreadcrumbPage>
+                                        ) : item.onClick ? (
+                                            <BreadcrumbLink asChild>
+                                                <a
+                                                    href={item.href || '#'}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        item.onClick?.(e);
+                                                    }}
+                                                    className="cursor-pointer"
+                                                >
+                                                    {item.title}
+                                                </a>
+                                            </BreadcrumbLink>
                                         ) : (
                                             <BreadcrumbLink asChild>
                                                 <Link href={item.href}>
