@@ -13,7 +13,9 @@ class CalendarController extends Controller
     {
         $project->load(['priority', 'status', 'user']);
 
-        $tasks = Task::with(['assignees', 'priority', 'status'])
+        $tasks = Task::with(['assignees', 'priority', 'status', 'subTasks' => function ($subQuery) {
+            $subQuery->with('assignees', 'priority', 'status');
+        },])
             ->where('project_id', $project->id)
             ->get();
 

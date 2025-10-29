@@ -5,12 +5,16 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
 import { toast } from 'sonner';
+import TaskDetailDialog from '../tasks/viewTask';
 interface Props {
     tasks: Task[];
 }
 export default function CalendarData({ tasks }: Props) {
-    const test = (tasks as Task[]).map((task) => ({
+    const [openViewTask, setOpenViewTask] = useState(false);
+    const [taskDetails, setTaskDetails] = useState<Task>();
+    const events = (tasks as Task[]).map((task) => ({
         id: String(task.id),
         title: task.title ?? '',
         color: String(task.priority.color) ?? '',
@@ -49,7 +53,12 @@ export default function CalendarData({ tasks }: Props) {
         );
     }
     function handleEventClick(data: any) {
-        //
+        const matchedTask = tasks.find(
+            (task) => task.id === Number(data.event.id),
+        );
+
+        setTaskDetails(matchedTask);
+        setOpenViewTask(true);
     }
 
     return (
@@ -57,7 +66,7 @@ export default function CalendarData({ tasks }: Props) {
             <FullCalendar
                 plugins={[dayGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
-                events={test}
+                events={events}
                 editable={true}
                 selectable={true} // Allow dates to be selectable.
                 selectMirror={true}
@@ -66,6 +75,13 @@ export default function CalendarData({ tasks }: Props) {
                 dayMaxEvents={true}
                 eventClick={handleEventClick}
             />
+            {openViewTask && taskDetails && (
+                <TaskDetailDialog
+                    tasks={taskDetails}
+                    open={openViewTask}
+                    setOpen={setOpenViewTask}
+                />
+            )}
         </div>
     );
 }
