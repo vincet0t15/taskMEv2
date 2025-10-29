@@ -25,7 +25,6 @@ interface Props {
 }
 
 export default function KanbanBoard({ statusWithTasks }: Props) {
-    console.log(statusWithTasks);
     const [taskDetails, setTaskDetails] = useState<Task>();
     const [openView, setOpenView] = useState(false);
 

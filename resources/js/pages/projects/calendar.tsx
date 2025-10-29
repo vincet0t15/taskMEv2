@@ -3,16 +3,18 @@ import { dashboard } from '@/routes';
 import { project } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
-import { Status } from '@/types/status';
+import { Task } from '@/types/task';
 import { Head } from '@inertiajs/react';
+import CalendarData from './calendarData';
 import ProjectLayout from './project-layout';
 
 interface Props {
     projects: Project;
-    statusWithTasks: Status[];
+
+    tasks: Task[];
 }
 
-export default function TaskBoard({ projects, statusWithTasks }: Props) {
+export default function TaskBoard({ projects, tasks }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
@@ -27,9 +29,7 @@ export default function TaskBoard({ projects, statusWithTasks }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <ProjectLayout projects={projects}>
-                <div className="flex gap-2 overflow-x-auto pb-6 md:gap-4">
-                    1
-                </div>
+                <CalendarData tasks={tasks} />
             </ProjectLayout>
         </AppLayout>
     );

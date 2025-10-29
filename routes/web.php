@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // CALENDAR
     Route::get('projects/{project}/calendar', [CalendarController::class, 'show'])->name('show.calendar');
-
+    Route::put('calendar/{task}', [CalendarController::class, 'moveData'])->name('calendar.move');
     // SETTINGS
 });
 
