@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
+import { Task } from '@/types/task';
 import {
     ArrowUpWideNarrow,
     ChevronDown,
@@ -16,6 +17,7 @@ import {
     Users2Icon,
 } from 'lucide-react';
 import { useState } from 'react';
+import TaskDetailDialog from '../tasks/viewTask';
 
 interface Props {
     statusWithTasks: Status[];
@@ -24,6 +26,8 @@ interface Props {
 export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
     const [openTasks, setOpenTasks] = useState<Record<number, boolean>>({});
+    const [openViewTask, setOpenViewTask] = useState(false);
+    const [taskDetails, setTaskDetails] = useState<Task>();
     const getInitials = useInitials();
 
     const toggleGroup = (title: string) => {
@@ -34,6 +38,10 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
         setOpenTasks((prev) => ({ ...prev, [taskId]: !prev[taskId] }));
     };
 
+    const handleClickTask = (task: Task) => {
+        setTaskDetails(task);
+        setOpenViewTask(true);
+    };
     return (
         <div className="space-y-4">
             {statusWithTasks.map((status) => (
@@ -112,28 +120,46 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                 <tbody>
                                     {status.tasks.map((task) => (
                                         <>
-                                            {/* Task Row */}
                                             <tr
                                                 key={task.id}
                                                 className="cursor-pointer border-t hover:bg-muted/20"
-                                                onClick={() =>
-                                                    toggleTask(task.id)
-                                                }
                                             >
                                                 <td className="flex items-center gap-2 p-3 font-medium text-muted-foreground">
                                                     {task.sub_tasks &&
                                                     task.sub_tasks.length >
                                                         0 ? (
                                                         openTasks[task.id] ? (
-                                                            <ChevronDown className="h-4 w-4 text-primary" />
+                                                            <ChevronDown
+                                                                className="h-4 w-4 text-primary"
+                                                                onClick={() =>
+                                                                    toggleTask(
+                                                                        task.id,
+                                                                    )
+                                                                }
+                                                            />
                                                         ) : (
-                                                            <ChevronRight className="h-4 w-4 text-primary" />
+                                                            <ChevronRight
+                                                                className="h-4 w-4 text-primary"
+                                                                onClick={() =>
+                                                                    toggleTask(
+                                                                        task.id,
+                                                                    )
+                                                                }
+                                                            />
                                                         )
                                                     ) : (
-                                                        // Empty placeholder to keep alignment
                                                         <span className="w-4" />
                                                     )}
-                                                    {task.title}
+                                                    <span
+                                                        className="cursor-pointer hover:font-bold"
+                                                        onClick={() =>
+                                                            handleClickTask(
+                                                                task,
+                                                            )
+                                                        }
+                                                    >
+                                                        {task.title}
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     {task.description || '-'}
@@ -251,6 +277,13 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                     )}
                 </div>
             ))}
+            {openViewTask && taskDetails && (
+                <TaskDetailDialog
+                    open={openViewTask}
+                    setOpen={setOpenViewTask}
+                    tasks={taskDetails}
+                />
+            )}
         </div>
     );
 }

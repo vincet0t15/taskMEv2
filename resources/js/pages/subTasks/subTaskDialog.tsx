@@ -5,6 +5,7 @@ import MultiSelectUser from '@/components/multi-select-user';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -194,14 +195,17 @@ export function SubTaskDialog({
                             </div>
 
                             <DialogFooter className="pt-4">
-                                <Button
+                                <DialogClose asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+                                {/* <Button
                                     type="button"
                                     variant="destructive"
                                     className="cursor-pointer"
                                     onClick={() => setOpenDelete(true)}
                                 >
                                     Delete
-                                </Button>
+                                </Button> */}
 
                                 <Button
                                     type="submit"

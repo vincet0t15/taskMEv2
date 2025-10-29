@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { useInitials } from '@/hooks/use-initials';
+import { task } from '@/routes/show';
 import { SubTaskInterface } from '@/types/subTask';
 import { Task } from '@/types/task';
 import { router } from '@inertiajs/react';
+import { DialogDescription } from '@radix-ui/react-dialog';
 import {
     Calendar,
     CheckCircle2,
@@ -16,13 +18,10 @@ import {
     File,
     FileText,
     Plus,
-    UserPlus,
 } from 'lucide-react';
 import { useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
-import { DialogDescription } from '@radix-ui/react-dialog';
-import { task } from '@/routes/show';
 interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -30,7 +29,6 @@ interface Props {
 }
 
 export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
-
     const getInitials = useInitials();
     const [addSubTask, setAddSubTask] = useState(false);
     const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
@@ -52,9 +50,16 @@ export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
                             {/* Header */}
                             <div className="mb-4 flex items-start justify-between">
                                 <div>
-                                    <h2 className="text-xl font-semibold text-gray-900 hover:underline cursor-pointer"
-
-                                    onClick={() => router.get(task.url({project: tasks.project_id, task: tasks.id}))}
+                                    <h2
+                                        className="cursor-pointer text-xl font-semibold text-gray-900 hover:underline"
+                                        onClick={() =>
+                                            router.get(
+                                                task.url({
+                                                    project: tasks.project_id,
+                                                    task: tasks.id,
+                                                }),
+                                            )
+                                        }
                                     >
                                         {tasks.title}
                                     </h2>
@@ -145,13 +150,13 @@ export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
                                             )}
                                         </div>
 
-                                        <Button
+                                        {/* <Button
                                             variant="ghost"
                                             size="icon"
                                             className="h-6 w-6"
                                         >
                                             <UserPlus className="h-4 w-4" />
-                                        </Button>
+                                        </Button> */}
                                     </div>
                                 </div>
                                 <div>
@@ -238,7 +243,7 @@ export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
                                         </span>
                                         <span className="text-xs text-gray-500">
                                             {tasks.completed_subtasks_count}/
-                                            {tasks.total_subtasks_count}
+                                            {tasks.total_subtasks_count ?? 0}
                                         </span>
                                     </div>
 
@@ -259,7 +264,7 @@ export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
                                         {tasks.sub_tasks.map((sub) => (
                                             <div
                                                 key={sub.id}
-                                                className="flex cursor-pointer items-center justify-between gap-2 rounded-sm hover:bg-gray-200"
+                                                className="flex cursor-pointer items-center justify-between gap-2 rounded-sm p-1 hover:bg-blue-200"
                                                 onClick={() =>
                                                     handleClickSubTask(sub)
                                                 }
