@@ -5,7 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import { router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import TaskDetailDialog from '../tasks/viewTask';
 interface Props {
@@ -60,6 +60,17 @@ export default function CalendarData({ tasks }: Props) {
         setTaskDetails(matchedTask);
         setOpenViewTask(true);
     }
+
+    useEffect(() => {
+        if (taskDetails && openViewTask) {
+            const updatedTask = tasks.find(
+                (task) => task.id === taskDetails.id,
+            );
+            if (updatedTask) {
+                setTaskDetails(updatedTask);
+            }
+        }
+    }, [tasks, taskDetails?.id, openViewTask]);
 
     return (
         <div className="rounded-md bg-sidebar p-4">
