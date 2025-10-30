@@ -6,7 +6,6 @@ import {
     SidebarFooter,
     SidebarHeader,
     SidebarMenu,
-    SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
@@ -21,6 +20,7 @@ import {
     PieChart,
     Settings2,
     SquareTerminal,
+    UserRoundCheck,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 import WorkspaceSection from './workSpaceStation';
@@ -29,6 +29,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'My Task',
+        href: dashboard(),
+        icon: UserRoundCheck,
     },
 ];
 
@@ -145,11 +150,9 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
+                        <Link href={dashboard()} prefetch>
+                            <AppLogo />
+                        </Link>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
