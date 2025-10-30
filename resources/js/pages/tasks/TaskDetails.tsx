@@ -19,7 +19,14 @@ import { Project } from '@/types/project';
 import { Task } from '@/types/task';
 import { Head, router } from '@inertiajs/react';
 
-import { Calendar, CheckCircle2, Circle, File, Plus } from 'lucide-react';
+import {
+    Calendar,
+    CheckCircle2,
+    Circle,
+    DownloadIcon,
+    File,
+    Plus,
+} from 'lucide-react';
 import { useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 interface TaskDetailsProps {
@@ -164,31 +171,38 @@ export default function TaskDetails({
                         <span className="text-sm font-medium text-gray-500">
                             Attachments
                         </span>
-                        <div className="flex items-center gap-2 rounded-md border p-2 hover:bg-gray-50">
-                            {tasks.attachments.length > 0 && (
-                                <div className="flex gap-1">
-                                    {tasks.attachments.map(
-                                        (attachment, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex items-center gap-2 rounded-md border p-2 hover:bg-gray-50"
-                                            >
-                                                <File className="h-5 w-5 text-orange-500" />
-                                                <div className="text-xs">
-                                                    <p>
-                                                        {
-                                                            attachment.original_name
-                                                        }
-                                                    </p>
-                                                    <span className="text-gray-400">
-                                                        {attachment.file_size}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ),
-                                    )}
+                        <div className="mt-2 flex gap-2">
+                            {tasks.attachments.map((attachment, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between rounded-md border p-3 hover:bg-gray-50"
+                                >
+                                    {/* File Info */}
+                                    <div className="flex items-center gap-3">
+                                        <File className="h-5 w-5 text-orange-500" />
+                                        <div className="text-xs">
+                                            <p className="font-medium text-gray-800">
+                                                {attachment.original_name}
+                                            </p>
+                                            <span className="text-gray-400">
+                                                {attachment.file_size}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Download Button */}
+
+                                    <a
+                                        href={attachment.path} // ✅ Adjust this key based on your backend response
+                                        download={attachment.original_name}
+                                        className="text-green-40 ml-2 text-xs font-medium text-green-400 hover:underline"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <DownloadIcon className="h-5 w-5" />
+                                    </a>
                                 </div>
-                            )}
+                            ))}
                         </div>
                     </div>
                 )}
