@@ -106,7 +106,17 @@ export default function TaskDetails({
                 <div className="flex flex-col gap-6 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
                     {/* Left: Title + Status */}
                     <div className="space-y-2">
-                        <h1 className="text-2xl font-semibold text-gray-800 uppercase">
+                        <h1
+                            className="cursor-pointer text-2xl font-semibold text-gray-800 uppercase hover:underline"
+                            onClick={() =>
+                                router.get(
+                                    task.url({
+                                        project: tasks.project_id,
+                                        task: tasks.id,
+                                    }),
+                                )
+                            }
+                        >
                             {tasks.title}
                         </h1>
                         <div className="flex flex-wrap items-center gap-3">
@@ -154,22 +164,6 @@ export default function TaskDetails({
                     </div>
 
                     {/* Right: Due date */}
-                    <div className="flex flex-col items-start gap-3 sm:items-end">
-                        <Button
-                            variant="outline"
-                            className=" "
-                            onClick={() =>
-                                router.get(
-                                    task.url({
-                                        project: tasks.project_id,
-                                        task: tasks.id,
-                                    }),
-                                )
-                            }
-                        >
-                            Edit Task
-                        </Button>
-                    </div>
                 </div>
 
                 {/* Assignees */}
