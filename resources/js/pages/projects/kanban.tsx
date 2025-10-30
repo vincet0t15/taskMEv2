@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/tooltip';
 import { Status } from '@/types/status';
 import { Task } from '@/types/task';
+import { router } from '@inertiajs/react';
 import {
     AlertTriangle,
     ChevronDown,
@@ -233,6 +234,9 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                     open={openView}
                     setOpen={setOpenView}
                     tasks={taskDetails}
+                    onDataNeededRefresh={() =>
+                        router.reload({ only: ['statusWithTasks'] })
+                    }
                 />
             )}
         </div>

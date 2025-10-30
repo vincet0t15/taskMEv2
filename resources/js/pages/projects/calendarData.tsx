@@ -80,6 +80,9 @@ export default function CalendarData({ tasks }: Props) {
                     tasks={taskDetails}
                     open={openViewTask}
                     setOpen={setOpenViewTask}
+                    onDataNeededRefresh={() =>
+                        router.reload({ only: ['tasks'] })
+                    }
                 />
             )}
         </div>

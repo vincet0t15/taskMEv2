@@ -7,6 +7,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { Status } from '@/types/status';
 import { SubTaskInterface } from '@/types/subTask';
 import { Task } from '@/types/task';
+import { router } from '@inertiajs/react';
 import {
     ArrowUpWideNarrow,
     ChevronDown,
@@ -17,7 +18,7 @@ import {
     ListCheckIcon,
     Users2Icon,
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import TaskDetailDialog from '../tasks/viewTask';
 
@@ -53,6 +54,19 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
         setSubTask(subTask);
         setOpenSubTaskDialog(true);
     };
+
+    const sections = useMemo(() => statusWithTasks ?? [], [statusWithTasks]);
+
+    useEffect(() => {
+        if (taskDetails && openViewTask) {
+            const updatedTask = sections
+                .flatMap((status) => status.tasks)
+                .find((task) => task.id === taskDetails.id);
+            if (updatedTask) {
+                setTaskDetails(updatedTask);
+            }
+        }
+    }, [statusWithTasks, taskDetails?.id, openViewTask]);
 
     return (
         <div className="space-y-4">
@@ -317,6 +331,9 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                     open={openViewTask}
                     setOpen={setOpenViewTask}
                     tasks={taskDetails}
+                    onDataNeededRefresh={() =>
+                        router.reload({ only: ['statusWithTasks'] })
+                    }
                 />
             )}
 

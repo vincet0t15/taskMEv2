@@ -26,9 +26,15 @@ interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
     tasks: Task;
+    onDataNeededRefresh?: () => void;
 }
 
-export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
+export default function TaskDetailDialog({
+    open,
+    setOpen,
+    tasks,
+    onDataNeededRefresh,
+}: Props) {
     const getInitials = useInitials();
     const [addSubTask, setAddSubTask] = useState(false);
     const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
@@ -44,9 +50,13 @@ export default function TaskDetailDialog({ open, setOpen, tasks }: Props) {
         if (isInitialMount.current) {
             isInitialMount.current = false;
         } else if (!openSubTaskDialog) {
-            router.reload({ only: ['tasks'] });
+            if (onDataNeededRefresh) {
+                onDataNeededRefresh();
+            } else {
+                router.reload({ only: ['tasks'] });
+            }
         }
-    }, [openSubTaskDialog]);
+    }, [openSubTaskDialog, onDataNeededRefresh]);
 
     return (
         <>
