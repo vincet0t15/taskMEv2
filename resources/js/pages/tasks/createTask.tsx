@@ -52,11 +52,8 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
             project_id: proj.id,
             assignees: [] as number[],
             subTasks: [],
+            attachment: [],
         });
-
-    const filterAssignees = data.assignees.filter((id) =>
-        systemUsers.some((user) => user.id === id),
-    );
 
     const priorityOptions = (systemPriorities as Priority[]).map(
         (priority) => ({

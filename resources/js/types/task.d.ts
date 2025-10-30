@@ -2,6 +2,7 @@ import { User } from '.';
 import { Priority } from './priority';
 import { Status } from './status';
 import { SubTaskForm, SubTaskInterface } from './subTask';
+import { TaskAttachment } from './taskAttachment';
 
 export interface Task {
     id: number;
@@ -28,4 +29,5 @@ export type TaskForm = {
     due_date: string;
     assignees: number[];
     subTasks?: SubTaskForm[];
+    attachment:TaskAttachment[]
 };
