@@ -104,6 +104,7 @@ class TaskController extends Controller
     public function updateTask(Request $request, Task $task)
     {
 
+
         $task->update([
             'title' => $request->title,
             'description' => $request->description,
@@ -159,6 +160,36 @@ class TaskController extends Controller
             $task->subTasks()
                 ->whereNotIn('id', $subTaskIds)
                 ->delete();
+        }
+
+        // Handle new attachments
+        if ($request->hasFile('attachment')) {
+            foreach ($request->file('attachment') as $file) {
+                $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+
+                $size = $file->getSize();
+                for ($i = 0; $size > 1024; $i++) {
+                    $size /= 1024;
+                }
+
+                $filePath = $file->store('attachment', 'public');
+                $original_name = $file->getClientOriginalName();
+                $extension_name = pathinfo($original_name, PATHINFO_EXTENSION);
+
+                $attachment = new TaskAttachment();
+                $attachment->task_id = $task->id;
+                $attachment->original_name = $original_name;
+                $attachment->path = $filePath;
+                $attachment->extension_name = $extension_name;
+                $attachment->date_created = Carbon::now('singapore')->toDateTimeString();
+                $attachment->file_size = round($size, 2) . ' ' . $units[$i];
+                $attachment->save();
+            }
+        }
+
+        // Handle attachment deletion
+        if ($request->has('deleted_attachments')) {
+            TaskAttachment::whereIn('id', $request->deleted_attachments)->delete();
         }
 
 

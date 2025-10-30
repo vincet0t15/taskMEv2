@@ -1,5 +1,6 @@
 import CustomDatePicker from '@/components/custom-date-picker';
 import CustomSelectWithColor from '@/components/custom-select-with-color';
+import FileInput from '@/components/file-input';
 import InputError from '@/components/input-error';
 import MultiSelectUser from '@/components/multi-select-user';
 import { Button } from '@/components/ui/button';
@@ -42,25 +43,28 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
 
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
-    const { data, setData, processing, put, errors } = useForm<TaskForm>({
-        title: tasks.title,
-        description: tasks.description || '',
-        due_date: tasks.due_date,
-        priority_id: tasks.priority_id,
-        status_id: tasks.status_id,
-        project_id: tasks.project_id,
-        assignees: tasks.assignees?.map((user) => user.id) || [],
-        subTasks:
-            tasks.sub_tasks?.map((subTask) => ({
-                title: subTask.title,
-                description: subTask.description || '',
-                priority_id: subTask.priority_id,
-                status_id: subTask.status_id,
-                due_date: subTask.due_date,
-                assignees: subTask.assignees?.map((user) => user.id) || [],
-                task_id: subTask.task_id,
-            })) || [],
-    });
+    const { data, setData, processing, post, errors, transform } =
+        useForm<TaskForm>({
+            title: tasks.title,
+            description: tasks.description || '',
+            due_date: tasks.due_date,
+            priority_id: tasks.priority_id,
+            status_id: tasks.status_id,
+            project_id: tasks.project_id,
+            assignees: tasks.assignees?.map((user) => user.id) || [],
+            subTasks:
+                tasks.sub_tasks?.map((subTask) => ({
+                    title: subTask.title,
+                    description: subTask.description || '',
+                    priority_id: subTask.priority_id,
+                    status_id: subTask.status_id,
+                    due_date: subTask.due_date,
+                    assignees: subTask.assignees?.map((user) => user.id) || [],
+                    task_id: subTask.task_id,
+                })) || [],
+            attachment: [] as File[],
+            deleted_attachments: [],
+        });
 
     const priorityOptions = (systemPriorities as Priority[]).map(
         (priority) => ({
@@ -115,14 +119,34 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
         setData('subTasks', updatedSubTasks);
     };
 
+    const removeAttachment = (attachmentId: number) => {
+        setData({
+            ...data,
+            deleted_attachments: Array.from(
+                new Set([...(data.deleted_attachments || []), attachmentId]),
+            ),
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(task.url(tasks.id), {
+
+        transform((data) => ({
+            ...data,
+            _method: 'PUT',
+        }));
+
+        post(task.url(tasks.id), {
             onSuccess: (response: { props: FlashProps }) => {
                 toast.success(
                     response.props.flash?.success ||
                         'Task updated successfully.',
                 );
+                setData({
+                    ...data,
+                    attachment: [],
+                    deleted_attachments: [],
+                });
             },
             onError: () => {
                 toast.error('An error occurred while updating the task.');
@@ -224,6 +248,45 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
                     />
                 </div>
 
+                <div className="grid gap-2">
+                    <Label>Attachments</Label>
+                    {/* Existing Attachments */}
+                    <div className="space-y-2">
+                        {tasks.attachments
+                            .filter(
+                                (att) =>
+                                    !data.deleted_attachments?.includes(att.id),
+                            )
+                            .map((attachment) => (
+                                <div
+                                    key={attachment.id}
+                                    className="flex items-center justify-between rounded-md border p-2"
+                                >
+                                    <div className="text-sm">
+                                        <p>{attachment.original_name}</p>
+                                        <span className="text-xs text-gray-500">
+                                            {attachment.file_size}
+                                        </span>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() =>
+                                            removeAttachment(attachment.id)
+                                        }
+                                    >
+                                        <TrashIcon className="h-4 w-4 text-red-500" />
+                                    </Button>
+                                </div>
+                            ))}
+                    </div>
+                    <FileInput
+                        value={data.attachment as File[]}
+                        onChange={(files) => setData('attachment', files)}
+                    />
+                    <InputError message={errors.attachment} />
+                </div>
                 <div className="grid gap-4">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-semibold">Subtasks</h2>

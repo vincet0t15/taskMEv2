@@ -31,4 +31,5 @@ export type TaskForm = {
     assignees: number[];
     subTasks?: SubTaskForm[];
     attachment?:File[]
+    deleted_attachments?:number[]
 };
