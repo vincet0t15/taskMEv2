@@ -4,12 +4,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useInitials } from '@/hooks/use-initials';
@@ -28,7 +22,6 @@ import { Head, router, useForm, usePage } from '@inertiajs/react';
 
 import { Input } from '@/components/ui/input';
 import comment from '@/routes/comment';
-import { comments } from '@/routes/update';
 import { CommentTypes } from '@/types/commet';
 import {
     Calendar,
@@ -36,24 +29,18 @@ import {
     Circle,
     DownloadIcon,
     File,
-    MoreHorizontal,
     Plus,
 } from 'lucide-react';
 import { KeyboardEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
+import CommentItem from './comment';
+
 interface TaskDetailsProps {
     tasks: Task;
     project: Project;
 }
-interface PageProps {
-    auth: {
-        user: {
-            id: number;
-            name: string;
-        } | null;
-    };
-}
+
 export default function TaskDetails({
     tasks,
     project: proj,
@@ -102,7 +89,13 @@ export default function TaskDetails({
 
     const handleKeyEnter: KeyboardEventHandler = (e) => {
         if (e.key === 'Enter') {
-            post(comment.task.url());
+            post(comment.task.url(), {
+                preserveScroll: true,
+                onSuccess: (response: { props: FlashProps }) => {
+                    toast.success(response.props.flash?.success);
+                    setData('comment', '');
+                },
+            });
         }
     };
     return (
@@ -357,131 +350,34 @@ export default function TaskDetails({
 
                     {/* Comments & Activity Placeholder */}
                     <TabsContent value="comments">
-                        {tasks.comments.map((comment) => {
-                            const [isEditing, setIsEditing] = useState(false);
-                            const [editedComment, setEditedComment] = useState(
-                                comment.comment,
-                            );
+                        <div className="space-y-3">
+                            {tasks.comments.length > 0 &&
+                                tasks.comments.map((comment, index) => (
+                                    <CommentItem
+                                        comment={comment}
+                                        key={index}
+                                    />
+                                ))}
+                        </div>
 
-                            const handleSave: KeyboardEventHandler = (e) => {
-                                if (e.key === 'Enter') {
-                                    router.put(
-                                        comments.url(comment.id),
-                                        { comment: editedComment },
-                                        {
-                                            preserveScroll: true,
-                                            onSuccess: (response: {
-                                                props: FlashProps;
-                                            }) => {
-                                                toast.success(
-                                                    response.props.flash
-                                                        ?.success,
-                                                );
-                                                setIsEditing(false);
-                                            },
-                                        },
-                                    );
-                                    setIsEditing(false);
+                        {/* ✅ Add Comment Section */}
+                        <div className="mt-4 flex items-start gap-3 border-t pt-3">
+                            <Avatar className="h-8 w-8">
+                                <AvatarFallback className="bg-blue-100 text-xs font-medium text-blue-600">
+                                    {getInitials(auth.user?.name || 'U')}
+                                </AvatarFallback>
+                            </Avatar>
+
+                            <Input
+                                placeholder="Write a comment..."
+                                value={data.comment}
+                                onChange={(e) =>
+                                    setData('comment', e.target.value)
                                 }
-                            };
-
-                            return (
-                                <div
-                                    key={comment.id}
-                                    className="flex flex-col rounded-lg border p-3 hover:bg-gray-50"
-                                >
-                                    <div className="flex justify-between">
-                                        {/* Left side: Avatar + Comment */}
-                                        <div className="flex flex-1 items-center gap-3">
-                                            <Avatar className="h-8 w-8">
-                                                <AvatarFallback className="bg-blue-100 text-xs font-medium text-blue-600">
-                                                    {getInitials(
-                                                        comment.user.name,
-                                                    )}
-                                                </AvatarFallback>
-                                            </Avatar>
-
-                                            <div className="flex flex-1 items-center gap-3">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-sm font-medium text-gray-800">
-                                                            {comment.user.name}
-                                                        </span>
-                                                    </div>
-
-                                                    {isEditing ? (
-                                                        <Input
-                                                            type="text"
-                                                            value={
-                                                                editedComment
-                                                            }
-                                                            onChange={(e) =>
-                                                                setEditedComment(
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            onKeyDown={
-                                                                handleSave
-                                                            }
-                                                            className="mt-1 w-full rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none"
-                                                        />
-                                                    ) : (
-                                                        <p className="mt-1 text-sm text-gray-600">
-                                                            {comment.comment}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            {!isEditing && (
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-xs text-gray-400">
-                                                        {new Date(
-                                                            comment.date_created,
-                                                        ).toLocaleString(
-                                                            'en-US',
-                                                            {
-                                                                year: 'numeric',
-                                                                month: 'short',
-                                                                day: 'numeric',
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                hour12: true,
-                                                            },
-                                                        )}
-                                                    </span>
-
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger
-                                                            asChild
-                                                        >
-                                                            <MoreHorizontal className="cursor-pointer rounded-full p-1 hover:bg-white hover:shadow" />
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent
-                                                            className="w-56"
-                                                            align="start"
-                                                        >
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    setIsEditing(
-                                                                        true,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Edit
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem>
-                                                                Delete
-                                                            </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                onKeyDown={handleKeyEnter}
+                                className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none"
+                            />
+                        </div>
                     </TabsContent>
 
                     <TabsContent value="activity">

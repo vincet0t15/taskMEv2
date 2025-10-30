@@ -26,4 +26,11 @@ class CommentController extends Controller
 
         return redirect()->back()->with('success', 'Comment updated successfully.');
     }
+
+    public function destroyComment(Comment $comment)
+    {
+        $comment->delete();
+
+        return redirect()->back()->with('success', 'Comment deleted successfully.');
+    }
 }
