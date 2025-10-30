@@ -91,7 +91,8 @@ class TaskController extends Controller
             'assignees',
             'subTasks.priority',
             'subTasks.status',
-            'subTasks.assignees'
+            'subTasks.assignees',
+            'attachments'
         ]);
 
         return Inertia::render('tasks/showTask', [
