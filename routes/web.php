@@ -29,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('projects/{project}/create-task', [TaskController::class, 'create'])->name('create.task');
     Route::get('projects/{project}/tasks/{task}', [TaskController::class, 'show'])->name('show.task');
     Route::put('tasks/{task}', [TaskController::class, 'updateTask'])->name('update.task');
-
+    Route::get('projects/{project}/tasks-view/{task}', [TaskController::class, 'view'])->name('view.tasks');
     // BOARD
     Route::get('projects/{project}/board', [BoardController::class, 'show'])->name('show.board');
 
@@ -41,7 +41,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // CALENDAR
     Route::get('projects/{project}/calendar', [CalendarController::class, 'show'])->name('show.calendar');
     Route::put('calendar/{task}', [CalendarController::class, 'moveData'])->name('calendar.move');
-    // SETTINGS
 });
 
 require __DIR__ . '/settings.php';

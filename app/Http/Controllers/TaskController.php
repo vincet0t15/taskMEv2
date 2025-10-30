@@ -101,6 +101,33 @@ class TaskController extends Controller
         ]);
     }
 
+    public function view(Project $project, Task $task)
+    {
+        $task = Task::withCount([
+            'subTasks as completed_subtasks_count' => function ($query) {
+                $query->whereHas('status', function ($q) {
+                    $q->where('name', 'Completed');
+                });
+            },
+            'subTasks as total_subtasks_count'
+        ])
+            ->with([
+                'priority',
+                'status',
+                'assignees',
+                'subTasks.priority',
+                'subTasks.status',
+                'subTasks.assignees',
+                'attachments'
+            ])
+            ->findOrFail($task->id);
+
+        return Inertia::render('tasks/TaskDetails', [
+            'tasks' => $task,
+            'project' => $project
+        ]);
+    }
+
     public function updateTask(Request $request, Task $task)
     {
 

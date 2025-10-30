@@ -7,6 +7,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { tasks } from '@/routes/view';
 import { Status } from '@/types/status';
 import { Task } from '@/types/task';
 import { router } from '@inertiajs/react';
@@ -43,11 +44,6 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
     };
 
     const sections = useMemo(() => statusWithTasks ?? [], [statusWithTasks]);
-
-    const handleClickName = (task: Task) => {
-        setTaskDetails(task);
-        setOpenView(true);
-    };
 
     useEffect(() => {
         if (taskDetails && openView) {
@@ -102,7 +98,13 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                                         <span
                                             className="cursor-pointer truncate text-sm font-semibold text-slate-700 hover:font-bold"
                                             onClick={() =>
-                                                handleClickName(task)
+                                                router.get(
+                                                    tasks.url({
+                                                        project:
+                                                            task.project_id,
+                                                        task: task.id,
+                                                    }),
+                                                )
                                             }
                                         >
                                             {task.title}
