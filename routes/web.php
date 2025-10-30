@@ -3,6 +3,7 @@
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\MyTaskController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TaskController;
@@ -52,6 +53,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('comments', [CommentController::class, 'comment'])->name('comment.task');
     Route::put('comments/{comment}', [CommentController::class, 'updateComment'])->name('update.comments');
     Route::delete('comments/{comment}', [CommentController::class, 'destroyComment'])->name('destroy.comments');
+
+
+    // MY TASKS
+    Route::get('mytasks', [MyTaskController::class, 'index'])->name('myTask.index');
 });
 
 require __DIR__ . '/settings.php';

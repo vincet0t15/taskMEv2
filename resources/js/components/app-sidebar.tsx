@@ -9,19 +9,10 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import myTask from '@/routes/myTask';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import {
-    BookOpen,
-    Bot,
-    Frame,
-    LayoutGrid,
-    Map,
-    PieChart,
-    Settings2,
-    SquareTerminal,
-    UserRoundCheck,
-} from 'lucide-react';
+import { LayoutGrid, UserRoundCheck } from 'lucide-react';
 import AppLogo from './app-logo';
 import WorkspaceSection from './workSpaceStation';
 const mainNavItems: NavItem[] = [
@@ -32,117 +23,10 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'My Task',
-        href: dashboard(),
+        href: myTask.index.url(),
         icon: UserRoundCheck,
     },
 ];
-
-const data = {
-    navMain: [
-        {
-            title: 'Playground',
-            url: '#',
-            icon: SquareTerminal,
-            isActive: true,
-            items: [
-                {
-                    title: 'History',
-                    url: '#',
-                },
-                {
-                    title: 'Starred',
-                    url: '#',
-                },
-                {
-                    title: 'Settings',
-                    url: '#',
-                },
-            ],
-        },
-        {
-            title: 'Models',
-            url: '#',
-            icon: Bot,
-            items: [
-                {
-                    title: 'Genesis',
-                    url: '#',
-                },
-                {
-                    title: 'Explorer',
-                    url: '#',
-                },
-                {
-                    title: 'Quantum',
-                    url: '#',
-                },
-            ],
-        },
-        {
-            title: 'Documentation',
-            url: '#',
-            icon: BookOpen,
-            items: [
-                {
-                    title: 'Introduction',
-                    url: '#',
-                },
-                {
-                    title: 'Get Started',
-                    url: '#',
-                },
-                {
-                    title: 'Tutorials',
-                    url: '#',
-                },
-                {
-                    title: 'Changelog',
-                    url: '#',
-                },
-            ],
-        },
-        {
-            title: 'Settings',
-            url: '#',
-            icon: Settings2,
-            items: [
-                {
-                    title: 'General',
-                    url: '#',
-                },
-                {
-                    title: 'Team',
-                    url: '#',
-                },
-                {
-                    title: 'Billing',
-                    url: '#',
-                },
-                {
-                    title: 'Limits',
-                    url: '#',
-                },
-            ],
-        },
-    ],
-    projects: [
-        {
-            name: 'Design Engineering',
-            url: '#',
-            icon: Frame,
-        },
-        {
-            name: 'Sales & Marketing',
-            url: '#',
-            icon: PieChart,
-        },
-        {
-            name: 'Travel',
-            url: '#',
-            icon: Map,
-        },
-    ],
-};
 
 export function AppSidebar() {
     return (
