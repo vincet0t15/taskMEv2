@@ -23,6 +23,7 @@ import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Input } from '@/components/ui/input';
 import comment from '@/routes/comment';
 import { CommentTypes } from '@/types/commet';
+import { SubTaskInterface } from '@/types/subTask';
 import {
     Calendar,
     CheckCircle2,
@@ -34,6 +35,7 @@ import {
 import { KeyboardEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
+import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import CommentItem from './comment';
 
 interface TaskDetailsProps {
@@ -45,6 +47,9 @@ export default function TaskDetails({
     tasks,
     project: proj,
 }: TaskDetailsProps) {
+    const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
+    const [subTask, setSubTask] = useState<SubTaskInterface>();
+
     const getInitials = useInitials();
     const [addSubTaskDialog, setAddSubTaskDialog] = useState(false);
     const isOverdue = tasks.due_date && new Date(tasks.due_date) < new Date();
@@ -96,6 +101,11 @@ export default function TaskDetails({
                 },
             });
         }
+    };
+
+    const handleClickSubTask = (subTask: SubTaskInterface) => {
+        setSubTask(subTask);
+        setOpenSubTaskDialog(true);
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -295,8 +305,11 @@ export default function TaskDetails({
                                 <div className="mt-4 space-y-2">
                                     {tasks.sub_tasks.map((sub) => (
                                         <div
+                                            onClick={() =>
+                                                handleClickSubTask(sub)
+                                            }
                                             key={sub.id}
-                                            className="flex items-center justify-between rounded-lg border p-3 transition hover:bg-gray-50"
+                                            className="flex cursor-pointer items-center justify-between rounded-lg border p-3 transition hover:bg-gray-50"
                                         >
                                             <div className="flex items-center gap-3">
                                                 {sub.status_id === 4 ? (
@@ -407,6 +420,15 @@ export default function TaskDetails({
                     <CreateSubTaskDialog
                         open={addSubTaskDialog}
                         onOpenChange={setAddSubTaskDialog}
+                        task={tasks}
+                    />
+                )}
+
+                {openSubTaskDialog && subTask && (
+                    <SubTaskDialog
+                        open={openSubTaskDialog}
+                        onOpenChange={setOpenSubTaskDialog}
+                        subTask={subTask}
                         task={tasks}
                     />
                 )}
