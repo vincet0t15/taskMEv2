@@ -17,8 +17,10 @@ import {
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Task } from '@/types/task';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 
+import comment from '@/routes/comment';
+import { CommentTypes } from '@/types/commet';
 import {
     Calendar,
     CheckCircle2,
@@ -27,44 +29,41 @@ import {
     File,
     Plus,
 } from 'lucide-react';
-import { useState } from 'react';
+import { KeyboardEventHandler, useState } from 'react';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 interface TaskDetailsProps {
     tasks: Task;
     project: Project;
 }
-
+interface PageProps {
+    auth: {
+        user: {
+            id: number;
+            name: string;
+        } | null;
+    };
+}
 export default function TaskDetails({
     tasks,
     project: proj,
 }: TaskDetailsProps) {
+    console.log(tasks);
     const getInitials = useInitials();
     const [addSubTaskDialog, setAddSubTaskDialog] = useState(false);
     const isOverdue = tasks.due_date && new Date(tasks.due_date) < new Date();
+    const { auth } = usePage<any>().props;
 
-    const completed = tasks.completed_subtasks_count ?? 0;
-    const total = tasks.total_subtasks_count ?? 0;
-    const progress = total ? (completed / total) * 100 : 0;
+    const { data, setData, post } = useForm<CommentTypes>({
+        comment: '',
+        task_id: tasks.id,
+    });
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: dashboard().url },
         { title: proj.name, href: projectRoute.url(proj.id) },
         {
             title: tasks.title,
             href: taskRoute.url({ project: proj.id, task: tasks.id }),
-        },
-    ];
-    const sampleComments = [
-        {
-            id: 1,
-            user: 'John Doe',
-            content: 'I have completed the initial design draft.',
-            created_at: '2025-10-28T14:32:00Z',
-        },
-        {
-            id: 2,
-            user: 'Jane Smith',
-            content: 'Please review the new layout before finalizing.',
-            created_at: '2025-10-29T09:10:00Z',
         },
     ];
 
@@ -89,6 +88,12 @@ export default function TaskDetails({
             timestamp: '2025-10-29T08:05:00Z',
         },
     ];
+
+    const handleKeyEnter: KeyboardEventHandler = (e) => {
+        if (e.key === 'Enter') {
+            post(comment.task.url());
+        }
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={tasks.title} />
@@ -249,7 +254,7 @@ export default function TaskDetails({
                             value="subtasks"
                             className="rounded-md px-3 py-1 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow"
                         >
-                            Sub Tasks ({total})
+                            Sub Tasks ({tasks.total_subtasks_count})
                         </TabsTrigger>
                         <TabsTrigger
                             value="comments"
@@ -272,7 +277,9 @@ export default function TaskDetails({
                                 {/* Progress */}
                                 <div className="flex items-center justify-between text-sm text-gray-600">
                                     <span>
-                                        Sub Tasks ({completed}/{total})
+                                        Sub Tasks (
+                                        {tasks.completed_subtasks_count}/
+                                        {tasks.total_subtasks_count})
                                     </span>
                                 </div>
                                 <Progress
@@ -339,9 +346,10 @@ export default function TaskDetails({
 
                     {/* Comments & Activity Placeholder */}
                     <TabsContent value="comments">
-                        {sampleComments.length > 0 ? (
-                            <div className="space-y-4">
-                                {sampleComments.map((comment) => (
+                        <div className="space-y-4">
+                            {/* Existing comments */}
+                            {tasks.comments.length > 0 ? (
+                                tasks.comments.map((comment) => (
                                     <div
                                         key={comment.id}
                                         className="flex flex-col rounded-lg border p-3 hover:bg-gray-50"
@@ -351,31 +359,64 @@ export default function TaskDetails({
                                                 <Avatar className="h-8 w-8">
                                                     <AvatarFallback className="bg-blue-100 text-xs font-medium text-blue-600">
                                                         {getInitials(
-                                                            comment.user,
+                                                            comment.user.name,
                                                         )}
                                                     </AvatarFallback>
                                                 </Avatar>
-                                                <span className="text-sm font-semibold text-gray-800">
-                                                    {comment.user}
+                                                <span className="text-sm text-gray-500">
+                                                    {comment.comment}
                                                 </span>
                                             </div>
                                             <span className="text-xs text-gray-400">
                                                 {new Date(
-                                                    comment.created_at,
-                                                ).toLocaleString()}
+                                                    comment.date_created,
+                                                ).toLocaleString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: '2-digit',
+                                                    hour12: true,
+                                                })}
                                             </span>
                                         </div>
-                                        <p className="mt-2 text-sm text-gray-700">
-                                            {comment.content}
-                                        </p>
+                                        {/* <p className="mt-2 text-sm text-gray-700">
+                                            {comment.comment}
+                                        </p> */}
                                     </div>
-                                ))}
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-500">
+                                    No comments yet.
+                                </p>
+                            )}
+
+                            {/* Add new comment form */}
+                            <div className="mt-6 border-t pt-4">
+                                <div className="flex items-center gap-3">
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarFallback className="bg-blue-100 text-xs font-medium text-blue-600">
+                                            {getInitials(auth.user?.name)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <input
+                                        value={data.comment}
+                                        onChange={(e) =>
+                                            setData({
+                                                ...data,
+                                                comment: e.target.value,
+                                            })
+                                        }
+                                        type="text"
+                                        name="comment"
+                                        placeholder="Write a comment..."
+                                        className="flex-1 rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        required
+                                        onKeyDown={handleKeyEnter}
+                                    />
+                                </div>
                             </div>
-                        ) : (
-                            <p className="text-sm text-gray-500">
-                                No comments yet.
-                            </p>
-                        )}
+                        </div>
                     </TabsContent>
 
                     <TabsContent value="activity">

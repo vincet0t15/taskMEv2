@@ -92,7 +92,8 @@ class TaskController extends Controller
             'subTasks.priority',
             'subTasks.status',
             'subTasks.assignees',
-            'attachments'
+            'attachments',
+            'comments'
         ]);
 
         return Inertia::render('tasks/showTask', [
@@ -118,7 +119,10 @@ class TaskController extends Controller
                 'subTasks.priority',
                 'subTasks.status',
                 'subTasks.assignees',
-                'attachments'
+                'attachments',
+                'comments' => function ($query) {
+                    $query->with('user');
+                }
             ])
             ->findOrFail($task->id);
 

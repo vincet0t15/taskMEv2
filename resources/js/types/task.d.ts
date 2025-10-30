@@ -1,4 +1,5 @@
 import { User } from '.';
+import { CommentInterface } from './commet';
 import { Priority } from './priority';
 import { Status } from './status';
 import { SubTaskForm, SubTaskInterface } from './subTask';
@@ -19,6 +20,7 @@ export interface Task {
     completed_subtasks_count?: number;
     total_subtasks_count?: number;
     attachments: TaskAttachment[];
+    comments: CommentInterface[]
 }
 
 export type TaskForm = {

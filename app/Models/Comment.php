@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,7 @@ class Comment extends Model
         static::creating(function ($comment) {
             if (Auth::check()) {
                 $comment->user_id = Auth::id();
+                $comment->date_created = Carbon::now('singapore')->toDateTimeString();
             }
         });
     }

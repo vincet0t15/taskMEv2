@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TaskController;
@@ -31,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('projects/{project}/tasks/{task}', [TaskController::class, 'show'])->name('show.task');
     Route::put('tasks/{task}', [TaskController::class, 'updateTask'])->name('update.task');
     Route::get('projects/{project}/tasks-view/{task}', [TaskController::class, 'view'])->name('view.tasks');
+
     // BOARD
     Route::get('projects/{project}/board', [BoardController::class, 'show'])->name('show.board');
 
@@ -45,6 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ATTACHMENTS
     Route::get('download/{id}', [TaskAttachment::class, 'download'])->name('file.download');
+
+    // COMMENTS
+    Route::post('comments', [CommentController::class, 'comment'])->name('comment.task');
 });
 
 require __DIR__ . '/settings.php';
