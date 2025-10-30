@@ -143,7 +143,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                 <tbody>
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
-                                            <tr className="cursor-pointer border-t hover:bg-muted/20">
+                                            <tr className="border-t hover:bg-muted/20">
                                                 <td className="flex items-center gap-2 p-3 font-medium text-muted-foreground">
                                                     {task.sub_tasks &&
                                                     task.sub_tasks.length >
