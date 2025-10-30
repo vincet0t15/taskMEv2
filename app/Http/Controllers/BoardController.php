@@ -22,7 +22,8 @@ class BoardController extends Controller
                         'subTasks' => function ($subQuery) {
                             $subQuery->with('assignees', 'priority', 'status');
                         },
-                        'attachments'
+                        'attachments',
+                        'comments'
                     ])
                     ->withCount([
                         'subTasks as completed_subtasks_count' => function ($subQuery) {

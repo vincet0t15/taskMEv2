@@ -17,9 +17,9 @@ import {
     Clock,
     MessageCircle,
     UserCircle2,
+    Workflow,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { SubTaskDrawer } from '../subTasks/list';
 import TaskDetailDialog from '../tasks/viewTask';
 interface Props {
     statusWithTasks: Status[];
@@ -132,7 +132,7 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                                         {/* Comments Count */}
                                         <div className="flex items-center gap-1">
                                             <MessageCircle className="h-3.5 w-3.5" />
-                                            <span>2</span>
+                                            <span>{task.comments?.length}</span>
                                         </div>
 
                                         {/* Users (Avatars) */}
@@ -168,12 +168,13 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                                                 </Tooltip>
                                             </TooltipProvider>
                                         </div>
-
-                                        <div>
-                                            <SubTaskDrawer
-                                                subTasks={task.sub_tasks}
-                                                task={task}
-                                            />
+                                        <div className="flex items-center gap-1">
+                                            <Workflow className="h-4 w-4" />
+                                            <span className="text-xs">
+                                                {task.sub_tasks.length} Subtask
+                                                {task.sub_tasks.length !== 1 &&
+                                                    's'}
+                                            </span>
                                         </div>
 
                                         <div className="flex items-center gap-1">

@@ -110,7 +110,6 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-        console.log(data);
         e.preventDefault();
         post(task.url(), {
             onSuccess: (response: { props: FlashProps }) => {

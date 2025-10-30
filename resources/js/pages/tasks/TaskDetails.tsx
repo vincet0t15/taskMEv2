@@ -45,7 +45,6 @@ export default function TaskDetails({
     tasks,
     project: proj,
 }: TaskDetailsProps) {
-    console.log(tasks);
     const getInitials = useInitials();
     const [addSubTaskDialog, setAddSubTaskDialog] = useState(false);
     const isOverdue = tasks.due_date && new Date(tasks.due_date) < new Date();

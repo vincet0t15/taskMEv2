@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { useInitials } from '@/hooks/use-initials';
 import { comments } from '@/routes/update';
 import { CommentInterface } from '@/types/commet';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { MoreHorizontal } from 'lucide-react';
 import { KeyboardEventHandler, useState } from 'react';
 import { toast } from 'sonner';
@@ -22,6 +22,7 @@ interface CommentItemProps {
 }
 
 export default function CommentItem({ comment }: CommentItemProps) {
+    const { auth } = usePage<any>().props;
     const getInitials = useInitials();
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.comment);
@@ -94,28 +95,30 @@ export default function CommentItem({ comment }: CommentItemProps) {
                                 )}
                             </span>
 
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <MoreHorizontal className="cursor-pointer rounded-full p-1 hover:bg-white hover:shadow" />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    className="w-44"
-                                    align="end"
-                                >
-                                    <DropdownMenuItem
-                                        onClick={() => setIsEditing(true)}
+                            {auth.user.id === comment.user.id && (
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <MoreHorizontal className="cursor-pointer rounded-full p-1 hover:bg-white hover:shadow" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        className="w-44"
+                                        align="end"
                                     >
-                                        Edit
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        onSelect={(e) => e.preventDefault()}
-                                    >
-                                        <DeleteCommentDialog
-                                            comment={comment}
-                                        />
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                                        <DropdownMenuItem
+                                            onClick={() => setIsEditing(true)}
+                                        >
+                                            Edit
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onSelect={(e) => e.preventDefault()}
+                                        >
+                                            <DeleteCommentDialog
+                                                comment={comment}
+                                            />
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            )}
                         </div>
                     )}
                 </div>

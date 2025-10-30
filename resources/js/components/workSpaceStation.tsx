@@ -67,7 +67,7 @@ export default function WorkspaceSection() {
                                 href={ws.url}
                                 key={ws.id}
                                 className={cn(
-                                    'flex cursor-pointer items-center space-x-2 rounded-md px-3 py-1 text-sm transition-colors',
+                                    'flex cursor-pointer items-center space-x-2 rounded-md px-1 py-1 text-sm transition-colors',
                                     isActive
                                         ? 'bg-muted font-semibold text-foreground'
                                         : 'text-muted-foreground hover:bg-muted hover:text-foreground',
@@ -75,7 +75,7 @@ export default function WorkspaceSection() {
                             >
                                 <div
                                     className={cn(
-                                        'flex size-8 items-center justify-center rounded-full text-xs font-medium',
+                                        'flex size-6 items-center justify-center rounded-full text-xs font-medium',
                                         isActive
                                             ? 'bg-primary text-primary-foreground'
                                             : 'bg-muted text-foreground',

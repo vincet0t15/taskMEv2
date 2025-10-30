@@ -43,7 +43,6 @@ export function SubTaskDialog({
     onSubTaskDeleted,
     task,
 }: subTaskDetails) {
-    console.log(task);
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
     const [openDelete, setOpenDelete] = useState(false);
