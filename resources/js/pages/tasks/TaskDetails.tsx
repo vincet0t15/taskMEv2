@@ -27,6 +27,7 @@ import {
     Circle,
     DownloadIcon,
     File,
+    MoreHorizontal,
     Plus,
 } from 'lucide-react';
 import { KeyboardEventHandler, useState } from 'react';
@@ -349,42 +350,55 @@ export default function TaskDetails({
                         <div className="space-y-4">
                             {/* Existing comments */}
                             {tasks.comments.length > 0 ? (
-                                tasks.comments.map((comment) => (
-                                    <div
-                                        key={comment.id}
-                                        className="flex flex-col rounded-lg border p-3 hover:bg-gray-50"
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <Avatar className="h-8 w-8">
-                                                    <AvatarFallback className="bg-blue-100 text-xs font-medium text-blue-600">
-                                                        {getInitials(
-                                                            comment.user.name,
+                                tasks.comments.map((comment) => {
+                                    return (
+                                        <div
+                                            key={comment.id}
+                                            className="flex flex-col rounded-lg border p-3 hover:bg-gray-50"
+                                        >
+                                            <div className="flex justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Avatar className="h-8 w-8">
+                                                        <AvatarFallback className="bg-blue-100 text-xs font-medium text-blue-600">
+                                                            {getInitials(
+                                                                comment.user
+                                                                    .name,
+                                                            )}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+
+                                                    <div>
+                                                        <span className="text-sm font-medium text-gray-800">
+                                                            {comment.user.name}
+                                                        </span>
+                                                        <p className="mt-1 text-sm text-gray-600">
+                                                            {comment.comment}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs text-gray-400">
+                                                        {new Date(
+                                                            comment.date_created,
+                                                        ).toLocaleString(
+                                                            'en-US',
+                                                            {
+                                                                year: 'numeric',
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                hour12: true,
+                                                            },
                                                         )}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <span className="text-sm text-gray-500">
-                                                    {comment.comment}
-                                                </span>
+                                                    </span>
+                                                    <MoreHorizontal className="cursor-pointer rounded-full p-1 hover:bg-white hover:shadow" />
+                                                </div>
                                             </div>
-                                            <span className="text-xs text-gray-400">
-                                                {new Date(
-                                                    comment.date_created,
-                                                ).toLocaleString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                    hour: 'numeric',
-                                                    minute: '2-digit',
-                                                    hour12: true,
-                                                })}
-                                            </span>
                                         </div>
-                                        {/* <p className="mt-2 text-sm text-gray-700">
-                                            {comment.comment}
-                                        </p> */}
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <p className="text-sm text-gray-500">
                                     No comments yet.
@@ -402,10 +416,7 @@ export default function TaskDetails({
                                     <input
                                         value={data.comment}
                                         onChange={(e) =>
-                                            setData({
-                                                ...data,
-                                                comment: e.target.value,
-                                            })
+                                            setData('comment', e.target.value)
                                         }
                                         type="text"
                                         name="comment"
