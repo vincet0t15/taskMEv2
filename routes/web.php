@@ -50,6 +50,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // COMMENTS
     Route::post('comments', [CommentController::class, 'comment'])->name('comment.task');
+    Route::put('comments/{comment}', [CommentController::class, 'updateComment'])->name('update.comments');
+    Route::delete('comments/{comment}', [CommentController::class, 'destroyComment'])->name('destroy.comment');
 });
 
 require __DIR__ . '/settings.php';

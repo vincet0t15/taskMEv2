@@ -17,4 +17,13 @@ class CommentController extends Controller
 
         return redirect()->back()->with('success', 'Comment created successfully.');
     }
+
+    public function updateComment(Request $request, Comment $comment)
+    {
+        $comment->update([
+            'comment' => $request->comment,
+        ]);
+
+        return redirect()->back()->with('success', 'Comment updated successfully.');
+    }
 }
