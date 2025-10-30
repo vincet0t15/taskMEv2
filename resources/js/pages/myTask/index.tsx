@@ -1,9 +1,10 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import myTask from '@/routes/myTask';
-import { type BreadcrumbItem } from '@/types';
+import { BreadcrumbItem } from '@/types';
+import { Status } from '@/types/status';
 import { Head } from '@inertiajs/react';
+import CollapsibleTaskTable from '../projects/table';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,30 +12,23 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
     {
-        title: 'MyTask',
+        title: 'My Tasks',
         href: myTask.index.url(),
     },
 ];
 
-export default function MyTasksList() {
+interface MyTasksListProps {
+    tasks: Status[];
+}
+
+export default function MyTasksList({ tasks }: MyTasksListProps) {
+    console.log(tasks);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="My Tasks" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                </div>
-                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div>
+                <CollapsibleTaskTable statusWithTasks={tasks} />
             </div>
         </AppLayout>
     );

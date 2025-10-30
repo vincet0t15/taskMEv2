@@ -1,5 +1,6 @@
 import { Priority } from './priority';
 import { Status } from './status';
+import { Task } from './task';
 
 export interface Project {
     id: number;
@@ -9,6 +10,7 @@ export interface Project {
     status_id: number;
     status?: Status;
     priority?: Priority;
+    tasks?: Task[];
 }
 
 export type ProjectCreateInput = {

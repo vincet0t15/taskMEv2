@@ -33,6 +33,12 @@ class Project extends Model
         return $this->belongsTo(Status::class);
     }
 
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public static function boot()
     {
         parent::boot();
