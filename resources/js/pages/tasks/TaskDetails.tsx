@@ -53,7 +53,42 @@ export default function TaskDetails({
             href: taskRoute.url({ project: proj.id, task: tasks.id }),
         },
     ];
+    const sampleComments = [
+        {
+            id: 1,
+            user: 'John Doe',
+            content: 'I have completed the initial design draft.',
+            created_at: '2025-10-28T14:32:00Z',
+        },
+        {
+            id: 2,
+            user: 'Jane Smith',
+            content: 'Please review the new layout before finalizing.',
+            created_at: '2025-10-29T09:10:00Z',
+        },
+    ];
 
+    // Sample Activity Logs
+    const sampleActivity = [
+        {
+            id: 1,
+            action: 'created the task',
+            user: 'John Doe',
+            timestamp: '2025-10-28T10:15:00Z',
+        },
+        {
+            id: 2,
+            action: 'updated task status to "In Progress"',
+            user: 'Jane Smith',
+            timestamp: '2025-10-28T13:45:00Z',
+        },
+        {
+            id: 3,
+            action: 'added 2 new subtasks',
+            user: 'John Doe',
+            timestamp: '2025-10-29T08:05:00Z',
+        },
+    ];
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={tasks.title} />
@@ -304,15 +339,73 @@ export default function TaskDetails({
 
                     {/* Comments & Activity Placeholder */}
                     <TabsContent value="comments">
-                        <p className="text-sm text-gray-500">
-                            No comments yet.
-                        </p>
+                        {sampleComments.length > 0 ? (
+                            <div className="space-y-4">
+                                {sampleComments.map((comment) => (
+                                    <div
+                                        key={comment.id}
+                                        className="flex flex-col rounded-lg border p-3 hover:bg-gray-50"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarFallback className="bg-blue-100 text-xs font-medium text-blue-600">
+                                                        {getInitials(
+                                                            comment.user,
+                                                        )}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <span className="text-sm font-semibold text-gray-800">
+                                                    {comment.user}
+                                                </span>
+                                            </div>
+                                            <span className="text-xs text-gray-400">
+                                                {new Date(
+                                                    comment.created_at,
+                                                ).toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <p className="mt-2 text-sm text-gray-700">
+                                            {comment.content}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-sm text-gray-500">
+                                No comments yet.
+                            </p>
+                        )}
                     </TabsContent>
 
                     <TabsContent value="activity">
-                        <p className="text-sm text-gray-500">
-                            Recent activity will appear here.
-                        </p>
+                        {sampleActivity.length > 0 ? (
+                            <ul className="space-y-3">
+                                {sampleActivity.map((activity) => (
+                                    <li
+                                        key={activity.id}
+                                        className="flex items-center justify-between rounded-lg border p-3 hover:bg-gray-50"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <CheckCircle2 className="h-4 w-4 text-blue-500" />
+                                            <span className="text-sm text-gray-700">
+                                                <strong>{activity.user}</strong>{' '}
+                                                {activity.action}
+                                            </span>
+                                        </div>
+                                        <span className="text-xs text-gray-400">
+                                            {new Date(
+                                                activity.timestamp,
+                                            ).toLocaleString()}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-gray-500">
+                                No recent activity.
+                            </p>
+                        )}
                     </TabsContent>
                 </Tabs>
                 {addSubTaskDialog && tasks && (
