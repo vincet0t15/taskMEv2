@@ -5,6 +5,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TaskController;
+use App\Models\TaskAttachment;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -41,6 +42,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // CALENDAR
     Route::get('projects/{project}/calendar', [CalendarController::class, 'show'])->name('show.calendar');
     Route::put('calendar/{task}', [CalendarController::class, 'moveData'])->name('calendar.move');
+
+    // ATTACHMENTS
+    Route::get('download/{id}', [TaskAttachment::class, 'download'])->name('file.download');
 });
 
 require __DIR__ . '/settings.php';
