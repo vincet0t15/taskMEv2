@@ -21,7 +21,7 @@ class CalendarController extends Controller
 
         return Inertia::render('projects/calendar', [
             'projects' => $project,
-            'tasks' => $tasks
+            'task' => $tasks
         ]);
     }
 

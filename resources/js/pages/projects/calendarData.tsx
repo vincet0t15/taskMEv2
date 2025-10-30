@@ -1,23 +1,25 @@
 import { move } from '@/routes/calendar';
+import { tasks } from '@/routes/view';
 import { Task } from '@/types/task';
 import { EventDropArg } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import { router } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import TaskDetailDialog from '../tasks/viewTask';
 interface Props {
-    tasks: Task[];
+    task: Task[];
 }
-export default function CalendarData({ tasks }: Props) {
+export default function CalendarData({ task }: Props) {
+    console.log(task);
     const [openViewTask, setOpenViewTask] = useState(false);
     const [taskDetails, setTaskDetails] = useState<Task>();
-    const events = (tasks as Task[]).map((task) => ({
+    const events = (task as Task[]).map((task) => ({
         id: String(task.id),
         title: task.title ?? '',
-        color: String(task.priority.color) ?? '',
+        color: String(task.status.color) ?? '',
         start: task.due_date ?? '',
         end: task.due_date ?? '',
     }));
@@ -53,24 +55,19 @@ export default function CalendarData({ tasks }: Props) {
         );
     }
     function handleEventClick(data: any) {
-        const matchedTask = tasks.find(
+        const matchedTask = task.find(
             (task) => task.id === Number(data.event.id),
         );
 
-        setTaskDetails(matchedTask);
-        setOpenViewTask(true);
-    }
+        if (!matchedTask) return;
 
-    useEffect(() => {
-        if (taskDetails && openViewTask) {
-            const updatedTask = tasks.find(
-                (task) => task.id === taskDetails.id,
-            );
-            if (updatedTask) {
-                setTaskDetails(updatedTask);
-            }
-        }
-    }, [tasks, taskDetails?.id, openViewTask]);
+        router.get(
+            tasks.url({
+                project: Number(matchedTask.project_id),
+                task: Number(matchedTask.id),
+            }),
+        );
+    }
 
     return (
         <div className="rounded-md bg-sidebar p-4">

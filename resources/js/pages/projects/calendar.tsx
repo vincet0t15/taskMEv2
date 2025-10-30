@@ -11,10 +11,10 @@ import ProjectLayout from './project-layout';
 interface Props {
     projects: Project;
 
-    tasks: Task[];
+    task: Task[];
 }
 
-export default function TaskBoard({ projects, tasks }: Props) {
+export default function TaskBoard({ projects, task }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
@@ -29,7 +29,7 @@ export default function TaskBoard({ projects, tasks }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <ProjectLayout projects={projects}>
-                <CalendarData tasks={tasks} />
+                <CalendarData task={task} />
             </ProjectLayout>
         </AppLayout>
     );
