@@ -20,22 +20,23 @@ import {
     Users2Icon,
 } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { SubTaskDialog } from '../subTasks/subTaskDialog';
-import TaskDetailDialog from '../tasks/viewTask';
 
 interface Props {
     statusWithTasks: Status[];
 }
 
 export default function MyTasksListTable({ statusWithTasks }: Props) {
-    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+    const getInitials = useInitials();
     const [openTasks, setOpenTasks] = useState<Record<number, boolean>>({});
     const [openViewTask, setOpenViewTask] = useState(false);
     const [taskDetails, setTaskDetails] = useState<Task>();
     const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
     const [subTask, setSubTask] = useState<SubTaskInterface>();
 
-    const getInitials = useInitials();
+    // 🟢 Initialize all status groups as open by default
+    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+        Object.fromEntries((statusWithTasks || []).map((s) => [s.name, true])),
+    );
 
     const toggleGroup = (title: string) => {
         setOpenGroups((prev) => ({ ...prev, [title]: !prev[title] }));
@@ -43,11 +44,6 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
 
     const toggleTask = (taskId: number) => {
         setOpenTasks((prev) => ({ ...prev, [taskId]: !prev[taskId] }));
-    };
-
-    const handleClickTask = (task: Task) => {
-        setTaskDetails(task);
-        setOpenViewTask(true);
     };
 
     const handleClickSubTask = (task: Task, subTask: SubTaskInterface) => {
@@ -331,25 +327,6 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                     )}
                 </div>
             ))}
-            {openViewTask && taskDetails && (
-                <TaskDetailDialog
-                    open={openViewTask}
-                    setOpen={setOpenViewTask}
-                    tasks={taskDetails}
-                    onDataNeededRefresh={() =>
-                        router.reload({ only: ['statusWithTasks'] })
-                    }
-                />
-            )}
-
-            {openSubTaskDialog && subTask && (
-                <SubTaskDialog
-                    open={openSubTaskDialog}
-                    onOpenChange={setOpenSubTaskDialog}
-                    subTask={subTask}
-                    task={taskDetails}
-                />
-            )}
         </div>
     );
 }
