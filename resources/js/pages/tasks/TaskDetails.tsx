@@ -261,7 +261,7 @@ export default function TaskDetails({
                             value="comments"
                             className="rounded-md px-3 py-1 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow"
                         >
-                            Comments
+                            Comments ({tasks.comments.length})
                         </TabsTrigger>
                         <TabsTrigger
                             value="activity"
