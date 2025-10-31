@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useInitials } from '@/hooks/use-initials';
-import { tasks } from '@/routes/view';
+import myTask from '@/routes/myTask';
 import { Status } from '@/types/status';
 import { SubTaskInterface } from '@/types/subTask';
 import { Task } from '@/types/task';
@@ -174,11 +174,9 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                         className="cursor-pointer hover:font-bold"
                                                         onClick={() =>
                                                             router.get(
-                                                                tasks.url({
-                                                                    project:
-                                                                        task.project_id,
-                                                                    task: task.id,
-                                                                }),
+                                                                myTask.show.url(
+                                                                    task.id,
+                                                                ),
                                                             )
                                                         }
                                                     >
