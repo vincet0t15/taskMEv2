@@ -37,6 +37,7 @@ import { toast } from 'sonner';
 import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import CommentItem from './comment';
+import DeleteSubTaskDialog from './deleteSubTask';
 
 interface TaskDetailsProps {
     tasks: Task;
@@ -87,6 +88,24 @@ export default function TaskDetails({
     const handleClickSubTask = (subTask: SubTaskInterface) => {
         setSubTask(subTask);
         setOpenSubTaskDialog(true);
+    };
+
+    const handleDeleteSubTask = (subTaskId: number, e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent triggering the edit dialog
+        if (confirm('Are you sure you want to delete this subtask?')) {
+            router.delete(`/subtasks/${subTaskId}`, {
+                preserveScroll: true,
+                onSuccess: (response: { props: FlashProps }) => {
+                    toast.success(
+                        response.props.flash?.success ||
+                            'Subtask deleted successfully',
+                    );
+                },
+                onError: () => {
+                    toast.error('Failed to delete subtask');
+                },
+            });
+        }
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -308,16 +327,21 @@ export default function TaskDetails({
                                                     {sub.title}
                                                 </span>
                                             </div>
-                                            <Badge
-                                                variant="outline"
-                                                style={{
-                                                    color: sub.status.color,
-                                                    borderColor:
-                                                        sub.status.color,
-                                                }}
-                                            >
-                                                {sub.status.name}
-                                            </Badge>
+                                            <div className="flex items-center gap-2">
+                                                <Badge
+                                                    variant="outline"
+                                                    style={{
+                                                        color: sub.status.color,
+                                                        borderColor:
+                                                            sub.status.color,
+                                                    }}
+                                                >
+                                                    {sub.status.name}
+                                                </Badge>
+                                                <DeleteSubTaskDialog
+                                                    subTask={sub}
+                                                />
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
