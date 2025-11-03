@@ -101,7 +101,6 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
             // If dropped on the same status, do nothing
             if (activeTask.status_id === overStatusId) return;
 
-            // Update task status via API
             router.put(
                 `/mytasks/${activeTaskId}/status/${overStatusId}`,
                 {},
