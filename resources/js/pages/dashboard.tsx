@@ -129,10 +129,8 @@ const TasksByStatusChart = ({ data }: { data: Status[] }) => (
                     </Pie>
                     <Tooltip
                         contentStyle={{
-                            backgroundColor: '#1f2937',
                             borderRadius: '8px',
                             border: 'none',
-                            color: 'white',
                         }}
                     />
                     <Legend />
@@ -168,10 +166,8 @@ const TasksByPriorityChart = ({ data }: { data: Priority[] }) => (
                     </Pie>
                     <Tooltip
                         contentStyle={{
-                            backgroundColor: '#1f2937',
                             borderRadius: '8px',
                             border: 'none',
-                            color: 'white',
                         }}
                     />
                     <Legend />
