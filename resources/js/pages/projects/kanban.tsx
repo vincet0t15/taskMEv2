@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import TaskDetailDialog from '../tasks/viewTask';
+
 interface Props {
     statusWithTasks: Status[];
 }
