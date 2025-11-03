@@ -93,6 +93,7 @@ class MyTaskController extends Controller
     public function updateTaskStatus(Task $task, Status $status)
     {
 
+
         // Store old values for activity logging
         $oldValues = [
             'status_id' => $task->status_id,
