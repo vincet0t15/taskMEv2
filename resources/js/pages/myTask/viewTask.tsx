@@ -51,28 +51,6 @@ export default function TaskDetails({ tasks }: TaskDetailsProps) {
         { title: 'Dashboard', href: dashboard().url },
     ];
 
-    // Sample Activity Logs
-    const sampleActivity = [
-        {
-            id: 1,
-            action: 'created the task',
-            user: 'John Doe',
-            timestamp: '2025-10-28T10:15:00Z',
-        },
-        {
-            id: 2,
-            action: 'updated task status to "In Progress"',
-            user: 'Jane Smith',
-            timestamp: '2025-10-28T13:45:00Z',
-        },
-        {
-            id: 3,
-            action: 'added 2 new subtasks',
-            user: 'John Doe',
-            timestamp: '2025-10-29T08:05:00Z',
-        },
-    ];
-
     const handleKeyEnter: KeyboardEventHandler = (e) => {
         if (e.key === 'Enter') {
             post(comment.task.url(), {
@@ -242,12 +220,6 @@ export default function TaskDetails({ tasks }: TaskDetailsProps) {
                         >
                             Comments ({tasks.comments.length})
                         </TabsTrigger>
-                        <TabsTrigger
-                            value="activity"
-                            className="rounded-md px-3 py-1 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow"
-                        >
-                            Activity
-                        </TabsTrigger>
                     </TabsList>
 
                     {/* Subtasks Tab */}
@@ -347,36 +319,6 @@ export default function TaskDetails({ tasks }: TaskDetailsProps) {
                                 className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none"
                             />
                         </div>
-                    </TabsContent>
-
-                    <TabsContent value="activity">
-                        {sampleActivity.length > 0 ? (
-                            <ul className="space-y-3">
-                                {sampleActivity.map((activity) => (
-                                    <li
-                                        key={activity.id}
-                                        className="flex items-center justify-between rounded-lg border p-3 hover:bg-gray-50"
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle2 className="h-4 w-4 text-blue-500" />
-                                            <span className="text-sm text-gray-700">
-                                                <strong>{activity.user}</strong>{' '}
-                                                {activity.action}
-                                            </span>
-                                        </div>
-                                        <span className="text-xs text-gray-400">
-                                            {new Date(
-                                                activity.timestamp,
-                                            ).toLocaleString()}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-sm text-gray-500">
-                                No recent activity.
-                            </p>
-                        )}
                     </TabsContent>
                 </Tabs>
 
