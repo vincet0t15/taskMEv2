@@ -98,9 +98,17 @@ export default function ProjectLayout({
                                         'Are you sure you want to archive this project?',
                                     )
                                 ) {
-                                    router.put(`/projects/${projects.id}`, {
-                                        status_id: 5, // Archived status ID
-                                    });
+                                    router.put(
+                                        `/projects/${projects.id}`,
+                                        {
+                                            status_id: 5, // Archived status ID
+                                        },
+                                        {
+                                            onSuccess: () => {
+                                                router.visit('/dashboard');
+                                            },
+                                        },
+                                    );
                                 }
                             }}
                             className="text-orange-600 hover:text-orange-700"
