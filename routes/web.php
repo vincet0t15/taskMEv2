@@ -3,6 +3,7 @@
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MyTaskController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SubTaskController;
@@ -19,9 +20,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     // PROJECTS
     Route::post('projects', [ProjectController::class, 'store'])->name('store.project');
