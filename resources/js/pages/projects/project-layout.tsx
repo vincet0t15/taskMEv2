@@ -40,10 +40,6 @@ export default function ProjectLayout({
             label: 'Calendar',
             href: calendar.url(projects.id),
         },
-        {
-            label: 'Settings',
-            href: `/projects/${projects.id}/settings`,
-        },
     ];
 
     const activeTab =
