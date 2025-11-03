@@ -17,15 +17,23 @@ interface Workspace {
 
 export default function WorkspaceSection() {
     const [open, setOpen] = useState(true);
+    const [showAllProjects, setShowAllProjects] = useState(false);
     const page = usePage();
     const { myProjects } = page.props;
     const currentUrl = page.url;
 
-    const workspaces: Workspace[] = (myProjects as Project[]).map((data) => ({
-        id: data.id,
-        name: data.name,
-        url: project.url(data.id),
-    }));
+    const allWorkspaces: Workspace[] = (myProjects as Project[]).map(
+        (data) => ({
+            id: data.id,
+            name: data.name,
+            url: project.url(data.id),
+        }),
+    );
+
+    const displayedWorkspaces = showAllProjects
+        ? allWorkspaces
+        : allWorkspaces.slice(0, 10);
+    const hasMoreProjects = allWorkspaces.length > 10;
 
     return (
         <div className="px-2 py-3">
@@ -57,7 +65,7 @@ export default function WorkspaceSection() {
             {/* Workspace Items */}
             {open && (
                 <ul className="mt-2 space-y-1">
-                    {workspaces.map((ws) => {
+                    {displayedWorkspaces.map((ws) => {
                         const isActive = currentUrl.startsWith(
                             `/projects/${ws.id}`,
                         );
@@ -87,6 +95,21 @@ export default function WorkspaceSection() {
                             </Link>
                         );
                     })}
+                    {hasMoreProjects && (
+                        <button
+                            onClick={() => setShowAllProjects(!showAllProjects)}
+                            className="flex w-full cursor-pointer items-center space-x-2 rounded-md px-1 py-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                        >
+                            <div className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium">
+                                {showAllProjects ? '−' : '+'}
+                            </div>
+                            <span>
+                                {showAllProjects
+                                    ? 'Show less'
+                                    : `Show ${allWorkspaces.length - 10} more`}
+                            </span>
+                        </button>
+                    )}
                 </ul>
             )}
         </div>
