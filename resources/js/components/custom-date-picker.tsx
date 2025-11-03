@@ -16,9 +16,14 @@ import { cn } from '@/lib/utils';
 interface Props {
     initialDate?: string;
     onSelect?: (formatted: string) => void;
+    disabled?: boolean; // ✅ Added disabled prop
 }
 
-export default function CustomDatePicker({ initialDate, onSelect }: Props) {
+export default function CustomDatePicker({
+    initialDate,
+    onSelect,
+    disabled = false, // ✅ Default false
+}: Props) {
     const id = useId();
     const [date, setDate] = useState<Date | undefined>();
 
@@ -31,6 +36,7 @@ export default function CustomDatePicker({ initialDate, onSelect }: Props) {
     }, [initialDate]);
 
     const handleSelect = (selectedDate: Date | undefined) => {
+        if (disabled) return; // ✅ Prevent selection if disabled
         setDate(selectedDate);
 
         if (onSelect && selectedDate) {
@@ -46,8 +52,12 @@ export default function CustomDatePicker({ initialDate, onSelect }: Props) {
                     <PopoverTrigger asChild>
                         <Button
                             id={id}
-                            variant={'outline'}
-                            className="group w-full justify-between border-input bg-background px-3 font-normal outline-offset-0 outline-none hover:bg-background focus-visible:outline-[3px]"
+                            variant="outline"
+                            className={cn(
+                                'group w-full justify-between border-input bg-background px-3 font-normal outline-offset-0 outline-none hover:bg-background focus-visible:outline-[3px]',
+                                disabled && 'cursor-not-allowed opacity-50',
+                            )}
+                            disabled={disabled} // ✅ Disable the button
                         >
                             <span
                                 className={cn(
@@ -71,6 +81,7 @@ export default function CustomDatePicker({ initialDate, onSelect }: Props) {
                             mode="single"
                             selected={date}
                             onSelect={handleSelect}
+                            disabled={disabled} // ✅ Disable date picking
                         />
                     </PopoverContent>
                 </Popover>

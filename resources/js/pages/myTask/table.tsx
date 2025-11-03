@@ -20,6 +20,7 @@ import {
     Users2Icon,
 } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { SubTaskDetails } from './openSubTask';
 
 interface Props {
     statusWithTasks: Status[];
@@ -325,6 +326,14 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                     )}
                 </div>
             ))}
+
+            {openSubTaskDialog && subTask && (
+                <SubTaskDetails
+                    subTask={subTask}
+                    open={openSubTaskDialog}
+                    onOpenChange={setOpenSubTaskDialog}
+                />
+            )}
         </div>
     );
 }
