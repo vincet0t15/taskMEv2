@@ -9,11 +9,13 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import archived from '@/routes/archived';
 import myTask from '@/routes/myTask';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, UserRoundCheck } from 'lucide-react';
+import { Archive, LayoutGrid, UserRoundCheck } from 'lucide-react';
 import AppLogo from './app-logo';
+import { ArchiveProjects } from './archiveProjects';
 import WorkspaceSection from './workSpaceStation';
 const mainNavItems: NavItem[] = [
     {
@@ -28,6 +30,13 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
+const archiveItems: NavItem[] = [
+    {
+        title: 'Arhived',
+        href: archived.projects.url(),
+        icon: Archive,
+    },
+];
 export function AppSidebar() {
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -45,6 +54,7 @@ export function AppSidebar() {
                 {/* <NavMainProject items={data.navMain} /> */}
                 <NavMain items={mainNavItems} />
                 <WorkspaceSection />
+                <ArchiveProjects items={archiveItems} />
             </SidebarContent>
 
             <SidebarFooter>
