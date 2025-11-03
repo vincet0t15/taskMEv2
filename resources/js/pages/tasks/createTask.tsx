@@ -457,6 +457,18 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
                         </div>
                     </div>
                     <DialogFooter>
+                        {editingSubTaskIndex !== null && (
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                onClick={() => {
+                                    removeSubTask(editingSubTaskIndex);
+                                    setIsDialogOpen(false);
+                                }}
+                            >
+                                Delete Subtask
+                            </Button>
+                        )}
                         {editingSubTaskIndex === null && (
                             <Button
                                 type="button"
