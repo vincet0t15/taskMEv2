@@ -18,7 +18,7 @@ class StatusesSeeder extends Seeder
             ['name' => 'In Progress', 'color' => '#f59e0b'], // Amber
             ['name' => 'In Review',   'color' => '#8b5cf6'], // Purple
             ['name' => 'Completed',   'color' => '#10b981'], // Green
-
+            ['name' => 'Archived',    'color' => '#6b7280'], // Gray
         ];
 
 

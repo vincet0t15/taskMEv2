@@ -46,6 +46,13 @@ class AppServiceProvider extends ServiceProvider
 
                 return app(ProjectController::class)->getMyProjects(request());
             },
+            'myArchivedProjects' => function () {
+                if (!Auth::check()) {
+                    return [];
+                }
+
+                return app(ProjectController::class)->getMyArchivedProjects(request());
+            },
 
             'systemUsers' => function () {
                 if (!Auth::check()) {

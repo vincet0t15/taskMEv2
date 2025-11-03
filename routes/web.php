@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // PROJECTS
     Route::post('projects', [ProjectController::class, 'store'])->name('store.project');
     Route::get('projects/{project}/list', [ProjectController::class, 'show'])->name('show.project');
+    Route::put('projects/{project}', [ProjectController::class, 'update'])->name('update.project');
 
     // TASKS
     Route::post('tasks', [TaskController::class, 'store'])->name('store.task');

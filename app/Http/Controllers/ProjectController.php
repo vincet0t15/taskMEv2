@@ -12,7 +12,38 @@ class ProjectController extends Controller
 {
     public function getMyProjects(Request $request)
     {
-        return Project::where('user_id', Auth::user()->id)->get();
+        return Project::where('user_id', Auth::user()->id)
+            ->whereHas('status', function ($query) {
+                $query->where('name', '!=', 'Archived');
+            })
+            ->get();
+    }
+
+    public function getMyArchivedProjects(Request $request)
+    {
+        return Project::where('user_id', Auth::user()->id)
+            ->whereHas('status', function ($query) {
+                $query->where('name', 'Archived');
+            })
+            ->get();
+    }
+
+    public function update(Request $request, Project $project)
+    {
+        // Ensure user owns the project
+        if ($project->user_id !== Auth::user()->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'status_id' => 'required|exists:statuses,id',
+        ]);
+
+        $project->update([
+            'status_id' => $request->status_id,
+        ]);
+
+        return redirect()->back()->with('success', 'Project updated successfully.');
     }
 
     public function store(ProjectStoreRequest $request)
