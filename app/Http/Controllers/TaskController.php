@@ -44,6 +44,24 @@ class TaskController extends Controller
                 if (!empty($subTaskData['assignees'])) {
                     $subTask->assignees()->attach($subTaskData['assignees']);
                 }
+
+                // Log subtask creation activity
+                TaskActivity::logActivity(
+                    $task->id,
+                    $request->user()->id,
+                    'subtask_created',
+                    "Created subtask: {$subTask->title}",
+                    null,
+                    [
+                        'subtask' => [
+                            'title' => $subTask->title,
+                            'description' => $subTask->description,
+                            'priority_id' => $subTask->priority_id,
+                            'status_id' => $subTask->status_id,
+                            'due_date' => $subTask->due_date,
+                        ]
+                    ]
+                );
             }
         }
 
@@ -189,6 +207,15 @@ class TaskController extends Controller
                 if (!empty($subTaskData['id'])) {
                     $subTask = $task->subTasks()->find($subTaskData['id']);
                     if ($subTask) {
+                        // Store old values for activity logging
+                        $oldSubTaskValues = [
+                            'title' => $subTask->title,
+                            'description' => $subTask->description,
+                            'priority_id' => $subTask->priority_id,
+                            'status_id' => $subTask->status_id,
+                            'due_date' => $subTask->due_date,
+                        ];
+
                         $subTask->update([
                             'title' => $subTaskData['title'],
                             'description' => $subTaskData['description'],
@@ -196,6 +223,24 @@ class TaskController extends Controller
                             'status_id' => $subTaskData['status_id'],
                             'due_date' => $subTaskData['due_date'],
                         ]);
+
+                        // Log subtask update activity
+                        $newSubTaskValues = [
+                            'title' => $subTask->title,
+                            'description' => $subTask->description,
+                            'priority_id' => $subTask->priority_id,
+                            'status_id' => $subTask->status_id,
+                            'due_date' => $subTask->due_date,
+                        ];
+
+                        TaskActivity::logActivity(
+                            $task->id,
+                            $request->user()->id,
+                            'subtask_updated',
+                            "Updated subtask: {$subTask->title}",
+                            ['subtask' => $oldSubTaskValues],
+                            ['subtask' => $newSubTaskValues]
+                        );
                     }
                 } else {
                     // Create a new subtask
@@ -206,6 +251,24 @@ class TaskController extends Controller
                         'status_id' => $subTaskData['status_id'],
                         'due_date' => $subTaskData['due_date'],
                     ]);
+
+                    // Log subtask creation activity
+                    TaskActivity::logActivity(
+                        $task->id,
+                        $request->user()->id,
+                        'subtask_created',
+                        "Created subtask: {$subTask->title}",
+                        null,
+                        [
+                            'subtask' => [
+                                'title' => $subTask->title,
+                                'description' => $subTask->description,
+                                'priority_id' => $subTask->priority_id,
+                                'status_id' => $subTask->status_id,
+                                'due_date' => $subTask->due_date,
+                            ]
+                        ]
+                    );
                 }
 
                 // Sync subtask assignees (if any)
@@ -218,6 +281,30 @@ class TaskController extends Controller
             }
 
             //  Optionally: delete removed subtasks
+            $deletedSubTasks = $task->subTasks()
+                ->whereNotIn('id', $subTaskIds)
+                ->get();
+
+            foreach ($deletedSubTasks as $deletedSubTask) {
+                // Log subtask deletion activity
+                TaskActivity::logActivity(
+                    $task->id,
+                    $request->user()->id,
+                    'subtask_deleted',
+                    "Deleted subtask: {$deletedSubTask->title}",
+                    [
+                        'subtask' => [
+                            'title' => $deletedSubTask->title,
+                            'description' => $deletedSubTask->description,
+                            'priority_id' => $deletedSubTask->priority_id,
+                            'status_id' => $deletedSubTask->status_id,
+                            'due_date' => $deletedSubTask->due_date,
+                        ]
+                    ],
+                    null
+                );
+            }
+
             $task->subTasks()
                 ->whereNotIn('id', $subTaskIds)
                 ->delete();
