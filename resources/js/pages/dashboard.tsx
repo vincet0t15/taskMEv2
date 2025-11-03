@@ -233,7 +233,7 @@ const RecentTasks = ({ data }: { data: Task[] }) => (
                                         {task.title}
                                     </p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        {task.project.name}
+                                        {task.project?.name || 'No project'}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -241,11 +241,11 @@ const RecentTasks = ({ data }: { data: Task[] }) => (
                                         className="inline-block h-2 w-2 rounded-full"
                                         style={{
                                             backgroundColor:
-                                                task.priority.color,
+                                                task.priority?.color || '#gray',
                                         }}
                                     />
                                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                                        {task.status.name}
+                                        {task.status?.name || 'Unknown'}
                                     </span>
                                 </div>
                             </div>
@@ -282,7 +282,7 @@ const UpcomingDeadlines = ({ data }: { data: Task[] }) => (
                                         {task.title}
                                     </p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        {task.project.name}
+                                        {task.project?.name || 'No project'}
                                     </p>
                                 </div>
                                 <div className="text-right">
@@ -295,7 +295,7 @@ const UpcomingDeadlines = ({ data }: { data: Task[] }) => (
                                         className="inline-block h-2 w-2 rounded-full"
                                         style={{
                                             backgroundColor:
-                                                task.priority.color,
+                                                task.priority?.color || '#gray',
                                         }}
                                     />
                                 </div>

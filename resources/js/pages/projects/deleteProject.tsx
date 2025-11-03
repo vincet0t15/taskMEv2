@@ -35,21 +35,24 @@ export default function DeleteProjectDialog({ projects }: Props) {
             <AlertDialogTrigger asChild>
                 <Button variant="destructive">
                     <Trash2 />
-                    Archive
+                    Delete
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Archive this project?</AlertDialogTitle>
+                    <AlertDialogTitle>Delete this project?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This will move
-                        <strong className="text-orange-400 uppercase">
+                        This will permanently delete{' '}
+                        <strong className="text-red-500 uppercase">
                             {projects.name}
                         </strong>{' '}
-                        to the archived list. You can restore it later from the
-                        project management page.
+                        and all associated data, including its tasks and
+                        subtasks. This action
+                        <span className="font-semibold"> cannot be undone</span>
+                        .
                     </AlertDialogDescription>
                 </AlertDialogHeader>
+
                 <AlertDialogFooter>
                     <Button
                         size="sm"
