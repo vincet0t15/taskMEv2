@@ -69,27 +69,8 @@ export default function TaskDetails({
         },
     ];
 
-    // Sample Activity Logs
-    const sampleActivity = [
-        {
-            id: 1,
-            action: 'created the task',
-            user: 'John Doe',
-            timestamp: '2025-10-28T10:15:00Z',
-        },
-        {
-            id: 2,
-            action: 'updated task status to "In Progress"',
-            user: 'Jane Smith',
-            timestamp: '2025-10-28T13:45:00Z',
-        },
-        {
-            id: 3,
-            action: 'added 2 new subtasks',
-            user: 'John Doe',
-            timestamp: '2025-10-29T08:05:00Z',
-        },
-    ];
+    // Activity logs from the backend
+    const activities = tasks.activities || [];
 
     const handleKeyEnter: KeyboardEventHandler = (e) => {
         if (e.key === 'Enter') {
@@ -387,9 +368,9 @@ export default function TaskDetails({
                     </TabsContent>
 
                     <TabsContent value="activity">
-                        {sampleActivity.length > 0 ? (
+                        {activities.length > 0 ? (
                             <ul className="space-y-3">
-                                {sampleActivity.map((activity) => (
+                                {activities.map((activity: any) => (
                                     <li
                                         key={activity.id}
                                         className="flex items-center justify-between rounded-lg border p-3 hover:bg-gray-50"
@@ -397,13 +378,15 @@ export default function TaskDetails({
                                         <div className="flex items-center gap-2">
                                             <CheckCircle2 className="h-4 w-4 text-blue-500" />
                                             <span className="text-sm text-gray-700">
-                                                <strong>{activity.user}</strong>{' '}
-                                                {activity.action}
+                                                <strong>
+                                                    {activity.user?.name}
+                                                </strong>{' '}
+                                                {activity.description}
                                             </span>
                                         </div>
                                         <span className="text-xs text-gray-400">
                                             {new Date(
-                                                activity.timestamp,
+                                                activity.created_at,
                                             ).toLocaleString()}
                                         </span>
                                     </li>

@@ -141,6 +141,9 @@ class TaskController extends Controller
                 'attachments',
                 'comments' => function ($query) {
                     $query->with('user');
+                },
+                'activities' => function ($query) {
+                    $query->with('user')->orderBy('created_at', 'desc');
                 }
             ])
             ->findOrFail($task->id);
