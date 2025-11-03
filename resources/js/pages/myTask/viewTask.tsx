@@ -9,10 +9,9 @@ import { useInitials } from '@/hooks/use-initials';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 
-import { task } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Task } from '@/types/task';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 
 import { Input } from '@/components/ui/input';
 import comment from '@/routes/comment';
@@ -29,6 +28,7 @@ import { KeyboardEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import CommentItem from '../tasks/comment';
+import { StatusDropDown } from './statusDropDown';
 
 interface TaskDetailsProps {
     tasks: Task;
@@ -97,28 +97,12 @@ export default function TaskDetails({ tasks }: TaskDetailsProps) {
                 <div className="flex flex-col gap-6 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
                     {/* Left: Title + Status */}
                     <div className="space-y-2">
-                        <h1
-                            className="cursor-pointer text-2xl font-semibold text-gray-800 uppercase hover:underline"
-                            onClick={() =>
-                                router.get(
-                                    task.url({
-                                        project: tasks.project_id,
-                                        task: tasks.id,
-                                    }),
-                                )
-                            }
-                        >
+                        <h1 className="text-2xl font-semibold text-gray-800 uppercase">
                             {tasks.title}
                         </h1>
                         <div className="flex flex-wrap items-center gap-3">
-                            <Badge
-                                variant="secondary"
-                                style={{
-                                    backgroundColor: `${tasks.status.color}33`,
-                                }}
-                            >
-                                {tasks.status.name}
-                            </Badge>
+                            <StatusDropDown tasks={tasks} />
+
                             <Badge
                                 className="rounded-full"
                                 variant="outline"
@@ -128,6 +112,7 @@ export default function TaskDetails({ tasks }: TaskDetailsProps) {
                             >
                                 {tasks.priority.name}
                             </Badge>
+
                             <div className="flex items-center gap-3">
                                 <span className="text-sm font-medium text-gray-500">
                                     Due Date
@@ -152,6 +137,12 @@ export default function TaskDetails({ tasks }: TaskDetailsProps) {
                                 </div>
                             </div>
                         </div>
+
+                        {/* 👇 User instruction note */}
+                        <p className="mt-1 text-xs text-gray-500 italic">
+                            💡 Tip: Click the status badge above to update the
+                            task status.
+                        </p>
                     </div>
 
                     {/* Right: Due date */}

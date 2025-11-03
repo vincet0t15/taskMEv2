@@ -58,6 +58,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // MY TASKS
     Route::get('mytasks', [MyTaskController::class, 'index'])->name('myTask.index');
     Route::get('mytasks/{task}', [MyTaskController::class, 'show'])->name('myTask.show');
+    Route::put('mytasks/{task}/status/{status}', [MyTaskController::class, 'updateTaskStatus'])->name('myTask.update');
 });
 
 require __DIR__ . '/settings.php';

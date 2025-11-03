@@ -30,9 +30,7 @@ class MyTaskController extends Controller
                         'priority',
                         'attachments',
                         'comments',
-                        'assignees' => function ($q) {
-                            $q->where('users.id', Auth::id());
-                        },
+                        'assignees',
                         'subTasks' => function ($subTaskQuery) {
                             $subTaskQuery
                                 ->whereHas('assignees', function ($q) {
@@ -89,5 +87,13 @@ class MyTaskController extends Controller
         return Inertia::render('myTask/viewTask', [
             'tasks' => $task
         ]);
+    }
+
+    public function updateTaskStatus(Task $task, Status $status)
+    {
+
+        $task->update(['status_id' => $status->id]);
+
+        return redirect()->back()->withSuccess('Task updated successfully');
     }
 }
