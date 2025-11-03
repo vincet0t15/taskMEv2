@@ -27,6 +27,12 @@ export function StatusDropDown({ tasks }: Props) {
                 onSuccess: (response: { props: FlashProps }) => {
                     toast.success(response.props.flash?.success);
                 },
+                onError: (errors) => {
+                    // only fires for validation errors (422)
+                    Object.values(errors).forEach((message) => {
+                        toast.error(String(message));
+                    });
+                },
             },
         );
     };

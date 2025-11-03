@@ -193,6 +193,16 @@ class TaskController extends Controller
             'due_date' => $request->due_date,
         ]);
 
+        // Validate: If task status is being set to completed (4), check that all subtasks are also completed
+        if ($request->status_id == 4) {
+            $incompleteSubTasks = $task->subTasks()->where('status_id', '!=', 4)->count();
+            if ($incompleteSubTasks > 0) {
+                return redirect()->back()->withErrors([
+                    'status_id' => 'Cannot mark task as completed while there are incomplete subtasks. Please complete all subtasks first.'
+                ]);
+            }
+        }
+
         //  Sync main task assignees
         if ($request->has('assignees')) {
             $task->assignees()->sync($request->assignees);

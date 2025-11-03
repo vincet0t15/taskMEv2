@@ -27,6 +27,16 @@ class SubTaskController extends Controller
             'due_date' => $request->due_date,
         ]);
 
+        // Validate: If subtask status is being set to completed (4), check that parent task is also completed
+        if ($request->status_id == 4) {
+            $parentTask = $subTask->task; // Assuming you have the relationship
+            if ($parentTask && $parentTask->status_id != 4) {
+                return redirect()->back()->withErrors([
+                    'status_id' => 'Cannot mark subtask as completed while the parent task is not completed.'
+                ]);
+            }
+        }
+
         if ($request->assignees) {
             $subTask->assignees()->sync($request->assignees);
         } else {

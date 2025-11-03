@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Status;
 use App\Models\Task;
+use App\Models\TaskActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -92,7 +93,36 @@ class MyTaskController extends Controller
     public function updateTaskStatus(Task $task, Status $status)
     {
 
+        // Store old values for activity logging
+        $oldValues = [
+            'status_id' => $task->status_id,
+        ];
+
+        // Validate: If task status is being set to completed (4), check that all subtasks are also completed
+        if ($status->id == 4) {
+            $incompleteSubTasks = $task->subTasks()->where('status_id', '!=', 4)->count();
+            if ($incompleteSubTasks > 0) {
+                return redirect()->back()->withErrors([
+                    'Cannot mark task as completed while there are incomplete subtasks. Please complete all subtasks first.'
+                ]);
+            }
+        }
+
         $task->update(['status_id' => $status->id]);
+
+        // Log task status update activity
+        $newValues = [
+            'status_id' => $task->status_id,
+        ];
+
+        TaskActivity::logActivity(
+            $task->id,
+            Auth::id(),
+            'status_changed',
+            "Task status changed to: {$status->name}",
+            $oldValues,
+            $newValues
+        );
 
         return redirect()->back()->withSuccess('Task updated successfully');
     }
