@@ -6,6 +6,7 @@ use App\Http\Requests\TaskRequest\TaskStoreRequest;
 use App\Models\Attachment;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\TaskActivity;
 use App\Models\TaskAttachment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -72,6 +73,24 @@ class TaskController extends Controller
                 $attachment->save();
             }
         }
+
+        // Log task creation activity
+        TaskActivity::logActivity(
+            $task->id,
+            $request->user()->id,
+            'created',
+            'Task created',
+            null,
+            [
+                'title' => $task->title,
+                'description' => $task->description,
+                'project_id' => $task->project_id,
+                'status_id' => $task->status_id,
+                'priority_id' => $task->priority_id,
+                'due_date' => $task->due_date,
+            ]
+        );
+
         return redirect()->back()->with('success', 'Task created successfully.');
     }
 
@@ -134,7 +153,15 @@ class TaskController extends Controller
 
     public function updateTask(Request $request, Task $task)
     {
-
+        // Store old values for activity logging
+        $oldValues = [
+            'title' => $task->title,
+            'description' => $task->description,
+            'project_id' => $task->project_id,
+            'status_id' => $task->status_id,
+            'priority_id' => $task->priority_id,
+            'due_date' => $task->due_date,
+        ];
 
         $task->update([
             'title' => $request->title,
@@ -223,6 +250,24 @@ class TaskController extends Controller
             TaskAttachment::whereIn('id', $request->deleted_attachments)->delete();
         }
 
+        // Log task update activity
+        $newValues = [
+            'title' => $task->title,
+            'description' => $task->description,
+            'project_id' => $task->project_id,
+            'status_id' => $task->status_id,
+            'priority_id' => $task->priority_id,
+            'due_date' => $task->due_date,
+        ];
+
+        TaskActivity::logActivity(
+            $task->id,
+            $request->user()->id,
+            'updated',
+            'Task updated',
+            $oldValues,
+            $newValues
+        );
 
         return redirect()->back()->with('success', 'Task updated successfully.');
     }
