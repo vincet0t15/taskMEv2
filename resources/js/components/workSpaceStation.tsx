@@ -5,7 +5,7 @@ import { CreateProject } from '@/pages/projects/create';
 import { project } from '@/routes/show';
 import { Project } from '@/types/project';
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronDown } from 'lucide-react';
+import { ArchiveIcon, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { SidebarGroupLabel } from './ui/sidebar';
 
@@ -110,6 +110,20 @@ export default function WorkspaceSection() {
                             </span>
                         </button>
                     )}
+                    <Link
+                        href="/projects/archived"
+                        className={cn(
+                            'flex cursor-pointer items-center space-x-2 rounded-md px-1 py-1 text-sm transition-colors',
+                            currentUrl === '/projects/archived'
+                                ? 'bg-muted font-semibold text-foreground'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                        )}
+                    >
+                        <div className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium">
+                            <ArchiveIcon className="h-3 w-3" />
+                        </div>
+                        <span className="truncate">Archived</span>
+                    </Link>
                 </ul>
             )}
         </div>

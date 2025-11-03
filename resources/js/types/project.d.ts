@@ -11,6 +11,8 @@ export interface Project {
     status?: Status;
     priority?: Priority;
     tasks?: Task[];
+    created_at: string;
+    updated_at: string;
 }
 
 export type ProjectCreateInput = {

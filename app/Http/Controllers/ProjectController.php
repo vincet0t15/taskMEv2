@@ -46,6 +46,15 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', 'Project updated successfully.');
     }
 
+    public function archived()
+    {
+        $archivedProjects = $this->getMyArchivedProjects(request());
+
+        return inertia('projects/archived', [
+            'archivedProjects' => $archivedProjects,
+        ]);
+    }
+
     public function store(ProjectStoreRequest $request)
     {
         Project::create([
