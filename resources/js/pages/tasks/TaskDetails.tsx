@@ -34,7 +34,7 @@ import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import CommentItem from './comment';
 import DeleteSubTaskDialog from './deleteSubTask';
-import ShowTask from './showTask';
+import ShowTask from './showTaskSettings';
 
 interface TaskDetailsProps {
     tasks: Task;
@@ -108,9 +108,7 @@ export default function TaskDetails({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={tasks.title} />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                {/* Top Section */}
                 <div className="flex flex-col gap-6 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
-                    {/* Left: Title + Status */}
                     <div className="space-y-2">
                         <h1 className="text-2xl font-semibold text-gray-800 uppercase">
                             {tasks.title}
@@ -158,11 +156,8 @@ export default function TaskDetails({
                             </div>
                         </div>
                     </div>
-
-                    {/* Right: Due date */}
                 </div>
 
-                {/* Assignees */}
                 <div className="flex flex-col gap-3 border-b pb-6">
                     <span className="text-sm font-medium text-gray-500">
                         Assignees

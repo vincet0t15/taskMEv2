@@ -7,10 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { dashboard } from '@/routes';
-import { project as projectRoute, task as taskRoute } from '@/routes/show';
 import { task } from '@/routes/update';
-import { User, type BreadcrumbItem } from '@/types';
+import { User } from '@/types';
 import { Priority } from '@/types/priority';
 import { Project } from '@/types/project';
 import { Status } from '@/types/status';
@@ -25,21 +23,6 @@ interface ShowTaskProps {
     project: Project;
 }
 export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: dashboard().url,
-        },
-        {
-            title: proj.name,
-            href: projectRoute.url(proj.id),
-        },
-        {
-            title: tasks.title,
-            href: taskRoute.url({ project: proj.id, task: tasks.id }),
-        },
-    ];
-
     const { systemPriorities, systemStatuses } = usePage().props;
     const { systemUsers } = usePage<{ systemUsers: User[] }>().props;
     const { data, setData, processing, post, errors, transform } =
