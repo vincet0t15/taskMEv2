@@ -68,8 +68,6 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', 'Project created successfully.');
     }
 
-
-
     public function show(Project $project)
     {
 
@@ -101,6 +99,13 @@ class ProjectController extends Controller
         return inertia('projects/show', [
             'projects' => $project,
             'statusWithTasks' => $statusWithTasks
+        ]);
+    }
+
+    public function edit(Project $project)
+    {
+        return inertia('projects/settings', [
+            'projects' => $project
         ]);
     }
 }

@@ -13,7 +13,6 @@ interface Props {
     task: Task[];
 }
 export default function CalendarData({ task }: Props) {
-    console.log(task);
     const [openViewTask, setOpenViewTask] = useState(false);
     const [taskDetails, setTaskDetails] = useState<Task>();
     const events = (task as Task[]).map((task) => ({

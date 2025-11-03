@@ -1,3 +1,4 @@
+import ProjectController from '@/actions/App/Http/Controllers/ProjectController';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -43,7 +44,7 @@ export default function ProjectLayout({
         },
         {
             label: 'Settings',
-            href: calendar.url(projects.id),
+            href: ProjectController.edit(projects.id).url,
         },
     ];
 

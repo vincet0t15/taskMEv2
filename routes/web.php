@@ -27,6 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('projects/{project}/list', [ProjectController::class, 'show'])->name('show.project');
     Route::get('projects/archived', [ProjectController::class, 'archived'])->name('archived.projects');
     Route::put('projects/{project}', [ProjectController::class, 'update'])->name('update.project');
+    Route::get('projects/{project}/settings', [ProjectController::class, 'edit'])->name('edit.project');
+    Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->name('destroy.project');
 
     // TASKS
     Route::post('tasks', [TaskController::class, 'store'])->name('store.task');
