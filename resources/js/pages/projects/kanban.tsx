@@ -10,6 +10,7 @@ import {
 import { tasks } from '@/routes/view';
 import { Status } from '@/types/status';
 import { Task } from '@/types/task';
+import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { router } from '@inertiajs/react';
 import {
     AlertTriangle,
@@ -20,6 +21,7 @@ import {
     Workflow,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import TaskDetailDialog from '../tasks/viewTask';
 
 interface Props {
@@ -29,6 +31,15 @@ interface Props {
 export default function KanbanBoard({ statusWithTasks }: Props) {
     const [taskDetails, setTaskDetails] = useState<Task>();
     const [openView, setOpenView] = useState(false);
+    const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+    );
 
     const [openGroups, setOpenGroups] = useState<{ [key: number]: boolean }>(
         () => {
@@ -56,6 +67,58 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
             }
         }
     }, [statusWithTasks, taskDetails?.id, openView]);
+
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+        const taskId = e.currentTarget.getAttribute('data-id');
+        if (taskId) {
+            const task = sections
+                .flatMap((status) => status.tasks)
+                .find((t) => t.id === parseInt(taskId));
+            setActiveTask(task || null);
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault(); // Allow drop
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const taskId = e.dataTransfer.getData('text/plain');
+        const statusId = e.currentTarget.getAttribute('data-id');
+
+        if (taskId && statusId) {
+            const activeTaskId = parseInt(taskId);
+            const overStatusId = parseInt(statusId);
+
+            // Find the task and its current status
+            const activeTask = sections
+                .flatMap((status) => status.tasks)
+                .find((task) => task.id === activeTaskId);
+
+            if (!activeTask) return;
+
+            // If dropped on the same status, do nothing
+            if (activeTask.status_id === overStatusId) return;
+
+            // Update task status via API
+            router.put(
+                `/mytasks/${activeTaskId}/status/${overStatusId}`,
+                {},
+                {
+                    onSuccess: () => {
+                        toast.success('Task status updated successfully');
+                        router.reload({ only: ['statusWithTasks'] });
+                    },
+                    onError: () => {
+                        toast.error('Failed to update task status');
+                    },
+                },
+            );
+        }
+
+        setActiveTask(null);
+    };
 
     return (
         <div className="flex gap-2 overflow-x-auto pb-6 md:gap-4">
@@ -89,11 +152,31 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
                     </button>
                     {/* Task List */}
                     {openGroups[status.id] && (
-                        <div className="mt-4 space-y-4">
+                        <div
+                            data-id={status.id}
+                            className="mt-4 min-h-[200px] space-y-4 rounded-lg border-2 border-dashed border-gray-200 p-2 transition-colors hover:border-gray-300"
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
+                        >
                             {status.tasks.map((task, index) => (
                                 <div
-                                    key={index}
-                                    className="group rounded-sm border border-slate-500 p-4 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-700"
+                                    key={task.id}
+                                    data-id={task.id}
+                                    draggable
+                                    className="group cursor-grab rounded-sm border border-slate-500 p-4 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-700 active:cursor-grabbing"
+                                    onDragStart={(e) => {
+                                        const taskId =
+                                            e.currentTarget.getAttribute(
+                                                'data-id',
+                                            );
+                                        if (taskId) {
+                                            e.dataTransfer.setData(
+                                                'text/plain',
+                                                taskId,
+                                            );
+                                            handleDragStart(e);
+                                        }
+                                    }}
                                 >
                                     <div className="mb-2 flex items-center justify-between">
                                         <span
