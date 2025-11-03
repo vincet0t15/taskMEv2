@@ -29,7 +29,6 @@ export default function TaskList({ projects, statusWithTasks }: Props) {
             <Head title="Dashboard" />
             <ProjectLayout projects={projects}>
                 <CollapsibleTaskTable statusWithTasks={statusWithTasks} />
-                {/* <TaskDetailModal /> */}
             </ProjectLayout>
         </AppLayout>
     );
