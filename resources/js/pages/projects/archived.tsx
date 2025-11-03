@@ -7,6 +7,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Head, router } from '@inertiajs/react';
 import { ArchiveRestoreIcon, ArrowLeftIcon } from 'lucide-react';
+import RestoreProjectDialog from './restoreProject';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,22 +27,6 @@ interface ArchivedProjectsProps {
 export default function ArchivedProjects({
     archivedProjects,
 }: ArchivedProjectsProps) {
-    const handleUnarchive = (projectId: number) => {
-        if (confirm('Are you sure you want to restore this project?')) {
-            router.put(
-                `/projects/${projectId}`,
-                {
-                    status_id: 1, // Set to "To Do" status (active)
-                },
-                {
-                    onSuccess: () => {
-                        window.location.reload();
-                    },
-                },
-            );
-        }
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Archived Projects" />
@@ -119,16 +104,7 @@ export default function ArchivedProjects({
                                         </span>
                                     </div>
 
-                                    <Button
-                                        onClick={() =>
-                                            handleUnarchive(project.id)
-                                        }
-                                        className="flex w-full items-center gap-2"
-                                        variant="default"
-                                    >
-                                        <ArchiveRestoreIcon className="h-4 w-4" />
-                                        Restore Project
-                                    </Button>
+                                    <RestoreProjectDialog projects={project} />
                                 </CardContent>
                             </Card>
                         ))}
