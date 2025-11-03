@@ -35,7 +35,6 @@ export default function ArchivedProjects({
                 },
                 {
                     onSuccess: () => {
-                        // Optionally refresh the page or update the list
                         window.location.reload();
                     },
                 },

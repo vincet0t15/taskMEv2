@@ -30,6 +30,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
+
         // Ensure user owns the project
         if ($project->user_id !== Auth::user()->id) {
             abort(403, 'Unauthorized');

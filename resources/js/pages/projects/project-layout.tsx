@@ -7,8 +7,9 @@ import { board, calendar, project } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Link, router, usePage } from '@inertiajs/react';
-import { ArchiveIcon, PlusIcon } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { PropsWithChildren } from 'react';
+import ArchiveProjectDialog from './archiveAlert';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -85,33 +86,7 @@ export default function ProjectLayout({
                     </div>
 
                     {projects.status?.name !== 'Archived' && (
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                                if (
-                                    confirm(
-                                        'Are you sure you want to archive this project?',
-                                    )
-                                ) {
-                                    router.put(
-                                        `/projects/${projects.id}`,
-                                        {
-                                            status_id: 5, // Archived status ID
-                                        },
-                                        {
-                                            onSuccess: () => {
-                                                router.visit('/dashboard');
-                                            },
-                                        },
-                                    );
-                                }
-                            }}
-                            className="text-orange-600 hover:text-orange-700"
-                        >
-                            <ArchiveIcon className="mr-1 h-4 w-4" />
-                            Archive
-                        </Button>
+                        <ArchiveProjectDialog projects={projects} />
                     )}
                 </div>
             </div>
