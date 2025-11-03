@@ -175,12 +175,12 @@ class TaskController extends Controller
             'due_date' => $request->due_date,
         ]);
 
-        // 🔹 Sync main task assignees
+        //  Sync main task assignees
         if ($request->has('assignees')) {
             $task->assignees()->sync($request->assignees);
         }
 
-        // 🔹 Handle subtasks (create or update)
+        //  Handle subtasks (create or update)
         if ($request->has('subTasks')) {
             $subTaskIds = []; // Keep track of updated/created subtask IDs
 
@@ -217,7 +217,7 @@ class TaskController extends Controller
                 $subTaskIds[] = $subTask->id;
             }
 
-            // 🔹 Optionally: delete removed subtasks
+            //  Optionally: delete removed subtasks
             $task->subTasks()
                 ->whereNotIn('id', $subTaskIds)
                 ->delete();
