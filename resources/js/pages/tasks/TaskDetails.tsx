@@ -38,6 +38,7 @@ import { CreateSubTaskDialog } from '../subTasks/createSubTask';
 import { SubTaskDialog } from '../subTasks/subTaskDialog';
 import CommentItem from './comment';
 import DeleteSubTaskDialog from './deleteSubTask';
+import ShowTask from './showTask';
 
 interface TaskDetailsProps {
     tasks: Task;
@@ -429,7 +430,10 @@ export default function TaskDetails({
                             </p>
                         )}
                     </TabsContent>
-                    <TabsContent value="settings">{/* settings */}</TabsContent>
+                    <TabsContent value="settings">
+                        <ShowTask tasks={tasks} project={proj} />
+                        {/* <TaskSettings tasks={tasks} /> */}
+                    </TabsContent>
                 </Tabs>
 
                 {addSubTaskDialog && tasks && (

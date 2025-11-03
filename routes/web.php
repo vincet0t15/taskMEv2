@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('projects/{project}/create-task', [TaskController::class, 'create'])->name('create.task');
     Route::get('projects/{project}/tasks/{task}', [TaskController::class, 'show'])->name('show.task');
     Route::put('tasks/{task}', [TaskController::class, 'updateTask'])->name('update.task');
+    Route::delete('tasks/{task}', [TaskController::class, 'destroyTask'])->name('destroy.task');
     Route::get('projects/{project}/tasks-view/{task}', [TaskController::class, 'view'])->name('view.tasks');
 
     // BOARD

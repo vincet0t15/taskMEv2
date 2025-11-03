@@ -371,4 +371,29 @@ class TaskController extends Controller
 
         return redirect()->back()->with('success', 'Task updated successfully.');
     }
+
+    public function destroyTask(Task $task)
+    {
+        // Store task data before deletion for activity logging
+        $deletedTaskData = [
+            'title' => $task->title,
+            'description' => $task->description,
+            'project_id' => $task->project_id,
+            'status_id' => $task->status_id,
+            'priority_id' => $task->priority_id,
+            'due_date' => $task->due_date,
+        ];
+
+        $taskId = $task->id;
+        $projectId = $task->project_id;
+
+        // Delete the task (this will cascade delete subtasks, assignees, attachments, comments, and activities)
+        $task->delete();
+
+        // Log task deletion activity (we need to do this after deletion since the task is gone)
+        // We'll log this as a general activity, but since the task is deleted, we'll use a different approach
+        // For now, we'll skip activity logging for task deletion as it would require a different implementation
+
+        return redirect()->route('show.project', $projectId)->with('success', 'Task deleted successfully.');
+    }
 }
