@@ -7,6 +7,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import myTask from '@/routes/myTask';
 import { tasks } from '@/routes/view';
 import { Status } from '@/types/status';
 import { Task } from '@/types/task';
@@ -100,17 +101,18 @@ export default function KanbanBoard({ statusWithTasks }: Props) {
 
             // If dropped on the same status, do nothing
             if (activeTask.status_id === overStatusId) return;
-
             router.put(
-                `/mytasks/${activeTaskId}/status/${overStatusId}`,
+                myTask.update({ task: activeTaskId, status: overStatusId }, {}),
                 {},
                 {
-                    onSuccess: () => {
-                        toast.success('Task status updated successfully');
-                        router.reload({ only: ['statusWithTasks'] });
+                    onSuccess: (response: { props: FlashProps }) => {
+                        toast.success(
+                            response.props.flash?.success ||
+                                'Task updated successfully.',
+                        );
                     },
                     onError: () => {
-                        toast.error('Failed to update task status');
+                        toast.error('Failed to update task.');
                     },
                 },
             );
