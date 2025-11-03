@@ -10,7 +10,6 @@ import { Project } from '@/types/project';
 import { Link, router, usePage } from '@inertiajs/react';
 import { PlusIcon } from 'lucide-react';
 import { PropsWithChildren } from 'react';
-import ArchiveProjectDialog from './archiveAlert';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -89,10 +88,6 @@ export default function ProjectLayout({
                             {projects.priority?.name}
                         </Badge>
                     </div>
-
-                    {projects.status?.name !== 'Archived' && (
-                        <ArchiveProjectDialog projects={projects} />
-                    )}
                 </div>
             </div>
 

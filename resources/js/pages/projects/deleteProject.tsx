@@ -1,3 +1,4 @@
+import ProjectController from '@/actions/App/Http/Controllers/ProjectController';
 import {
     AlertDialog,
     AlertDialogContent,
@@ -8,10 +9,9 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { project } from '@/routes/update';
 import { Project } from '@/types/project';
 import { router } from '@inertiajs/react';
-import { ArchiveIcon } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -19,30 +19,22 @@ interface Props {
     projects: Project;
 }
 
-export default function ArchiveProjectDialog({ projects }: Props) {
+export default function DeleteProjectDialog({ projects }: Props) {
     const [open, setOpen] = useState(false);
     const archiveProject = () => {
-        router.put(
-            project.url(projects.id),
-            {
-                status_id: 5,
+        router.delete(ProjectController.destroy(projects.id), {
+            onSuccess: () => {
+                toast.success('Project deleted successfully.');
+                router.visit('/dashboard');
             },
-            {
-                onSuccess: () => {
-                    toast.success('Project archived successfully.');
-                    router.visit('/dashboard');
-                },
-            },
-        );
+        });
     };
+
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="border-orange-300 text-orange-600 hover:bg-orange-100"
-                >
-                    <ArchiveIcon />
+                <Button variant="destructive">
+                    <Trash2 />
                     Archive
                 </Button>
             </AlertDialogTrigger>

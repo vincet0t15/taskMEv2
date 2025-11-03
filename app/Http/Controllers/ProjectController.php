@@ -30,19 +30,32 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-
         // Ensure user owns the project
         if ($project->user_id !== Auth::user()->id) {
             abort(403, 'Unauthorized');
         }
 
         $request->validate([
-            'status_id' => 'required|exists:statuses,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status_id' => 'sometimes|exists:statuses,id',
         ]);
 
-        $project->update([
-            'status_id' => $request->status_id,
-        ]);
+        $updateData = [];
+
+        if ($request->has('name')) {
+            $updateData['name'] = $request->name;
+        }
+
+        if ($request->has('description')) {
+            $updateData['description'] = $request->description;
+        }
+
+        if ($request->has('status_id')) {
+            $updateData['status_id'] = $request->status_id;
+        }
+
+        $project->update($updateData);
 
         return redirect()->back()->with('success', 'Project updated successfully.');
     }
@@ -104,8 +117,27 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        // Ensure user owns the project
+        if ($project->user_id !== Auth::user()->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $project->load(['priority', 'status', 'user']);
+
         return inertia('projects/settings', [
             'projects' => $project
         ]);
+    }
+
+    public function destroy(Project $project)
+    {
+        // Ensure user owns the project
+        if ($project->user_id !== Auth::user()->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $project->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Project deleted successfully.');
     }
 }
