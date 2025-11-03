@@ -17,6 +17,7 @@ import { useForm, usePage } from '@inertiajs/react';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { ChangeEventHandler } from 'react';
 import { toast } from 'sonner';
+import DeleteTaskDialog from './deleteTask';
 
 interface ShowTaskProps {
     tasks: Task;
@@ -400,10 +401,20 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
                     </div>
                 ))}
             </div>
-
             <Button type="submit" disabled={processing}>
                 Update Task
             </Button>
+
+            <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4">
+                <div>
+                    <h4 className="font-medium text-red-900">Delete Project</h4>
+                    <p className="text-sm text-red-700">
+                        Permanently delete this project and all its tasks. This
+                        action cannot be undone.
+                    </p>
+                </div>
+                <DeleteTaskDialog task={tasks} project={proj} />
+            </div>
         </form>
     );
 }
