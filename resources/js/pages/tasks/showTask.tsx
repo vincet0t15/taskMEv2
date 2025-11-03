@@ -159,14 +159,6 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
             onSubmit={handleSubmit}
             className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
         >
-            <div>
-                <h1 className="text-2xl font-bold text-foreground">
-                    Edit Task
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                    Update the form below to edit the task.
-                </p>
-            </div>
             <div className="grid gap-4">
                 <div className="grid gap-2">
                     <Label htmlFor="title">Task Name</Label>
