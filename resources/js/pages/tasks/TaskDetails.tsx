@@ -10,11 +10,7 @@ import { useInitials } from '@/hooks/use-initials';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 
-import {
-    project as projectRoute,
-    task,
-    task as taskRoute,
-} from '@/routes/show';
+import { project as projectRoute, task as taskRoute } from '@/routes/show';
 import { type BreadcrumbItem } from '@/types';
 import { Project } from '@/types/project';
 import { Task } from '@/types/task';
@@ -116,17 +112,7 @@ export default function TaskDetails({
                 <div className="flex flex-col gap-6 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
                     {/* Left: Title + Status */}
                     <div className="space-y-2">
-                        <h1
-                            className="cursor-pointer text-2xl font-semibold text-gray-800 uppercase hover:underline"
-                            onClick={() =>
-                                router.get(
-                                    task.url({
-                                        project: tasks.project_id,
-                                        task: tasks.id,
-                                    }),
-                                )
-                            }
-                        >
+                        <h1 className="text-2xl font-semibold text-gray-800 uppercase">
                             {tasks.title}
                         </h1>
                         <div className="flex flex-wrap items-center gap-3">
