@@ -275,6 +275,13 @@ export default function TaskDetails({
                         >
                             Activity
                         </TabsTrigger>
+
+                        <TabsTrigger
+                            value="settings"
+                            className="rounded-md px-3 py-1 text-sm font-medium data-[state=active]:bg-white data-[state=active]:shadow"
+                        >
+                            Settings
+                        </TabsTrigger>
                     </TabsList>
 
                     {/* Subtasks Tab */}
@@ -422,7 +429,9 @@ export default function TaskDetails({
                             </p>
                         )}
                     </TabsContent>
+                    <TabsContent value="settings">{/* settings */}</TabsContent>
                 </Tabs>
+
                 {addSubTaskDialog && tasks && (
                     <CreateSubTaskDialog
                         open={addSubTaskDialog}
