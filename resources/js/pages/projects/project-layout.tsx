@@ -52,7 +52,8 @@ export default function ProjectLayout({
         tabs[0].label;
 
     return (
-        <div className="flex h-[calc(100vh-64px)] flex-col space-y-6 overflow-hidden p-6">
+        //  <div className="flex h-[calc(100vh-64px)] flex-col space-y-6 overflow-hidden p-6">
+        <div className="flex-col space-y-6 overflow-hidden p-6">
             {/* Header Section */}
             <div className="flex flex-col gap-4 border-b pb-4 md:flex-row md:items-center md:justify-between">
                 <div className="min-w-0 flex-1">

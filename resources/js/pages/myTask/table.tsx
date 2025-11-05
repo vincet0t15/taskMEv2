@@ -80,9 +80,9 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                     >
                         <div className="flex items-center gap-2">
                             {openGroups[status.name] ? (
-                                <ChevronDown className="h-4 w-4" />
+                                <ChevronDown className="h-4 w-4 cursor-pointer" />
                             ) : (
-                                <ChevronRight className="h-4 w-4" />
+                                <ChevronRight className="ursor-pointer h-4 w-4" />
                             )}
                             <div
                                 className="h-5 w-[3px] rounded-full"
@@ -151,7 +151,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                         0 ? (
                                                         openTasks[task.id] ? (
                                                             <ChevronDown
-                                                                className="h-4 w-4 text-primary"
+                                                                className="h-4 w-4 cursor-pointer text-primary"
                                                                 onClick={() =>
                                                                     toggleTask(
                                                                         task.id,
@@ -160,7 +160,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                             />
                                                         ) : (
                                                             <ChevronRight
-                                                                className="h-4 w-4 text-primary"
+                                                                className="h-4 w-4 cursor-pointer text-primary"
                                                                 onClick={() =>
                                                                     toggleTask(
                                                                         task.id,

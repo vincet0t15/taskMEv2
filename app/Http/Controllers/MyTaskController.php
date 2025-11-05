@@ -37,14 +37,11 @@ class MyTaskController extends Controller
                                 ->whereHas('assignees', function ($q) {
                                     $q->where('users.id', Auth::id());
                                 })
-                                ->with(['assignees' => function ($q) {
-                                    $q->where('users.id', Auth::id());
-                                }, 'priority', 'status']);
+                                ->with(['assignees', 'priority', 'status']);
                         },
                     ]);
             },
         ])
-
             ->whereHas('tasks', function ($taskQuery) {
                 $taskQuery
                     ->whereHas('assignees', function ($assigneeQuery) {
