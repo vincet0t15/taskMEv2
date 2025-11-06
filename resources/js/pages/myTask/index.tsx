@@ -22,8 +22,6 @@ interface MyTasksListProps {
 }
 
 export default function MyTasksList({ tasks }: MyTasksListProps) {
-    console.log(tasks);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="My Tasks" />

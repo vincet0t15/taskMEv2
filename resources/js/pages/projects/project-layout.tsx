@@ -115,7 +115,7 @@ export default function ProjectLayout({
                 <div className="flex gap-2 md:justify-end">
                     {/* <CreateTaskDialog projectId={projects.id} /> */}
                     <Button
-                        variant={'outline'}
+                        variant={'default'}
                         onClick={() => router.get(task.url(projects.id))}
                         className="cursor-pointer"
                     >

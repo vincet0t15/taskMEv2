@@ -28,7 +28,7 @@ interface Props {
 }
 
 export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
-    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+    // const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
     const [openTasks, setOpenTasks] = useState<Record<number, boolean>>({});
     const [openViewTask, setOpenViewTask] = useState(false);
     const [taskDetails, setTaskDetails] = useState<Task>();
@@ -37,6 +37,9 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
 
     const getInitials = useInitials();
 
+ const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+        Object.fromEntries((statusWithTasks || []).map((s) => [s.name, true])),
+    );
     const toggleGroup = (title: string) => {
         setOpenGroups((prev) => ({ ...prev, [title]: !prev[title] }));
     };

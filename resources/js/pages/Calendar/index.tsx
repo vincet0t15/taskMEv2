@@ -1,20 +1,28 @@
-import { move } from '@/routes/calendar';
-import { tasks } from '@/routes/view';
+import AppLayout from '@/layouts/app-layout';
+import calendar from '@/routes/calendar';
+import { BreadcrumbItem } from '@/types';
 import { Task } from '@/types/task';
-import { EventDropArg } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { toast } from 'sonner';
-import TaskDetailDialog from '../tasks/viewTask';
+
 interface Props {
     task: Task[];
 }
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/dashboard',
+    },
+];
+
 export default function CalendarData({ task }: Props) {
     const [openViewTask, setOpenViewTask] = useState(false);
     const [taskDetails, setTaskDetails] = useState<Task>();
+
     const events = (task as Task[]).map((task) => ({
         id: String(task.id),
         title: task.title ?? '',
@@ -28,36 +36,6 @@ export default function CalendarData({ task }: Props) {
         },
     }));
 
-    function handleEventDrop(info: EventDropArg) {
-        const start = info.event.start
-            ? info.event.start.toLocaleDateString('en-CA')
-            : null;
-
-        if (!start) {
-            console.warn('Invalid event start date');
-            info.revert();
-            return;
-        }
-
-        router.put(
-            move.url(Number(info.event.id)),
-            { due_date: start },
-            {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: (response: { props: FlashProps }) => {
-                    toast.success(
-                        response.props.flash?.success ||
-                            'Task date updated successfully',
-                    );
-                },
-                onError: (error) => {
-                    console.error('Failed to update task date:', error);
-                    info.revert();
-                },
-            },
-        );
-    }
     function handleEventClick(data: any) {
         const matchedTask = task.find(
             (task) => task.id === Number(data.event.id),
@@ -65,12 +43,7 @@ export default function CalendarData({ task }: Props) {
 
         if (!matchedTask) return;
 
-        router.get(
-            tasks.url({
-                project: Number(matchedTask.project_id),
-                task: Number(matchedTask.id),
-            }),
-        );
+        router.get(calendar.view.url(matchedTask.id));
     }
 
     function renderEventContent(eventInfo: any) {
@@ -139,30 +112,22 @@ export default function CalendarData({ task }: Props) {
     }
 
     return (
-        <div className="rounded-md bg-sidebar p-4">
-            <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth"
-                events={events}
-                editable={true}
-                selectable={true} // Allow dates to be selectable.
-                selectMirror={true}
-                eventDrop={handleEventDrop}
-                expandRows={true}
-                dayMaxEvents={true}
-                eventClick={handleEventClick}
-                eventContent={renderEventContent}
-            />
-            {openViewTask && taskDetails && (
-                <TaskDetailDialog
-                    tasks={taskDetails}
-                    open={openViewTask}
-                    setOpen={setOpenViewTask}
-                    onDataNeededRefresh={() =>
-                        router.reload({ only: ['tasks'] })
-                    }
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Calendar" />
+            <div className="rounded-md bg-sidebar p-4">
+                <FullCalendar
+                    plugins={[dayGridPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    events={events}
+                    editable={false}
+                    selectable={true}
+                    selectMirror={true}
+                    expandRows={true}
+                    dayMaxEvents={true}
+                    eventClick={handleEventClick}
+                    eventContent={renderEventContent}
                 />
-            )}
-        </div>
+            </div>
+        </AppLayout>
     );
 }

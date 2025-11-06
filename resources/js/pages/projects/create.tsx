@@ -20,10 +20,11 @@ import { ProjectCreateInput } from '@/types/project';
 import { Status } from '@/types/status';
 import { useForm, usePage } from '@inertiajs/react';
 import { Loader2Icon, Plus } from 'lucide-react';
-import { ChangeEventHandler, FormEventHandler } from 'react';
+import { ChangeEventHandler, FormEventHandler, useState } from 'react';
 import { toast } from 'sonner';
 
 export function CreateProject() {
+    const [open, setOpen] = useState(false);
     const { systemStatuses } = usePage().props;
     const { systemPriorities } = usePage().props;
     const { data, setData, processing, errors, reset, post } =
@@ -62,6 +63,7 @@ export function CreateProject() {
             onSuccess: (response: { props: FlashProps }) => {
                 toast.success(response.props.flash?.success);
                 reset();
+                setOpen(false)
             },
         });
     };
@@ -72,7 +74,7 @@ export function CreateProject() {
         setData({ ...data, [e.target.name]: e.target.value });
     };
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Plus className="h-4 w-4 cursor-pointer" />
             </DialogTrigger>
