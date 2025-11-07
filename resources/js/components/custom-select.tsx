@@ -9,7 +9,6 @@ import {
 interface Option {
     label: string;
     value: string;
-    color: string;
 }
 
 interface CustomSelectProps {
@@ -20,6 +19,8 @@ interface CustomSelectProps {
     label?: string;
     widthClass?: string;
     disabled?: boolean;
+    id: string;
+    name: string;
 }
 
 export default function CustomSelect({

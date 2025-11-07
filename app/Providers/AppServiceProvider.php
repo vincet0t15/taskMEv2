@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PriorityController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\StatusController;
@@ -63,11 +64,11 @@ class AppServiceProvider extends ServiceProvider
             },
 
             'systemOffices' => function () {
-                if (!Auth::check()) {
-                    return null;
-                }
+                // if (!Auth::check()) {
+                //     return null;
+                // }
 
-                return app(\App\Http\Controllers\OfficeController::class)->getAllOffice();
+                return app(OfficeController::class)->getAllOffice();
             },
         ]);
     }
