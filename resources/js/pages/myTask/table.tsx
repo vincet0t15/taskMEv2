@@ -109,7 +109,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                 Task Name
                                             </div>
                                         </th>
-                                        <th className="p-3 font-medium">
+                                        <th className="font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ClipboardCheck className="h-4 w-4" />
                                                 Description
@@ -144,53 +144,65 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                 <tbody>
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
-                                            <tr className="border-t hover:bg-muted/20">
-                                                <td className="flex items-center gap-2 p-3 font-medium text-muted-foreground">
-                                                    {task.sub_tasks &&
-                                                    task.sub_tasks.length >
-                                                        0 ? (
-                                                        openTasks[task.id] ? (
-                                                            <ChevronDown
-                                                                className="h-4 w-4 cursor-pointer text-primary"
-                                                                onClick={() =>
-                                                                    toggleTask(
-                                                                        task.id,
-                                                                    )
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <ChevronRight
-                                                                className="h-4 w-4 cursor-pointer text-primary"
-                                                                onClick={() =>
-                                                                    toggleTask(
-                                                                        task.id,
-                                                                    )
-                                                                }
-                                                            />
-                                                        )
-                                                    ) : (
-                                                        <span className="w-4" />
-                                                    )}
-                                                    <span
-                                                        className="cursor-pointer hover:font-bold"
-                                                        onClick={() =>
-                                                            router.get(
-                                                                myTask.show.url(
-                                                                    task.id,
-                                                                ),
+                                            <tr className="border-t align-middle hover:bg-muted/20">
+                                                <td className="p-2 align-middle">
+                                                    <div className="flex items-center gap-2 font-medium text-muted-foreground">
+                                                        {task.sub_tasks &&
+                                                        task.sub_tasks.length >
+                                                            0 ? (
+                                                            openTasks[
+                                                                task.id
+                                                            ] ? (
+                                                                <ChevronDown
+                                                                    className="h-4 w-4 cursor-pointer text-primary"
+                                                                    onClick={() =>
+                                                                        toggleTask(
+                                                                            task.id,
+                                                                        )
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <ChevronRight
+                                                                    className="h-4 w-4 cursor-pointer text-primary"
+                                                                    onClick={() =>
+                                                                        toggleTask(
+                                                                            task.id,
+                                                                        )
+                                                                    }
+                                                                />
                                                             )
-                                                        }
-                                                    >
-                                                        {task.title}
-                                                    </span>
+                                                        ) : (
+                                                            <span className="w-4" />
+                                                        )}
+                                                        <span
+                                                            className="w-[250px] cursor-pointer truncate hover:font-bold"
+                                                            onClick={() =>
+                                                                router.get(
+                                                                    myTask.show.url(
+                                                                        task.id,
+                                                                    ),
+                                                                )
+                                                            }
+                                                        >
+                                                            {task.title}
+                                                        </span>
+                                                    </div>
                                                 </td>
 
-                                                <td>
+                                                <td
+                                                    className="max-w-[550px] truncate align-middle"
+                                                    title={
+                                                        task.description || '-'
+                                                    }
+                                                >
                                                     {task.description || '-'}
                                                 </td>
-                                                <td>{task.due_date || '-'}</td>
 
-                                                <td>
+                                                <td className="align-middle">
+                                                    {task.due_date || '-'}
+                                                </td>
+
+                                                <td className="align-middle">
                                                     <div className="flex -space-x-2">
                                                         {task.assignees.map(
                                                             (user, i) => (
@@ -209,7 +221,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                     </div>
                                                 </td>
 
-                                                <td className="w-32 p-2">
+                                                <td className="w-32 align-middle">
                                                     <Progress
                                                         value={
                                                             task.total_subtasks_count
@@ -219,11 +231,11 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                                   100
                                                                 : 0
                                                         }
-                                                        className="mb-3 [&>div]:bg-blue-500"
+                                                        className="[&>div]:bg-blue-500"
                                                     />
                                                 </td>
 
-                                                <td>
+                                                <td className="align-middle">
                                                     <Badge
                                                         className="text-xs"
                                                         style={{
@@ -245,7 +257,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                         className="border-t bg-muted/5 transition-colors hover:bg-muted/20"
                                                     >
                                                         <td
-                                                            className="flex cursor-pointer items-center gap-2 p-3 pl-10 text-muted-foreground hover:font-bold"
+                                                            className="flex cursor-pointer items-center gap-2 p-2 pl-10 text-muted-foreground hover:font-bold"
                                                             onClick={() =>
                                                                 handleClickSubTask(
                                                                     task,
@@ -255,11 +267,17 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                         >
                                                             {sub.title}
                                                         </td>
-                                                        <td className="text-xs">
-                                                            {sub.description ||
+                                                        <td
+                                                            className="max-w-[250px] truncate"
+                                                            title={
+                                                                task.description ||
+                                                                '-'
+                                                            }
+                                                        >
+                                                            {task.description ||
                                                                 '-'}
                                                         </td>
-                                                        <td className="text-xs">
+                                                        <td className="">
                                                             {sub.due_date ||
                                                                 '-'}
                                                         </td>
