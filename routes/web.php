@@ -15,7 +15,8 @@ use Laravel\Fortify\Features;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
+        'laravelVersion' => Illuminate\Foundation\Application::VERSION,
+        'phpVersion' => PHP_VERSION,
     ]);
 })->name('home');
 
