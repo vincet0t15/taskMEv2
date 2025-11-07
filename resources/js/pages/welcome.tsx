@@ -1,14 +1,15 @@
-import { login, register } from '@/routes';
-import { Link } from '@inertiajs/react';
+import { dashboard, login, register } from '@/routes';
+import { Link, usePage } from '@inertiajs/react';
 import { CheckCircle, ListTodo, Users, Zap } from 'lucide-react';
 import React from 'react';
 
 // --- Main Component ---
 export default function Welcome() {
     // NOTE: Keep state definition simple for a welcome page example
-    const [auth] = React.useState({ user: null });
-    const canRegister = true;
 
+    const canRegister = true;
+    const { props } = usePage();
+    const { auth } = props as any;
     return (
         // Reduced overall vertical padding from lg:p-12 to lg:p-8
         <div className="flex min-h-screen flex-col items-center bg-gray-50 p-4 text-slate-900 lg:justify-center lg:p-8">
@@ -17,32 +18,27 @@ export default function Welcome() {
             {/* Reduced max-width for the header to match the content slightly better */}
             <header className="mb-6 w-full max-w-6xl text-sm">
                 <nav className="flex items-center justify-end gap-3">
-                    {auth.user ? (
-                        <a
-                            href="#dashboard"
-                            // Slightly smaller padding: px-4 py-1.5
+                    {auth?.user ? (
+                        <Link
+                            href={dashboard()}
                             className="inline-block rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-sm font-semibold text-slate-900 shadow-sm transition-all hover:border-slate-400 hover:shadow-md"
                         >
                             Dashboard
-                        </a>
+                        </Link>
                     ) : (
                         <>
                             <Link
                                 href={login.url()}
-                                // Slightly smaller padding/text size
                                 className="inline-block rounded-lg px-4 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:text-indigo-600"
                             >
                                 Log in
                             </Link>
-                            {canRegister && (
-                                <Link
-                                    href={register.url()}
-                                    // Slightly smaller padding: px-5 py-2
-                                    className="inline-block rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-lg transition-all hover:bg-indigo-700 hover:shadow-xl"
-                                >
-                                    Get Started
-                                </Link>
-                            )}
+                            <Link
+                                href={register.url()}
+                                className="inline-block rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-lg transition-all hover:bg-indigo-700 hover:shadow-xl"
+                            >
+                                Get Started
+                            </Link>
                         </>
                     )}
                 </nav>
@@ -76,11 +72,10 @@ export default function Welcome() {
 
                         {/* CTAs */}
                         <div className="mb-10 flex flex-wrap gap-3">
-                            {canRegister && (
+                            {!auth?.user && canRegister && (
                                 <Link
                                     href={register.url()}
-                                    // Reduced padding: px-6 py-3
-                                    className="inline-flex items-center rounded-xl bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-xl transition-all hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-2xl"
+                                    className="/* ensures centered in both axes */ /* smooth */ /* or use / to center if needed */ mx-auto mr-auto ml-auto inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-xl transition transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-2xl"
                                 >
                                     Start Managing Now
                                 </Link>
