@@ -6,7 +6,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
 
 interface Props {
     task: Task[];
@@ -20,9 +19,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CalendarData({ task }: Props) {
-    const [openViewTask, setOpenViewTask] = useState(false);
-    const [taskDetails, setTaskDetails] = useState<Task>();
-
     const events = (task as Task[]).map((task) => ({
         id: String(task.id),
         title: task.title ?? '',
