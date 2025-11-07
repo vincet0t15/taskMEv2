@@ -16,6 +16,7 @@ import {
     CircleCheck,
     ClipboardCheck,
     Clock,
+    Dot,
     ListCheckIcon,
     Users2Icon,
 } from 'lucide-react';
@@ -103,37 +104,37 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                             <table className="w-full border-t text-sm">
                                 <thead className="bg-muted/40">
                                     <tr className="text-left text-muted-foreground">
-                                        <th className="p-3 font-medium">
+                                        <th className="w-[250px] p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ListCheckIcon className="h-4 w-4" />
                                                 Task Name
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="w-[700px] p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ClipboardCheck className="h-4 w-4" />
                                                 Description
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <Clock className="h-4 w-4" />
                                                 Deadline
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <Users2Icon className="h-4 w-4" />
                                                 Assignees
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ArrowUpWideNarrow className="h-4 w-4" />
                                                 Progress
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <CircleCheck className="h-4 w-4" />
                                                 Priority
@@ -141,7 +142,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="text-muted-foreground">
+                                <tbody className="">
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
                                             <tr className="border-t align-middle hover:bg-muted/20">
@@ -190,7 +191,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                 </td>
 
                                                 <td
-                                                    className="max-w-[550px] truncate align-middle text-muted-foreground"
+                                                    className="max-w-[300px] truncate p-2 text-muted-foreground"
                                                     title={
                                                         task.description || '-'
                                                     }
@@ -198,7 +199,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                     {task.description || '-'}
                                                 </td>
 
-                                                <td className="align-middle">
+                                                <td className="p-2 align-middle text-muted-foreground">
                                                     {task.due_date || '-'}
                                                 </td>
 
@@ -257,7 +258,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                         className="border-t bg-muted/5 transition-colors hover:bg-muted/20"
                                                     >
                                                         <td
-                                                            className="flex cursor-pointer items-center gap-2 p-2 pl-10 text-muted-foreground hover:font-bold"
+                                                            className="flex cursor-pointer items-center p-2 pl-5 text-xs text-muted-foreground hover:font-bold"
                                                             onClick={() =>
                                                                 handleClickSubTask(
                                                                     task,
@@ -265,19 +266,20 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                                 )
                                                             }
                                                         >
+                                                            <Dot />
                                                             {sub.title}
                                                         </td>
                                                         <td
-                                                            className="max-w-[250px] truncate"
+                                                            className="max-w-[300px] truncate p-2 text-xs text-muted-foreground"
                                                             title={
-                                                                task.description ||
+                                                                sub.description ||
                                                                 '-'
                                                             }
                                                         >
-                                                            {task.description ||
+                                                            {sub.description ||
                                                                 '-'}
                                                         </td>
-                                                        <td className="">
+                                                        <td className="p-2 text-xs text-muted-foreground">
                                                             {sub.due_date ||
                                                                 '-'}
                                                         </td>
@@ -292,7 +294,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                                             key={
                                                                                 i
                                                                             }
-                                                                            className="h-8 w-8 border-2 border-background"
+                                                                            className="h-7 w-7 border-2 border-background"
                                                                         >
                                                                             <AvatarFallback className="bg-green-500 text-xs">
                                                                                 {getInitials(

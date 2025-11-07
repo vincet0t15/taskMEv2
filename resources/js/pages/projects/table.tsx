@@ -16,6 +16,7 @@ import {
     CircleCheck,
     ClipboardCheck,
     Clock,
+    Dot,
     ListCheckIcon,
     Users2Icon,
 } from 'lucide-react';
@@ -106,40 +107,40 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                     {/* Tasks Table */}
                     {openGroups[status.name] && (
                         <div className="overflow-x-auto">
-                            <table className="w-full border-t text-sm">
+                            <table className="w-full table-fixed border-t text-sm">
                                 <thead className="bg-muted/40">
                                     <tr className="text-left text-muted-foreground">
-                                        <th className="p-2 font-medium">
+                                        <th className="w-[250px] p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ListCheckIcon className="h-4 w-4" />
                                                 Task Name
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="w-[700px] p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ClipboardCheck className="h-4 w-4" />
                                                 Description
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <Clock className="h-4 w-4" />
                                                 Deadline
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <Users2Icon className="h-4 w-4" />
                                                 Assignees
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ArrowUpWideNarrow className="h-4 w-4" />
                                                 Progress
                                             </div>
                                         </th>
-                                        <th className="font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <CircleCheck className="h-4 w-4" />
                                                 Priority
@@ -147,63 +148,70 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                         </th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
                                             <tr className="border-t align-middle hover:bg-muted/20">
-                                                <td className="flex w-[250px] items-center gap-2 p-2 font-medium text-muted-foreground">
-                                                    {task.sub_tasks &&
-                                                    task.sub_tasks.length >
-                                                        0 ? (
-                                                        openTasks[task.id] ? (
-                                                            <ChevronDown
-                                                                className="h-4 w-4 text-primary"
-                                                                onClick={() =>
-                                                                    toggleTask(
-                                                                        task.id,
-                                                                    )
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <ChevronRight
-                                                                className="h-4 w-4 text-primary"
-                                                                onClick={() =>
-                                                                    toggleTask(
-                                                                        task.id,
-                                                                    )
-                                                                }
-                                                            />
-                                                        )
-                                                    ) : (
-                                                        <span className="w-4" />
-                                                    )}
-                                                    <span
-                                                        className="cursor-pointer truncate hover:font-bold"
-                                                        onClick={() =>
-                                                            router.get(
-                                                                tasks.url({
-                                                                    project:
-                                                                        task.project_id,
-                                                                    task: task.id,
-                                                                }),
+                                                <td className="w-[250px] truncate p-2 font-medium text-muted-foreground">
+                                                    <div className="flex items-center gap-2">
+                                                        {task.sub_tasks
+                                                            ?.length ? (
+                                                            openTasks[
+                                                                task.id
+                                                            ] ? (
+                                                                <ChevronDown
+                                                                    className="h-4 w-4 cursor-pointer text-primary"
+                                                                    onClick={() =>
+                                                                        toggleTask(
+                                                                            task.id,
+                                                                        )
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <ChevronRight
+                                                                    className="h-4 w-4 cursor-pointer text-primary"
+                                                                    onClick={() =>
+                                                                        toggleTask(
+                                                                            task.id,
+                                                                        )
+                                                                    }
+                                                                />
                                                             )
-                                                        }
-                                                    >
-                                                        {task.title}
-                                                    </span>
+                                                        ) : (
+                                                            <span className="w-4" />
+                                                        )}
+                                                        <span
+                                                            className="cursor-pointer truncate hover:font-bold"
+                                                            onClick={() =>
+                                                                router.get(
+                                                                    tasks.url({
+                                                                        project:
+                                                                            task.project_id,
+                                                                        task: task.id,
+                                                                    }),
+                                                                )
+                                                            }
+                                                        >
+                                                            {task.title}
+                                                        </span>
+                                                    </div>
                                                 </td>
 
                                                 <td
-                                                    className="max-w-[250px] truncate"
+                                                    className="max-w-[300px] truncate p-2 text-muted-foreground"
                                                     title={
                                                         task.description || '-'
                                                     }
                                                 >
                                                     {task.description || '-'}
                                                 </td>
-                                                <td>{task.due_date || '-'}</td>
 
-                                                <td>
+                                                <td className="p-2 text-muted-foreground">
+                                                    {task.due_date || '-'}
+                                                </td>
+
+                                                <td className="">
                                                     <div className="flex -space-x-2">
                                                         {task.assignees.map(
                                                             (user, i) => (
@@ -222,7 +230,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                     </div>
                                                 </td>
 
-                                                <td className="w-32 p-2">
+                                                <td className="p-2">
                                                     <Progress
                                                         value={
                                                             task.total_subtasks_count
@@ -232,11 +240,11 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                                   100
                                                                 : 0
                                                         }
-                                                        className="mb-3 [&>div]:bg-blue-500"
+                                                        className="[&>div]:bg-blue-500"
                                                     />
                                                 </td>
 
-                                                <td>
+                                                <td className="p-2">
                                                     <Badge
                                                         className="text-xs"
                                                         style={{
@@ -250,15 +258,15 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                 </td>
                                             </tr>
 
+                                            {/* Subtasks */}
                                             {openTasks[task.id] &&
-                                                task.sub_tasks?.length > 0 &&
-                                                task.sub_tasks.map((sub) => (
+                                                task.sub_tasks?.map((sub) => (
                                                     <tr
                                                         key={sub.id}
-                                                        className="border-t bg-muted/5 transition-colors hover:bg-muted/20"
+                                                        className="border-t bg-muted/10 align-middle hover:bg-muted/20"
                                                     >
                                                         <td
-                                                            className="flex cursor-pointer items-center gap-2 p-2 pl-10 text-muted-foreground hover:font-bold"
+                                                            className="flex cursor-pointer items-center p-2 pl-5 text-xs text-muted-foreground hover:font-bold"
                                                             onClick={() =>
                                                                 handleClickSubTask(
                                                                     task,
@@ -266,10 +274,11 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                                 )
                                                             }
                                                         >
+                                                            <Dot />
                                                             {sub.title}
                                                         </td>
                                                         <td
-                                                            className="max-w-[250px] truncate"
+                                                            className="max-w-[300px] truncate p-2 text-xs text-muted-foreground"
                                                             title={
                                                                 sub.description ||
                                                                 '-'
@@ -278,11 +287,11 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                             {sub.description ||
                                                                 '-'}
                                                         </td>
-                                                        <td className="text-xs">
+                                                        <td className="p-2 text-xs text-muted-foreground">
                                                             {sub.due_date ||
                                                                 '-'}
                                                         </td>
-                                                        <td>
+                                                        <td className="">
                                                             <div className="flex -space-x-2">
                                                                 {sub.assignees?.map(
                                                                     (
@@ -293,7 +302,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                                             key={
                                                                                 i
                                                                             }
-                                                                            className="h-8 w-8 border-2 border-background"
+                                                                            className="h-7 w-7 border-2 border-background"
                                                                         >
                                                                             <AvatarFallback className="bg-green-500 text-xs">
                                                                                 {getInitials(
@@ -305,7 +314,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                                 )}
                                                             </div>
                                                         </td>
-                                                        <td className="w-32 p-2">
+                                                        <td className="p-2">
                                                             <Badge
                                                                 style={{
                                                                     backgroundColor:
@@ -313,6 +322,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                                             .status
                                                                             .color,
                                                                 }}
+                                                                className="text-xs"
                                                             >
                                                                 {
                                                                     sub.status
@@ -320,15 +330,15 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                                 }
                                                             </Badge>
                                                         </td>
-                                                        <td>
+                                                        <td className="p-2">
                                                             <Badge
-                                                                className="text-[10px]"
                                                                 style={{
                                                                     backgroundColor:
                                                                         sub
                                                                             .priority
                                                                             ?.color,
                                                                 }}
+                                                                className="text-[10px]"
                                                             >
                                                                 {sub.priority
                                                                     ?.name ||
