@@ -21,6 +21,7 @@ interface CustomSelectProps {
     disabled?: boolean;
     id: string;
     name: string;
+    tabIndex?: number;
 }
 
 export default function CustomSelect({
@@ -30,6 +31,7 @@ export default function CustomSelect({
     placeholder = 'Select an option',
     widthClass = 'w-[180px]',
     disabled,
+    tabIndex,
 }: CustomSelectProps) {
     return (
         <Select

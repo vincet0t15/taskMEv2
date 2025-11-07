@@ -12,11 +12,12 @@ import AuthLayout from '@/layouts/auth-layout';
 import { store } from '@/routes/register';
 import { OfficeInterface } from '@/types/office';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 
 export default function Register() {
     const { systemOffices } = usePage().props;
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, errors, processing, reset } = useForm({
         name: '',
         username: '',
         office_id: 0,
@@ -33,7 +34,12 @@ export default function Register() {
 
     const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
         event.preventDefault();
-        post(store.url());
+        post(store.url(), {
+            onSuccess: () => {
+                toast.success('User successfully created');
+                reset();
+            },
+        });
     };
 
     const handleOfficeChange = (value: string) => {
@@ -94,15 +100,12 @@ export default function Register() {
                         <div className="grid gap-2">
                             <Label>Office</Label>
                             <CustomSelect
+                                tabIndex={3}
                                 id="office_id"
                                 name="office_id"
                                 placeholder="Select an office"
                                 options={officeOptions}
-                                value={
-                                    data.office_id
-                                        ? String(data.office_id)
-                                        : undefined
-                                }
+                                value={String(data.office_id)}
                                 onChange={handleOfficeChange}
                                 widthClass="w-full truncate"
                             />
