@@ -63,7 +63,7 @@ export function CreateProject() {
             onSuccess: (response: { props: FlashProps }) => {
                 toast.success(response.props.flash?.success);
                 reset();
-                setOpen(false)
+                setOpen(false);
             },
         });
     };

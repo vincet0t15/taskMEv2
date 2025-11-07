@@ -144,6 +144,7 @@ export function SubTaskDialog({
                                         rows={3}
                                         value={data.description}
                                         onChange={handleInputChange}
+                                        className="max-h-[200px] min-h-[80px] resize-y overflow-auto"
                                     />
                                 </div>
                             </div>

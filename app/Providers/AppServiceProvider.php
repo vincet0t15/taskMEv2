@@ -61,6 +61,14 @@ class AppServiceProvider extends ServiceProvider
 
                 return app(\App\Http\Controllers\UserController::class)->getAllUsers();
             },
+
+            'systemOffices' => function () {
+                if (!Auth::check()) {
+                    return null;
+                }
+
+                return app(\App\Http\Controllers\OfficeController::class)->getAllOffice();
+            },
         ]);
     }
 }

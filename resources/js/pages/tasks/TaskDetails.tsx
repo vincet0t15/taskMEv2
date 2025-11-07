@@ -17,6 +17,7 @@ import { Task } from '@/types/task';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import comment from '@/routes/comment';
 import { CommentTypes } from '@/types/commet';
 import { SubTaskInterface } from '@/types/subTask';
@@ -187,9 +188,7 @@ export default function TaskDetails({
                         <span className="block text-sm font-medium text-gray-500">
                             Description
                         </span>
-                        <p className="mt-2 rounded-lg border bg-gray-50 p-3 text-sm text-gray-700">
-                            {tasks.description}
-                        </p>
+                        <Textarea readOnly>{tasks.description}</Textarea>
                     </div>
                 )}
 
