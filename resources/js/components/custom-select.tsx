@@ -39,7 +39,7 @@ export default function CustomSelect({
             onValueChange={onChange}
             disabled={disabled}
         >
-            <SelectTrigger className={widthClass}>
+            <SelectTrigger className={widthClass} tabIndex={tabIndex}>
                 {value == '0' ? placeholder : <SelectValue />}
             </SelectTrigger>
             <SelectContent>
