@@ -141,12 +141,12 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="text-muted-foreground">
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
                                             <tr className="border-t align-middle hover:bg-muted/20">
                                                 <td className="p-2 align-middle">
-                                                    <div className="flex items-center gap-2 font-medium text-muted-foreground">
+                                                    <div className="flex w-[250px] items-center gap-2 font-medium text-muted-foreground">
                                                         {task.sub_tasks &&
                                                         task.sub_tasks.length >
                                                             0 ? (
@@ -175,7 +175,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                             <span className="w-4" />
                                                         )}
                                                         <span
-                                                            className="w-[250px] cursor-pointer truncate hover:font-bold"
+                                                            className="cursor-pointer truncate hover:font-bold"
                                                             onClick={() =>
                                                                 router.get(
                                                                     myTask.show.url(
@@ -190,7 +190,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                 </td>
 
                                                 <td
-                                                    className="max-w-[550px] truncate align-middle"
+                                                    className="max-w-[550px] truncate align-middle text-muted-foreground"
                                                     title={
                                                         task.description || '-'
                                                     }
@@ -221,7 +221,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                     </div>
                                                 </td>
 
-                                                <td className="w-32 align-middle">
+                                                <td className="w-32 p-2 align-middle">
                                                     <Progress
                                                         value={
                                                             task.total_subtasks_count

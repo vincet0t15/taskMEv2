@@ -37,7 +37,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
 
     const getInitials = useInitials();
 
- const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
         Object.fromEntries((statusWithTasks || []).map((s) => [s.name, true])),
     );
     const toggleGroup = (title: string) => {
@@ -109,13 +109,13 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                             <table className="w-full border-t text-sm">
                                 <thead className="bg-muted/40">
                                     <tr className="text-left text-muted-foreground">
-                                        <th className="p-3 font-medium">
+                                        <th className="p-2 font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ListCheckIcon className="h-4 w-4" />
                                                 Task Name
                                             </div>
                                         </th>
-                                        <th className="p-3 font-medium">
+                                        <th className="font-medium">
                                             <div className="flex items-center gap-1">
                                                 <ClipboardCheck className="h-4 w-4" />
                                                 Description
@@ -150,8 +150,8 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                 <tbody>
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
-                                            <tr className="cursor-pointer border-t hover:bg-muted/20">
-                                                <td className="flex items-center gap-2 p-3 font-medium text-muted-foreground">
+                                            <tr className="border-t align-middle hover:bg-muted/20">
+                                                <td className="flex w-[250px] items-center gap-2 p-2 font-medium text-muted-foreground">
                                                     {task.sub_tasks &&
                                                     task.sub_tasks.length >
                                                         0 ? (
@@ -178,7 +178,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                         <span className="w-4" />
                                                     )}
                                                     <span
-                                                        className="cursor-pointer hover:font-bold"
+                                                        className="cursor-pointer truncate hover:font-bold"
                                                         onClick={() =>
                                                             router.get(
                                                                 tasks.url({
@@ -193,7 +193,12 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                     </span>
                                                 </td>
 
-                                                <td>
+                                                <td
+                                                    className="max-w-[250px] truncate"
+                                                    title={
+                                                        task.description || '-'
+                                                    }
+                                                >
                                                     {task.description || '-'}
                                                 </td>
                                                 <td>{task.due_date || '-'}</td>
@@ -253,7 +258,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                         className="border-t bg-muted/5 transition-colors hover:bg-muted/20"
                                                     >
                                                         <td
-                                                            className="flex cursor-pointer items-center gap-2 p-3 pl-10 text-muted-foreground hover:font-bold"
+                                                            className="flex cursor-pointer items-center gap-2 p-2 pl-10 text-muted-foreground hover:font-bold"
                                                             onClick={() =>
                                                                 handleClickSubTask(
                                                                     task,
@@ -263,7 +268,13 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                         >
                                                             {sub.title}
                                                         </td>
-                                                        <td className="text-xs">
+                                                        <td
+                                                            className="max-w-[250px] truncate"
+                                                            title={
+                                                                sub.description ||
+                                                                '-'
+                                                            }
+                                                        >
                                                             {sub.description ||
                                                                 '-'}
                                                         </td>
