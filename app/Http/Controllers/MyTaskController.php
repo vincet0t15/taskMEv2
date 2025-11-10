@@ -14,6 +14,7 @@ class MyTaskController extends Controller
 {
     public function index()
     {
+
         $tasks = Status::with([
             'tasks' => function ($taskQuery) {
                 $taskQuery
@@ -25,6 +26,23 @@ class MyTaskController extends Controller
                                 $subAssigneeQuery->where('users.id', Auth::id());
                             });
                     })
+                    ->withCount([
+                        // ✅ Count completed subtasks assigned to current user
+                        'subTasks as completed_subtasks_count' => function ($query) {
+                            $query->whereHas('status', function ($q) {
+                                $q->where('name', 'Completed');
+                            })
+                                ->whereHas('assignees', function ($assigneeQuery) {
+                                    $assigneeQuery->where('users.id', Auth::id());
+                                });
+                        },
+                        // ✅ Count all subtasks assigned to current user
+                        'subTasks as total_subtasks_count' => function ($query) {
+                            $query->whereHas('assignees', function ($assigneeQuery) {
+                                $assigneeQuery->where('users.id', Auth::id());
+                            });
+                        },
+                    ])
                     ->with([
                         'project',
                         'status',

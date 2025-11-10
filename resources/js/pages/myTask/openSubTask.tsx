@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { subtask } from '@/routes/update';
-import { User } from '@/types';
 import { Priority } from '@/types/priority';
 import { Status } from '@/types/status';
 import { SubTaskForm, SubTaskInterface } from '@/types/subTask';
@@ -83,13 +82,6 @@ export function SubTaskDetails({
                 onOpenChange(false);
             },
         });
-    };
-
-    const handleSelectUserChange = (selectedUsers: User[]) => {
-        setData(
-            'assignees',
-            selectedUsers.map((user) => user.id),
-        );
     };
 
     return (
