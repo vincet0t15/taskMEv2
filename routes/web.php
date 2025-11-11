@@ -70,4 +70,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('calendar/tasks-view/{task}', [CalendarController::class, 'view'])->name('calendar.view');
 });
 
-require __DIR__ . '/settings.php';
+// require __DIR__ . '/settings.php';
