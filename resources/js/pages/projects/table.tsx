@@ -152,7 +152,27 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                 <tbody>
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
-                                            <tr className="border-t align-middle hover:bg-muted/20">
+                                            <tr
+                                                className={`border-t align-middle ${
+                                                    task.due_date
+                                                        ? new Date(
+                                                              task.due_date,
+                                                          ) < new Date()
+                                                            ? 'bg-red-100' // overdue
+                                                            : (new Date(
+                                                                    task.due_date,
+                                                                ).getTime() -
+                                                                    Date.now()) /
+                                                                    (1000 *
+                                                                        60 *
+                                                                        60 *
+                                                                        24) <=
+                                                                3
+                                                              ? 'bg-orange-100'
+                                                              : ''
+                                                        : ''
+                                                }`}
+                                            >
                                                 <td className="w-[250px] truncate p-2 font-medium text-muted-foreground">
                                                     <div className="flex items-center gap-2">
                                                         {task.sub_tasks
@@ -263,7 +283,25 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                 task.sub_tasks?.map((sub) => (
                                                     <tr
                                                         key={sub.id}
-                                                        className="border-t bg-muted/10 align-middle hover:bg-muted/20"
+                                                        className={`border-t align-middle hover:bg-muted/20 ${
+                                                            sub.due_date
+                                                                ? new Date(
+                                                                      sub.due_date,
+                                                                  ) < new Date()
+                                                                    ? 'bg-red-100'
+                                                                    : (new Date(
+                                                                            sub.due_date,
+                                                                        ).getTime() -
+                                                                            Date.now()) /
+                                                                            (1000 *
+                                                                                60 *
+                                                                                60 *
+                                                                                24) <=
+                                                                        3
+                                                                      ? 'bg-orange-100'
+                                                                      : 'bg-muted/10'
+                                                                : 'bg-muted/10'
+                                                        }`}
                                                     >
                                                         <td
                                                             className="flex cursor-pointer items-center p-2 pl-5 text-xs text-muted-foreground hover:font-bold"
