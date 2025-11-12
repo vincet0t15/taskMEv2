@@ -8,8 +8,9 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, home } from '@/routes';
 import archived from '@/routes/archived';
+import calendar from '@/routes/calendar';
 import myTask from '@/routes/myTask';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -17,7 +18,6 @@ import { Archive, Calendar1, LayoutGrid, UserRoundCheck } from 'lucide-react';
 import AppLogo from './app-logo';
 import { ArchiveProjects } from './archiveProjects';
 import WorkspaceSection from './workSpaceStation';
-import calendar from '@/routes/calendar';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -29,7 +29,7 @@ const mainNavItems: NavItem[] = [
         href: myTask.index.url(),
         icon: UserRoundCheck,
     },
-     {
+    {
         title: 'Calendar',
         href: calendar.index.url(),
         icon: Calendar1,
@@ -49,7 +49,7 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <Link href={dashboard()} prefetch>
+                        <Link href={home()} prefetch>
                             <AppLogo />
                         </Link>
                     </SidebarMenuItem>
