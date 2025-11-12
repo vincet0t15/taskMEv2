@@ -146,7 +146,28 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                 <tbody className="">
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
-                                            <tr className="border-t align-middle hover:bg-muted/20">
+                                            <tr
+                                                className={`border-t border-b align-middle ${
+                                                    task.due_date &&
+                                                    task.status_id !== 4
+                                                        ? new Date(
+                                                              task.due_date,
+                                                          ) < new Date()
+                                                            ? 'bg-red-100'
+                                                            : (new Date(
+                                                                    task.due_date,
+                                                                ).getTime() -
+                                                                    Date.now()) /
+                                                                    (1000 *
+                                                                        60 *
+                                                                        60 *
+                                                                        24) <=
+                                                                3
+                                                              ? 'bg-orange-100' // due soon
+                                                              : ''
+                                                        : ''
+                                                }`}
+                                            >
                                                 <td className="p-2 align-middle">
                                                     <div className="flex w-[250px] items-center gap-2 font-medium text-muted-foreground">
                                                         {task.sub_tasks &&
@@ -224,17 +245,30 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                 </td>
 
                                                 <td className="w-32 p-2 align-middle">
-                                                    <Progress
-                                                        value={
-                                                            task.total_subtasks_count
-                                                                ? ((task.completed_subtasks_count ??
-                                                                      0) /
-                                                                      task.total_subtasks_count) *
-                                                                  100
-                                                                : 0
-                                                        }
-                                                        className="[&>div]:bg-blue-500"
-                                                    />
+                                                    {task.sub_tasks.length >
+                                                    0 ? (
+                                                        <Progress
+                                                            value={
+                                                                task.total_subtasks_count
+                                                                    ? ((task.completed_subtasks_count ??
+                                                                          0) /
+                                                                          task.total_subtasks_count) *
+                                                                      100
+                                                                    : 0
+                                                            }
+                                                            className="[&>div]:bg-blue-500"
+                                                        />
+                                                    ) : (
+                                                        <Badge
+                                                            style={{
+                                                                backgroundColor:
+                                                                    task.status
+                                                                        .color,
+                                                            }}
+                                                        >
+                                                            {task.status.name}
+                                                        </Badge>
+                                                    )}
                                                 </td>
 
                                                 <td className="align-middle">
@@ -256,7 +290,26 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                 task.sub_tasks.map((sub) => (
                                                     <tr
                                                         key={sub.id}
-                                                        className="border-t bg-muted/5 transition-colors hover:bg-muted/20"
+                                                        className={`border-t align-middle hover:bg-muted/20 ${
+                                                            sub.due_date &&
+                                                            sub.status_id !== 4
+                                                                ? new Date(
+                                                                      sub.due_date,
+                                                                  ) < new Date()
+                                                                    ? 'bg-red-100'
+                                                                    : (new Date(
+                                                                            sub.due_date,
+                                                                        ).getTime() -
+                                                                            Date.now()) /
+                                                                            (1000 *
+                                                                                60 *
+                                                                                60 *
+                                                                                24) <=
+                                                                        3
+                                                                      ? 'bg-orange-100'
+                                                                      : 'bg-muted/10'
+                                                                : 'bg-muted/10'
+                                                        }`}
                                                     >
                                                         <td
                                                             className="flex cursor-pointer items-center p-2 pl-5 text-xs text-muted-foreground hover:font-bold"

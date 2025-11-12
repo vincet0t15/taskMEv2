@@ -251,18 +251,31 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                     </div>
                                                 </td>
 
-                                                <td className="p-2">
-                                                    <Progress
-                                                        value={
-                                                            task.total_subtasks_count
-                                                                ? ((task.completed_subtasks_count ??
-                                                                      0) /
-                                                                      task.total_subtasks_count) *
-                                                                  100
-                                                                : 0
-                                                        }
-                                                        className="[&>div]:bg-blue-500"
-                                                    />
+                                                <td className="w-32 p-2 align-middle">
+                                                    {task.sub_tasks.length >
+                                                    0 ? (
+                                                        <Progress
+                                                            value={
+                                                                task.total_subtasks_count
+                                                                    ? ((task.completed_subtasks_count ??
+                                                                          0) /
+                                                                          task.total_subtasks_count) *
+                                                                      100
+                                                                    : 0
+                                                            }
+                                                            className="[&>div]:bg-blue-500"
+                                                        />
+                                                    ) : (
+                                                        <Badge
+                                                            style={{
+                                                                backgroundColor:
+                                                                    task.status
+                                                                        .color,
+                                                            }}
+                                                        >
+                                                            {task.status.name}
+                                                        </Badge>
+                                                    )}
                                                 </td>
 
                                                 <td className="p-2">
