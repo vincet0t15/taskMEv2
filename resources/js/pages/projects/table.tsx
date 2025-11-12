@@ -153,12 +153,13 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
                                             <tr
-                                                className={`border-t align-middle ${
-                                                    task.due_date
+                                                className={`border-t border-b align-middle ${
+                                                    task.due_date &&
+                                                    task.status_id !== 4
                                                         ? new Date(
                                                               task.due_date,
                                                           ) < new Date()
-                                                            ? 'bg-red-100' // overdue
+                                                            ? 'bg-red-100'
                                                             : (new Date(
                                                                     task.due_date,
                                                                 ).getTime() -
@@ -168,7 +169,7 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                                         60 *
                                                                         24) <=
                                                                 3
-                                                              ? 'bg-orange-100'
+                                                              ? 'bg-orange-100' // due soon
                                                               : ''
                                                         : ''
                                                 }`}
@@ -284,7 +285,8 @@ export default function CollapsibleTaskTable({ statusWithTasks }: Props) {
                                                     <tr
                                                         key={sub.id}
                                                         className={`border-t align-middle hover:bg-muted/20 ${
-                                                            sub.due_date
+                                                            sub.due_date &&
+                                                            sub.status_id !== 4
                                                                 ? new Date(
                                                                       sub.due_date,
                                                                   ) < new Date()
