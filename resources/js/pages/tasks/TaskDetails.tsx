@@ -188,7 +188,7 @@ export default function TaskDetails({
                         <span className="block text-sm font-medium text-gray-500">
                             Description
                         </span>
-                        <Textarea readOnly>{tasks.description}</Textarea>
+                        <Textarea readOnly defaultValue={tasks.description} />
                     </div>
                 )}
 

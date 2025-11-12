@@ -9,12 +9,15 @@ import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import TaskDetailDialog from '../tasks/viewTask';
+import { CreateTask } from './createTask';
 interface Props {
     task: Task[];
 }
 export default function CalendarData({ task }: Props) {
     const [openViewTask, setOpenViewTask] = useState(false);
     const [taskDetails, setTaskDetails] = useState<Task>();
+    const [openCreateTask, setOpenCreateTask] = useState(false);
+    const [dateStart, setDateStart] = useState('');
     const events = (task as Task[]).map((task) => ({
         id: String(task.id),
         title: task.title ?? '',
@@ -58,6 +61,7 @@ export default function CalendarData({ task }: Props) {
             },
         );
     }
+
     function handleEventClick(data: any) {
         const matchedTask = task.find(
             (task) => task.id === Number(data.event.id),
@@ -138,6 +142,12 @@ export default function CalendarData({ task }: Props) {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 
+    const onDateClick = (info: any) => {
+        const start = info.dateStr;
+        setDateStart(start);
+        setOpenCreateTask(true);
+    };
+
     return (
         <div className="rounded-md bg-sidebar p-4">
             <FullCalendar
@@ -152,6 +162,7 @@ export default function CalendarData({ task }: Props) {
                 dayMaxEvents={true}
                 eventClick={handleEventClick}
                 eventContent={renderEventContent}
+                dateClick={onDateClick}
             />
             {openViewTask && taskDetails && (
                 <TaskDetailDialog
@@ -161,6 +172,15 @@ export default function CalendarData({ task }: Props) {
                     onDataNeededRefresh={() =>
                         router.reload({ only: ['tasks'] })
                     }
+                />
+            )}
+
+            {openCreateTask && (
+                <CreateTask
+                    open={openCreateTask}
+                    onOpenChange={setOpenCreateTask}
+                    projectId={task[0].project_id}
+                    date={dateStart}
                 />
             )}
         </div>
