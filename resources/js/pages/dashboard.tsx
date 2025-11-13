@@ -128,14 +128,18 @@ const ChartCard = ({
                         outerRadius={85}
                         innerRadius={45}
                         paddingAngle={3}
+                        labelLine={false}
                         label={({ name, percent }) =>
-                            `${name} ${(percent * 100).toFixed(0)}%`
+                            percent > 0
+                                ? `${name} ${(percent * 100).toFixed(0)}%`
+                                : ''
                         }
                     >
                         {data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                     </Pie>
+
                     <Tooltip
                         contentStyle={{
                             borderRadius: 8,
