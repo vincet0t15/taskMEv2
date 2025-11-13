@@ -28,7 +28,6 @@ interface Props {
 }
 
 export default function MyTasksListTable({ statusWithTasks }: Props) {
-    console.log(statusWithTasks);
     const getInitials = useInitials();
     const [openTasks, setOpenTasks] = useState<Record<number, boolean>>({});
     const [openViewTask, setOpenViewTask] = useState(false);
