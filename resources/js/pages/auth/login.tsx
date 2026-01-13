@@ -9,7 +9,7 @@ import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
-import { LogIn } from 'lucide-react';
+import { Lock, LogIn } from 'lucide-react';
 
 interface LoginProps {
     status?: string;
@@ -87,16 +87,21 @@ export default function Login({
                                             </TextLink>
                                         )}
                                     </div>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        name="password"
-                                        required
-                                        tabIndex={2}
-                                        autoComplete="current-password"
-                                        placeholder="••••••••"
-                                        className="rounded-xl border-slate-200 focus:border-indigo-400 focus:ring-indigo-400"
-                                    />
+                                    <div className="relative">
+                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <Lock className="h-5 w-5 text-slate-400" />
+                                        </div>
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            name="password"
+                                            required
+                                            tabIndex={2}
+                                            autoComplete="current-password"
+                                            placeholder="••••••••"
+                                            className="rounded-xl border-slate-200 pl-10 focus:border-indigo-400 focus:ring-indigo-400"
+                                        />
+                                    </div>
                                     <InputError message={errors.password} />
                                 </div>
 

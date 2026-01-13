@@ -9,7 +9,7 @@ import { login } from '@/routes';
 import { store } from '@/routes/register';
 import { OfficeInterface } from '@/types/office';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { UserPlus } from 'lucide-react';
+import { Lock, UserPlus } from 'lucide-react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner';
 
@@ -164,20 +164,25 @@ export default function Register() {
                         >
                             Confirm Password
                         </Label>
-                        <Input
-                            id="password_confirmation"
-                            type="password"
-                            name="password_confirmation"
-                            required
-                            tabIndex={5}
-                            autoComplete="new-password"
-                            placeholder="Re-enter your password"
-                            value={data.password_confirmation}
-                            onChange={(e) =>
-                                setData('password_confirmation', e.target.value)
-                            }
-                            className="rounded-xl border-slate-200 focus:border-indigo-400 focus:ring-indigo-400"
-                        />
+                        <div className="relative">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <Lock className="h-5 w-5 text-slate-400" />
+                            </div>
+                            <Input
+                                id="password_confirmation"
+                                type="password"
+                                name="password_confirmation"
+                                required
+                                tabIndex={5}
+                                autoComplete="new-password"
+                                placeholder="Re-enter your password"
+                                value={data.password_confirmation}
+                                onChange={(e) =>
+                                    setData('password_confirmation', e.target.value)
+                                }
+                                className="rounded-xl border-slate-200 pl-10 focus:border-indigo-400 focus:ring-indigo-400"
+                            />
+                        </div>
                         <InputError message={errors.password_confirmation} />
                     </div>
 
