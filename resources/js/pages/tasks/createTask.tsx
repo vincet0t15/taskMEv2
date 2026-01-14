@@ -469,15 +469,7 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
                                 Delete Subtask
                             </Button>
                         )}
-                        {editingSubTaskIndex === null && (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={saveSubTask}
-                            >
-                                Create & Add Another
-                            </Button>
-                        )}
+
                         <Button type="button" onClick={saveSubTaskAndClose}>
                             {editingSubTaskIndex !== null
                                 ? 'Update Subtask'
