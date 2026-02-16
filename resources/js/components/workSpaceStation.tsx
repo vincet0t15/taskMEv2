@@ -75,17 +75,13 @@ export default function WorkspaceSection() {
                                 href={ws.url}
                                 key={ws.id}
                                 className={cn(
-                                    'flex cursor-pointer items-center space-x-2 rounded-md px-1 py-1 text-sm transition-colors',
+                                    'flex cursor-pointer items-center space-x-2 rounded-md px-4 py-1 text-sm transition-colors',
                                     isActive
                                         ? 'bg-muted font-semibold text-foreground'
                                         : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                                 )}
                             >
-                                <div
-                                    className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground"
-                                >
-                                    {ws.name.charAt(0)}
-                                </div>
+
                                 <span className="truncate">{ws.name}</span>
                             </Link>
                         );
