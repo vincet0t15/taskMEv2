@@ -40,7 +40,7 @@ export default function CustomDatePicker({
     }, [initialDate]);
 
     const handleSelect = (selectedDate: Date | undefined) => {
-        if (disabled) return; // ✅ Prevent selection if disabled
+        if (disabled) return;
         setDate(selectedDate);
 
         if (onSelect && selectedDate) {
