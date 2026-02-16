@@ -151,7 +151,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                     ? new Date(
                                                         task.due_date,
                                                     ) < new Date()
-                                                        ? 'bg-red-100'
+                                                        ? 'bg-red-50'
                                                         : (new Date(
                                                             task.due_date,
                                                         ).getTime() -
@@ -161,7 +161,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                                 60 *
                                                                 24) <=
                                                             3
-                                                            ? 'bg-orange-100'
+                                                            ? 'bg-yellow-50'
                                                             : ''
                                                     : ''
                                                     }`}
@@ -293,7 +293,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                             ? new Date(
                                                                 sub.due_date,
                                                             ) < new Date()
-                                                                ? 'bg-red-100'
+                                                                ? 'bg-red-50'
                                                                 : (new Date(
                                                                     sub.due_date,
                                                                 ).getTime() -
@@ -303,7 +303,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                                         60 *
                                                                         24) <=
                                                                     3
-                                                                    ? 'bg-orange-100'
+                                                                    ? 'bg-yellow-50'
                                                                     : 'bg-muted/10'
                                                             : 'bg-muted/10'
                                                             }`}
