@@ -17,12 +17,16 @@ interface Props {
     initialDate?: string;
     onSelect?: (formatted: string) => void;
     disabled?: boolean; // ✅ Added disabled prop
+    maxDate?: string;
+    minDate?: string;
 }
 
 export default function CustomDatePicker({
     initialDate,
     onSelect,
     disabled = false, // ✅ Default false
+    maxDate,
+    minDate,
 }: Props) {
     const id = useId();
     const [date, setDate] = useState<Date | undefined>();
@@ -81,7 +85,27 @@ export default function CustomDatePicker({
                             mode="single"
                             selected={date}
                             onSelect={handleSelect}
-                            disabled={disabled} // ✅ Disable date picking
+                            disabled={
+                                disabled
+                                    ? [
+                                        { before: new Date(0) },
+                                        { after: new Date(9999, 0, 1) },
+                                    ]
+                                    : [
+                                        ...(maxDate
+                                            ? [{ after: new Date(maxDate) }]
+                                            : []),
+                                        ...(minDate
+                                            ? [
+                                                {
+                                                    before: new Date(
+                                                        minDate,
+                                                    ),
+                                                },
+                                            ]
+                                            : []),
+                                    ]
+                            }
                         />
                     </PopoverContent>
                 </Popover>

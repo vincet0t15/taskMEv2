@@ -132,6 +132,15 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
     };
 
     const handleSubTaskFormChange = (field: string, value: any) => {
+        if (field === 'due_date' && data.due_date && value) {
+            if (new Date(value) > new Date(data.due_date)) {
+                toast.error(
+                    'Subtask deadline cannot be after the task deadline',
+                );
+                return;
+            }
+        }
+
         setSubTaskForm((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -390,20 +399,21 @@ export default function CreateTask({ project: proj }: CreateTaskProps) {
                             />
                         </div>
                         <div className="grid gap-2 md:grid-cols-3">
-                            <div className="grid gap-2">
-                                <Label htmlFor="subtask-due-date">
-                                    Deadline
-                                </Label>
-                                <CustomDatePicker
-                                    initialDate={subTaskForm.due_date}
-                                    onSelect={(date) =>
-                                        handleSubTaskFormChange(
-                                            'due_date',
-                                            date,
-                                        )
-                                    }
-                                />
-                            </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="subtask-due-date">
+                                Deadline
+                            </Label>
+                            <CustomDatePicker
+                                initialDate={subTaskForm.due_date}
+                                onSelect={(date) =>
+                                    handleSubTaskFormChange(
+                                        'due_date',
+                                        date,
+                                    )
+                                }
+                                maxDate={data.due_date}
+                            />
+                        </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="subtask-priority">
                                     Priority

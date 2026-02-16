@@ -3,13 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\SubTask;
+use App\Models\Task;
 use App\Models\TaskActivity;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SubTaskController extends Controller
 {
     public function updateSubTask(Request $request, SubTask $subTask)
     {
+        $parentTask = $subTask->task;
+
+        if ($parentTask && $parentTask->due_date && $request->due_date) {
+            $taskDueDate = Carbon::parse($parentTask->due_date);
+            $subTaskDueDate = Carbon::parse($request->due_date);
+
+            if ($subTaskDueDate->gt($taskDueDate)) {
+                return redirect()->back()
+                    ->withErrors([
+                        'due_date' => 'Subtask deadline cannot be after the task deadline.',
+                    ])
+                    ->withInput();
+            }
+        }
 
         // Store old values for activity logging
         $oldSubTaskValues = [
@@ -69,6 +85,21 @@ class SubTaskController extends Controller
 
     public function store(Request $request)
     {
+        $task = Task::find($request->task_id);
+
+        if ($task && $task->due_date && $request->due_date) {
+            $taskDueDate = Carbon::parse($task->due_date);
+            $subTaskDueDate = Carbon::parse($request->due_date);
+
+            if ($subTaskDueDate->gt($taskDueDate)) {
+                return redirect()->back()
+                    ->withErrors([
+                        'due_date' => 'Subtask deadline cannot be after the task deadline.',
+                    ])
+                    ->withInput();
+            }
+        }
+
         $subTask = SubTask::create([
             'task_id' => $request->task_id,
             'title' => $request->title,

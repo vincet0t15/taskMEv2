@@ -75,7 +75,20 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
         setData({ ...data, [e.target.name]: e.target.value });
     };
 
-    const handleSubTaskChange = (index: number, field: string, value: any) => {
+    const handleSubTaskChange = (
+        index: number,
+        field: string,
+        value: any,
+    ) => {
+        if (field === 'due_date' && data.due_date && value) {
+            if (new Date(value) > new Date(data.due_date)) {
+                toast.error(
+                    'Subtask deadline cannot be after the task deadline',
+                );
+                return;
+            }
+        }
+
         const updatedSubTasks = [...(data.subTasks ?? [])];
         updatedSubTasks[index] = { ...updatedSubTasks[index], [field]: value };
         setData('subTasks', updatedSubTasks);
@@ -123,7 +136,7 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
             onSuccess: (response: { props: FlashProps }) => {
                 toast.success(
                     response.props.flash?.success ||
-                        'Task updated successfully.',
+                    'Task updated successfully.',
                 );
                 setData({
                     ...data,
@@ -338,6 +351,7 @@ export default function ShowTask({ tasks, project: proj }: ShowTaskProps) {
                                             date,
                                         )
                                     }
+                                    maxDate={data.due_date}
                                 />
                             </div>
                             <div className="grid gap-2">

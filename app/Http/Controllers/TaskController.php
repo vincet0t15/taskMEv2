@@ -16,6 +16,24 @@ class TaskController extends Controller
 {
     public function store(Request $request)
     {
+        // Ensure subtask deadlines do not exceed the main task deadline
+        if ($request->due_date && $request->subTasks) {
+            $taskDueDate = Carbon::parse($request->due_date);
+
+            foreach ($request->subTasks as $subTaskData) {
+                if (!empty($subTaskData['due_date'])) {
+                    $subTaskDueDate = Carbon::parse($subTaskData['due_date']);
+
+                    if ($subTaskDueDate->gt($taskDueDate)) {
+                        return redirect()->back()
+                            ->withErrors([
+                                'subTasks' => 'Subtask "' . ($subTaskData['title'] ?? 'Untitled') . '" deadline cannot be after the task deadline.',
+                            ])
+                            ->withInput();
+                    }
+                }
+            }
+        }
 
         $task = Task::create([
             'title' => $request->title,
@@ -174,6 +192,27 @@ class TaskController extends Controller
 
     public function updateTask(Request $request, Task $task)
     {
+        // Ensure subtask deadlines do not exceed the main task deadline
+        $taskDueDateString = $request->due_date ?? $task->due_date;
+
+        if ($taskDueDateString && $request->has('subTasks')) {
+            $taskDueDate = Carbon::parse($taskDueDateString);
+
+            foreach ($request->subTasks as $subTaskData) {
+                if (!empty($subTaskData['due_date'])) {
+                    $subTaskDueDate = Carbon::parse($subTaskData['due_date']);
+
+                    if ($subTaskDueDate->gt($taskDueDate)) {
+                        return redirect()->back()
+                            ->withErrors([
+                                'subTasks' => 'Subtask "' . ($subTaskData['title'] ?? 'Untitled') . '" deadline cannot be after the task deadline.',
+                            ])
+                            ->withInput();
+                    }
+                }
+            }
+        }
+
         // Store old values for activity logging
         $oldValues = [
             'title' => $task->title,

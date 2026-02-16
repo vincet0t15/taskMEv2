@@ -71,7 +71,18 @@ export function SubTaskDialog({
         color: status.color,
     }));
 
-    const onChangeDueDate = (date: string) => setData('due_date', date);
+    const onChangeDueDate = (date: string) => {
+        if (task?.due_date && date) {
+            if (new Date(date) > new Date(task.due_date)) {
+                toast.error(
+                    'Subtask deadline cannot be after the task deadline',
+                );
+                return;
+            }
+        }
+
+        setData('due_date', date);
+    };
     const handleSelectPriorityChange = (value: string) =>
         setData('priority_id', Number(value));
     const handleSelectStatusChange = (value: string) =>
@@ -156,6 +167,7 @@ export function SubTaskDialog({
                                     <CustomDatePicker
                                         initialDate={data.due_date}
                                         onSelect={onChangeDueDate}
+                                        maxDate={task?.due_date}
                                     />
                                     <InputError message={errors.due_date} />
                                 </div>
