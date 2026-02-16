@@ -35,7 +35,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
     const [openSubTaskDialog, setOpenSubTaskDialog] = useState(false);
     const [subTask, setSubTask] = useState<SubTaskInterface>();
 
-    // 🟢 Initialize all status groups as open by default
+
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
         Object.fromEntries((statusWithTasks || []).map((s) => [s.name, true])),
     );
@@ -74,7 +74,7 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                     key={index}
                     className="overflow-hidden rounded-md bg-card text-card-foreground shadow-sm"
                 >
-                    {/* Status Header */}
+
                     <div
                         className="flex cursor-pointer items-center justify-between bg-muted/100 px-4 py-2 hover:bg-muted/30"
                         onClick={() => toggleGroup(status.name)}
@@ -146,31 +146,30 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                     {status.tasks.map((task) => (
                                         <React.Fragment key={task.id}>
                                             <tr
-                                                className={`border-t border-b align-middle ${
-                                                    task.due_date &&
+                                                className={`border-t border-b align-middle ${task.due_date &&
                                                     task.status_id !== 4
-                                                        ? new Date(
-                                                              task.due_date,
-                                                          ) < new Date()
-                                                            ? 'bg-red-100'
-                                                            : (new Date(
-                                                                    task.due_date,
-                                                                ).getTime() -
-                                                                    Date.now()) /
-                                                                    (1000 *
-                                                                        60 *
-                                                                        60 *
-                                                                        24) <=
-                                                                3
-                                                              ? 'bg-orange-100' // due soon
-                                                              : ''
-                                                        : ''
-                                                }`}
+                                                    ? new Date(
+                                                        task.due_date,
+                                                    ) < new Date()
+                                                        ? 'bg-red-100'
+                                                        : (new Date(
+                                                            task.due_date,
+                                                        ).getTime() -
+                                                            Date.now()) /
+                                                            (1000 *
+                                                                60 *
+                                                                60 *
+                                                                24) <=
+                                                            3
+                                                            ? 'bg-orange-100'
+                                                            : ''
+                                                    : ''
+                                                    }`}
                                             >
                                                 <td className="p-2 align-middle">
                                                     <div className="flex w-[250px] items-center gap-2 font-medium text-muted-foreground">
                                                         {task.sub_tasks &&
-                                                        task.sub_tasks.length >
+                                                            task.sub_tasks.length >
                                                             0 ? (
                                                             openTasks[
                                                                 task.id
@@ -245,14 +244,14 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
 
                                                 <td className="w-32 p-2 align-middle">
                                                     {task.sub_tasks.length >
-                                                    0 ? (
+                                                        0 ? (
                                                         <Progress
                                                             value={
                                                                 task.total_subtasks_count
                                                                     ? ((task.completed_subtasks_count ??
-                                                                          0) /
-                                                                          task.total_subtasks_count) *
-                                                                      100
+                                                                        0) /
+                                                                        task.total_subtasks_count) *
+                                                                    100
                                                                     : 0
                                                             }
                                                             className="[&>div]:bg-blue-500"
@@ -289,26 +288,25 @@ export default function MyTasksListTable({ statusWithTasks }: Props) {
                                                 task.sub_tasks.map((sub) => (
                                                     <tr
                                                         key={sub.id}
-                                                        className={`border-t align-middle hover:bg-muted/20 ${
-                                                            sub.due_date &&
+                                                        className={`border-t align-middle hover:bg-muted/20 ${sub.due_date &&
                                                             sub.status_id !== 4
-                                                                ? new Date(
-                                                                      sub.due_date,
-                                                                  ) < new Date()
-                                                                    ? 'bg-red-100'
-                                                                    : (new Date(
-                                                                            sub.due_date,
-                                                                        ).getTime() -
-                                                                            Date.now()) /
-                                                                            (1000 *
-                                                                                60 *
-                                                                                60 *
-                                                                                24) <=
-                                                                        3
-                                                                      ? 'bg-orange-100'
-                                                                      : 'bg-muted/10'
-                                                                : 'bg-muted/10'
-                                                        }`}
+                                                            ? new Date(
+                                                                sub.due_date,
+                                                            ) < new Date()
+                                                                ? 'bg-red-100'
+                                                                : (new Date(
+                                                                    sub.due_date,
+                                                                ).getTime() -
+                                                                    Date.now()) /
+                                                                    (1000 *
+                                                                        60 *
+                                                                        60 *
+                                                                        24) <=
+                                                                    3
+                                                                    ? 'bg-orange-100'
+                                                                    : 'bg-muted/10'
+                                                            : 'bg-muted/10'
+                                                            }`}
                                                     >
                                                         <td
                                                             className="flex cursor-pointer items-center p-2 pl-5 text-xs text-muted-foreground hover:font-bold"
