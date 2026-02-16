@@ -81,7 +81,6 @@ export default function WorkspaceSection() {
                                         : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                                 )}
                             >
-
                                 <span className="truncate">{ws.name}</span>
                             </Link>
                         );
