@@ -82,12 +82,7 @@ export default function WorkspaceSection() {
                                 )}
                             >
                                 <div
-                                    className={cn(
-                                        'flex size-6 items-center justify-center rounded-full text-xs font-medium',
-                                        isActive
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-muted text-foreground',
-                                    )}
+                                    className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground"
                                 >
                                     {ws.name.charAt(0)}
                                 </div>
