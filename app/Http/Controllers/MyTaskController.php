@@ -26,6 +26,9 @@ class MyTaskController extends Controller
                                 $subAssigneeQuery->where('users.id', Auth::id());
                             });
                     })
+                    ->whereHas('project.status', function ($query) {
+                        $query->where('name', '!=', 'Archived');
+                    })
                     ->withCount([
                         // ✅ Count completed subtasks assigned to current user
                         'subTasks as completed_subtasks_count' => function ($query) {
@@ -62,11 +65,16 @@ class MyTaskController extends Controller
         ])
             ->whereHas('tasks', function ($taskQuery) {
                 $taskQuery
-                    ->whereHas('assignees', function ($assigneeQuery) {
-                        $assigneeQuery->where('users.id', Auth::id());
+                    ->where(function ($query) {
+                        $query->whereHas('assignees', function ($assigneeQuery) {
+                            $assigneeQuery->where('users.id', Auth::id());
+                        })
+                            ->orWhereHas('subTasks.assignees', function ($subAssigneeQuery) {
+                                $subAssigneeQuery->where('users.id', Auth::id());
+                            });
                     })
-                    ->orWhereHas('subTasks.assignees', function ($subAssigneeQuery) {
-                        $subAssigneeQuery->where('users.id', Auth::id());
+                    ->whereHas('project.status', function ($query) {
+                        $query->where('name', '!=', 'Archived');
                     });
             })
             ->get();

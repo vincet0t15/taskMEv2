@@ -14,6 +14,9 @@ class CalendarController extends Controller
         $tasks = Task::with(['assignees', 'priority', 'status', 'subTasks' => function ($subQuery) {
             $subQuery->with('assignees', 'priority', 'status');
         },])
+            ->whereHas('project.status', function ($query) {
+                $query->where('name', '!=', 'Archived');
+            })
             ->get();
 
         return Inertia::render('Calendar/index', [
