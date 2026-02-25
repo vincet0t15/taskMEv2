@@ -13,6 +13,7 @@ class ProjectController extends Controller
     public function getMyProjects(Request $request)
     {
         return Project::where('user_id', Auth::user()->id)
+            ->with(['status', 'priority'])
             ->whereHas('status', function ($query) {
                 $query->where('name', '!=', 'Archived');
             })
@@ -22,6 +23,7 @@ class ProjectController extends Controller
     public function getMyArchivedProjects(Request $request)
     {
         return Project::where('user_id', Auth::user()->id)
+            ->with(['status', 'priority'])
             ->whereHas('status', function ($query) {
                 $query->where('name', 'Archived');
             })
@@ -36,7 +38,7 @@ class ProjectController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'status_id' => 'sometimes|exists:statuses,id',
         ]);

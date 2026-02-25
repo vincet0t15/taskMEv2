@@ -13,6 +13,7 @@ import archived from '@/routes/archived';
 import calendar from '@/routes/calendar';
 import myTask from '@/routes/myTask';
 import { SharedData, type NavItem } from '@/types';
+import { Project } from '@/types/project';
 import { Link, usePage } from '@inertiajs/react';
 import { Archive, Calendar1, LayoutGrid, UserIcon, UserRoundCheck } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -22,7 +23,7 @@ import accounts from '@/routes/accounts';
 
 export function AppSidebar() {
 
-    const { auth } = usePage<SharedData>().props
+    const { auth, myArchivedProjects } = usePage<SharedData>().props
 
     const user = auth.user
 
@@ -71,6 +72,18 @@ export function AppSidebar() {
                 },
             ],
         },
+        ...(myArchivedProjects && (myArchivedProjects as Project[]).length > 0
+            ? [
+                {
+                    title: 'Archive',
+                    children: (myArchivedProjects as Project[]).map(project => ({
+                        title: project.name,
+                        href: `/projects/${project.id}/list`,
+                        icon: Archive,
+                    })),
+                }
+            ]
+            : []),
     ]
     return (
         <Sidebar collapsible="offcanvas" variant="sidebar">
