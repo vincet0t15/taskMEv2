@@ -14,7 +14,7 @@ class AccountController extends Controller
         $accounts = User::query()
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('username', 'like', "%{$search}%");
             })
             ->paginate(10)
             ->withQueryString();
@@ -25,5 +25,14 @@ class AccountController extends Controller
                 'search' => $search,
             ],
         ]);
+    }
+
+    public function toggleActive(User $user)
+    {
+        $user->update([
+            'is_active' => !$user->is_active,
+        ]);
+
+        return redirect()->back()->with('success', 'User status updated successfully.');
     }
 }

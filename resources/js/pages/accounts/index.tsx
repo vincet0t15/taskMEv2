@@ -1,14 +1,17 @@
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage as useInertiaPage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import type { BreadcrumbItem, User } from '@/types';
+import type { BreadcrumbItem, SharedData, User } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import React, { KeyboardEventHandler, useState } from 'react';
 import { PaginatedDataResponse } from '@/types/pagination';
 import { FilterProps } from '@/types/filter';
-import accounts from '@/routes/accounts';
+import * as accounts from '@/routes/accounts';
 import Pagination from '@/components/paginationData';
+import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -26,22 +29,32 @@ interface Props {
     filters: FilterProps
 }
 export default function AccountList({ accountList, filters }: Props) {
-    console.log(accountList)
-    const [search, setSearch] = useState(filters.search || '');
-    const [openCreateDialog, setOpenCreateDialog] = useState(false);
-    const [openEditDialog, setOpenEditDialog] = useState(false);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-    const [openCreateSection, setOpenCreateSection] = useState(false);
-    const [openEditYearSectionDialog, setOpenEditYearSectionDialog] = useState(false);
-    const [openDeleteSectionDialog, setOpenDeleteSectionDialog] = useState(false);
-    const [expandedYearLevels, setExpandedYearLevels] = useState<number[]>([]);
+    const { auth } = useInertiaPage<SharedData>().props;
+    const currentUser = auth.user;
 
-    const toggleYearLevel = (id: number) => {
-        setExpandedYearLevels(prev =>
-            prev.includes(id)
-                ? prev.filter(expandedId => expandedId !== id)
-                : [...prev, id]
-        );
+    const [search, setSearch] = useState(filters.search || '');
+    // ... existing state ...
+
+    const handleToggleActive = (user: User) => {
+        if (user.id === currentUser.id) {
+            toast.error("You cannot deactivate your own account.");
+            return;
+        }
+
+        const action = user.is_active ? 'deactivate' : 'activate';
+        if (!confirm(`Are you sure you want to ${action} this account?`)) {
+            return;
+        }
+
+        router.put(accounts.toggleActive.url(user.id), {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success(`User ${user.is_active ? 'deactivated' : 'activated'} successfully.`);
+            },
+            onError: () => {
+                toast.error("Failed to update user status.");
+            }
+        });
     };
 
 
@@ -104,13 +117,22 @@ export default function AccountList({ accountList, filters }: Props) {
                                                 </div>
                                             </TableCell>
 
-                                            <TableCell className="flex justify-end gap-3">
+                                            <TableCell className="flex justify-end items-center gap-3">
                                                 <span
-                                                    className="cursor-pointer text-teal-800 hover:text-teal-900 hover:underline"
-
+                                                    className={cn(
+                                                        "text-xs font-medium px-2 py-1 rounded-full",
+                                                        account.is_active
+                                                            ? "bg-teal-100 text-teal-800"
+                                                            : "bg-red-100 text-red-800"
+                                                    )}
                                                 >
-                                                    Active
+                                                    {account.is_active ? 'Active' : 'Inactive'}
                                                 </span>
+                                                <Switch
+                                                    checked={!!account.is_active}
+                                                    onCheckedChange={() => handleToggleActive(account)}
+                                                    disabled={account.id === currentUser.id}
+                                                />
                                             </TableCell>
                                         </TableRow>
 

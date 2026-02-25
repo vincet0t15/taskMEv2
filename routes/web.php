@@ -72,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ACCOUNTS
     Route::get('accounts', [AccountController::class, 'index'])->name('accounts.index');
+    Route::put('accounts/{user}/toggle-active', [AccountController::class, 'toggleActive'])->name('accounts.toggle-active');
 });
 
 require __DIR__ . '/settings.php';
