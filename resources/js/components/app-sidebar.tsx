@@ -12,48 +12,66 @@ import { dashboard, home } from '@/routes';
 import archived from '@/routes/archived';
 import calendar from '@/routes/calendar';
 import myTask from '@/routes/myTask';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { Archive, Calendar1, LayoutGrid, UserRoundCheck } from 'lucide-react';
+import { SharedData, type NavItem } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { Archive, Calendar1, LayoutGrid, UserIcon, UserRoundCheck } from 'lucide-react';
 import AppLogo from './app-logo';
 import { ArchiveProjects } from './archiveProjects';
 import WorkspaceSection from './workSpaceStation';
-const mainNavItems: NavItem[] = [
-    {
-        title: 'General',
-        children: [
-            {
-                title: 'Dashboard',
-                href: dashboard(),
-                icon: LayoutGrid,
-            },
-            {
-                title: 'My Task',
-                href: myTask.index.url(),
-                icon: UserRoundCheck,
-            },
-            {
-                title: 'Calendar',
-                href: calendar.index.url(),
-                icon: Calendar1,
-            },
-        ],
-    },
-];
+import accounts from '@/routes/accounts';
 
-const archiveItems: NavItem[] = [
-    {
-        title: 'Archive',
-        children: [
-            {
-                title: 'Archived Projects',
-                href: archived.projects.url(),
-                icon: Archive,
-            },
-        ],
-    },
-];
 export function AppSidebar() {
+
+    const { auth } = usePage<SharedData>().props
+
+    const user = auth.user
+
+    console.log(user)
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'General',
+            children: [
+                {
+                    title: 'Dashboard',
+                    href: dashboard(),
+                    icon: LayoutGrid,
+                },
+                {
+                    title: 'My Task',
+                    href: myTask.index.url(),
+                    icon: UserRoundCheck,
+                },
+                {
+                    title: 'Calendar',
+                    href: calendar.index.url(),
+                    icon: Calendar1,
+                },
+            ],
+        },
+    ];
+
+    const archiveItems: NavItem[] = [
+        {
+            title: 'Settings',
+            children: [
+                ...(user.is_admin
+                    ? [
+                        {
+                            title: 'Accounts',
+                            href: accounts.index.url(),
+                            icon: UserIcon,
+                        },
+                    ]
+                    : []),
+
+                {
+                    title: 'Archived Projects',
+                    href: archived.projects.url(),
+                    icon: Archive,
+                },
+            ],
+        },
+    ]
     return (
         <Sidebar collapsible="offcanvas" variant="sidebar">
             <SidebarHeader>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CommentController;
@@ -68,6 +69,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // CALENDAR
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('calendar/tasks-view/{task}', [CalendarController::class, 'view'])->name('calendar.view');
+
+    // ACCOUNTS
+    Route::get('accounts', [AccountController::class, 'index'])->name('accounts.index');
 });
 
 require __DIR__ . '/settings.php';
