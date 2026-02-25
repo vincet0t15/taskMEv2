@@ -109,20 +109,7 @@ export default function AccountList({ accountList, filters }: Props) {
                                                     className="cursor-pointer text-teal-800 hover:text-teal-900 hover:underline"
 
                                                 >
-                                                    Create Section
-                                                </span>
-                                                <span
-                                                    className="cursor-pointer text-green-500 hover:text-green-700 hover:underline"
-
-                                                >
-                                                    Edit
-                                                </span>
-
-                                                <span
-                                                    className="cursor-pointer text-red-500 hover:text-red-700 hover:underline"
-
-                                                >
-                                                    Delete
+                                                    Active
                                                 </span>
                                             </TableCell>
                                         </TableRow>
