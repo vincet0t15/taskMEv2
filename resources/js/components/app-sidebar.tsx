@@ -20,27 +20,37 @@ import { ArchiveProjects } from './archiveProjects';
 import WorkspaceSection from './workSpaceStation';
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'My Task',
-        href: myTask.index.url(),
-        icon: UserRoundCheck,
-    },
-    {
-        title: 'Calendar',
-        href: calendar.index.url(),
-        icon: Calendar1,
+        title: 'General',
+        children: [
+            {
+                title: 'Dashboard',
+                href: dashboard(),
+                icon: LayoutGrid,
+            },
+            {
+                title: 'My Task',
+                href: myTask.index.url(),
+                icon: UserRoundCheck,
+            },
+            {
+                title: 'Calendar',
+                href: calendar.index.url(),
+                icon: Calendar1,
+            },
+        ],
     },
 ];
 
 const archiveItems: NavItem[] = [
     {
-        title: 'Arhived',
-        href: archived.projects.url(),
-        icon: Archive,
+        title: 'Archive',
+        children: [
+            {
+                title: 'Archived Projects',
+                href: archived.projects.url(),
+                icon: Archive,
+            },
+        ],
     },
 ];
 export function AppSidebar() {
